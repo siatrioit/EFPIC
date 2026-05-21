@@ -29,5 +29,3 @@ function efpic_load_add_ons_page() {
 	</div>
 	<?php
 }
-
-add_filter( 'option_page_capability_efpic_addon_licenses', 'efpic_capability' );

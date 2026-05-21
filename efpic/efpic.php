@@ -489,23 +489,14 @@ function efpic_is_pro_active() {
 
 
 /**
- * Determine if there is a valid Pro license.
+ * Pro license checks are disabled; Pro features follow plugin activation.
  *
  * @since 2.0.1
  *
- * @return bool Whether there is an active Pro license
+ * @return bool Whether Pro features should be available
  */
 function efpic_is_pro_license_valid() {
-	$valid = false;
-
-	if ( function_exists( 'efpic_pro_get_license_status' ) ) {
-		$license_status = efpic_pro_get_license_status();
-		if ( $license_status == 'valid' ) {
-			$valid = true;
-		}
-	}
-
-	return $valid;
+	return efpic_is_pro_active();
 }
 
 

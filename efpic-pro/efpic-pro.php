@@ -53,10 +53,7 @@ if ( ! function_exists( 'efpic_pro_setup' ) ) {
 		// Define plugin version
 		define( 'EFPIC_PRO', '1.4.7' );
 
-		// Define update & licensing info
 		define( 'EFPIC_PRO_NAME', 'efpic Pro' );
-		define( 'EFPIC_PRO_ITEM_ID', 21847 );
-		define( 'EFPIC_PRO_STORE_URL', 'https://efpic.io' );
 		define( 'EFPIC_PRO_LICENSE_PAGE', 'efpic-pro' );
 
 		// Define path for this plugin
@@ -83,7 +80,7 @@ if ( ! function_exists( 'efpic_pro_setup' ) ) {
 			return;
 		}
 
-		// Include Pro page and licensing functions
+		// Pro admin page (no license / no remote updates)
 		require_once EFPIC_PRO_PATH . 'inc/pro-page.php';
 
 		// Handle plugin activation
@@ -243,56 +240,6 @@ function efpic_pro_admin_styles_scripts() {
 }
 
 add_action( 'admin_enqueue_scripts', 'efpic_pro_admin_styles_scripts' );
-
-
-/**
- * Include EDD updater.
- *
- * @since 1.0.0
- */
-if ( ! class_exists( 'efpic_Pro_Plugin_Updater' ) ) {
-	include( dirname( __FILE__  ) . '/inc/plugin-updater.php' );
-}
-
-
-/**
- * Update plugin via efpic.io.
- * * @since 1.0.0
- */
-function efpic_pro_updater() {
-	$license_key = get_option( 'efpic_pro_license_key' );
-
-	// Setup updater
-	$updater = new efpic_Pro_Plugin_Updater( EFPIC_PRO_STORE_URL, __FILE__, [
-		'version' => EFPIC_PRO,
-		'license' => $license_key,
-		'item_id' => EFPIC_PRO_ITEM_ID,
-		'item_name' => EFPIC_PRO_NAME,
-		'author' => 'Claudio Rimann, Florian Ziegler',
-		'url' => home_url(),
-		'beta' => false
-	] );
-}
-
-add_action( 'init', 'efpic_pro_updater' );
-
-
-/**
- * Display additional update info if license in not valid
- *
- * @since 1.0.2
- */
-function efpic_pro_plugin_update_message( $plugin_data ) {
-		if ( efpic_pro_get_license_status() == 'valid' ) {
-			return;
-		}
-
-		echo '</p><p class="efpic-pro-no-license-update">' . __( 'There is a new version of efpic Pro available.', 'efpic_pro' ) . ' ';
-		echo '<a href="' . admin_url( 'plugin-install.php?tab=plugin-information&amp;plugin=efpic-pro&amp;section=changelog&amp;TB_iframe=true' ) . '" class="thickbox open-plugin-details-modal" aria-label="View efpic Pro version ' . $plugin_data['new_version'] .' details">' . sprintf( __( 'View version %s details', 'efpic_pro' ), $plugin_data['new_version'] ) . '</a>.';
-		echo ' ' . sprintf( __( 'To enable updates, please %1$senter a valid license key%2$s. If you don\'t have a licence key, see %3$sdetails & pricing%4$s.', 'efpic' ), '<a href="' . admin_url( 'admin.php?page=efpic-pro' ) . '">', '</a>', '<a href="https://efpic.io/pro">', '</a>' );
-}
-
-add_action( 'in_plugin_update_message-efpic-pro/efpic-pro.php', 'efpic_pro_plugin_update_message' );
 
 
 /**
