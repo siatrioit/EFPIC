@@ -1,0 +1,32 @@
+---
+description: Git versiju kontrole un droša atgriešanās pirms efpic izmaiņām
+alwaysApply: true
+---
+
+# efpic — versiju kontrole
+
+Repozitorija sakne: `g:\Mans disks\EFPIC` (satur `efpic/` un `efpic-pro/`).
+
+## Obligāti pirms riskantām izmaiņām
+
+1. Pārbaudi `git status` repozitorija saknē.
+2. Ja ir iepriekšējas necommitētas izmaiņas, vispirms commit vai snapshot.
+3. Pirms liela refaktora, moduļa dzēšanas vai masveida labojumu izpildi:
+   `.\scripts\git-snapshot.ps1 -Message "<īss apraksts>" -Tag`
+4. Pēc pabeigta loģiska uzdevuma — commit ar skaidru ziņojumu (ko un kāpēc mainīja).
+
+## Atgriešanās
+
+- Sākuma stāvoklis: tags `baseline/pre-customization`
+- Saraksts: `.\scripts\git-rollback.ps1 -List`
+- Atgriešanās: `.\scripts\git-rollback.ps1 -ToTag "<tags>"` (tikai ar lietotāja apstiprinājumu)
+
+## Neveikt bez pieprasījuma
+
+- `git push`, `git push --force`
+- `git reset --hard` bez skaidra lietotāja piekrišanas
+- Dzēst `.git` vai vēsturi
+
+## Abi spraudņi
+
+Mainot Pro, strādā ar `efpic-pro/` ceļiem. Vienā commit var iekļaut abus, ja izmaiņas ir saistītas.

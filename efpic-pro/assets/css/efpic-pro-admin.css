@@ -1,0 +1,171 @@
+/**
+ * Color variables
+ */
+:root {
+	--efpic-pro--primary--color: #2f92a7;
+	--efpic-pro--success--color: #007017;
+	--efpic-pro--success-light--color: #b8e6bf;
+	--efpic-pro--alert--color: #d63638;
+	--efpic-pro--alert-light--color: #facfd2;
+	--efpic-pro--border--color: #ccc;
+	--efpic-pro--box-bg--color: #f9f9f9;
+}
+
+/**
+ * Pro admin page header
+ */
+.efpic-pro__head-wrapper {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	border-top: 5px solid var(--efpic-pro--primary--color);
+	border-bottom: 1px solid var(--efpic-pro--border--color);
+	margin: 0 0 20px -20px;
+	padding: 20px 22px;
+	background: white;
+}
+
+.efpic-pro__head-wrapper h1 {
+	display: flex;
+	flex-wrap: nowrap;
+	justify-content: flex-start;
+	align-items: center;
+	margin: 0;
+	font-size: 20px;
+	line-height: 1;
+}
+
+.efpic-pro__head-nav {
+	display: flex;
+	gap: 10px;
+}
+
+
+/**
+ * Pro licensing form
+ */
+.efpic-pro__license-form {
+	margin: 20px 0;
+	padding: 10px 20px;
+	background-color: var(--efpic-pro--box-bg--color);
+	border: 1px solid var(--efpic-pro--border--color);
+	border-radius: 3px;
+}
+
+.efpic-pro__license-form h3 {
+	display: flex;
+	justify-content: flex-start;
+	align-items: flex-end;
+	font-size: 16px;
+}
+
+.efpic-pro__license-wrap {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.efpic-pro__license-form .efpic-pro__license-status {
+	position: relative;
+	display: inline-block;
+	margin-left: 10px;
+	padding: 8px 12px 8px 30px;
+	font-size: 8px;
+	font-weight: 700;
+	line-height: 1;
+	text-transform: uppercase;
+	letter-spacing: 0;
+	border-radius: 20px;
+}
+
+.efpic-pro__license-form .efpic-pro__license-status.efpic-pro__license-status--active {
+	color: var(--efpic-pro--success--color);
+	background-color: var(--efpic-pro--success-light--color);
+}
+
+.efpic-pro__license-status.efpic-pro__license-status--active:before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	display: block;
+	margin: 0;
+	width: 24px;
+	height: 24px;
+	background: var(--efpic-pro--success--color) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='20 6 9 17 4 12'%3E%3C/polyline%3E%3C/svg%3E") no-repeat center center;
+	background-size: 16px 16px;
+	text-indent: -10000px;
+	border-radius: 50%;
+}
+
+.efpic-pro__license-form .efpic-pro__license-status.efpic-pro__license-status--expired {
+	color: var(--efpic-pro--alert--color);
+	background-color: var(--efpic-pro--alert-light--color);
+}
+
+.efpic-pro__license-status.efpic-pro__license-status--expired:before {
+	content: '';
+	position: absolute;
+	left: 0;
+	top: 0;
+	display: block;
+	margin: 0;
+	width: 24px;
+	height: 24px;
+	background: var(--efpic-pro--alert--color) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%23ffffff' stroke-width='3.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cline x1='18' y1='6' x2='6' y2='18'%3E%3C/line%3E%3Cline x1='6' y1='6' x2='18' y2='18'%3E%3C/line%3E%3C/svg%3E") no-repeat center center;
+	background-size: 16px 16px;
+	text-indent: -10000px;
+	border-radius: 50%;
+}
+
+
+/**
+ * Pro activation notice
+ */
+.efpic-activtion-notice {
+	padding: 2em 20px 10px;
+	color: white;
+	background-color: #34333b;
+	background-size: 90px 26px;
+	border: none;
+	border-radius: 3px;
+}
+
+.efpic-activtion-notice .efpic-logo {
+	width: 90px;
+	height: 26px;
+	vertical-align: bottom;
+}
+
+.efpic-activtion-notice p {
+	margin: 0 0 0.5em;
+}
+
+.efpic-activtion-notice a {
+	color: white;
+}
+
+.efpic-activtion-notice .button {
+	padding: 0.25em 1em;
+	background-color: var(--efpic-pro--primary--color);
+	border-radius: 3px;
+	border: 1px solid var(--efpic-pro--primary--color);
+	border-bottom: 3px solid #246f7f;
+	border-radius: 1px 1px 3px 3px;
+}
+
+.efpic-activtion-notice .button:hover,
+.efpic-activtion-notice .button:active {
+	background-color: #246f7f;
+	border: 1px solid #236c7b;
+	border-bottom: 3px solid #194c57;
+}
+
+#efpic-pro-update .plugin-update .update-message:has(.efpic-pro-no-license-update) p {
+	display: none;
+}
+
+#efpic-pro-update .plugin-update .update-message p.efpic-pro-no-license-update {
+	display: block;
+}

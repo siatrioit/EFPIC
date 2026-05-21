@@ -1,0 +1,30 @@
+/* Special styles for printing */
+#logo, .edit-button, .efpic-brand, .efpic-status-bar, .efpic-select-item {
+  display: none;
+}
+
+body, .efpic-collection {
+  width: 100%;
+}
+
+.efpic-gallery-item {
+  float: left !important;
+  width: 20% !important;
+  padding: 10px !important;
+}
+.efpic-gallery-item:nth-of-type(4n+1) {
+  clear: both !important;
+}
+.efpic-gallery-item .efpic-figure, .efpic-gallery-item .efpic-imgbox, .efpic-gallery-item .efpic-imgbox-inner, .efpic-gallery-item a, .efpic-gallery-item img {
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.efpic-img-title {
+  font-size: 7pt;
+}
+
+/*# sourceMappingURL=efpic-print.css.map */

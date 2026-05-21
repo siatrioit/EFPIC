@@ -1,0 +1,32 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE / editor
+.idea/
+.vscode/
+*.swp
+*~
+
+# Secrets (nekad necommitēt)
+.env
+.env.*
+*.pem
+wp-config-local.php
+
+# Logs & temp
+*.log
+.cache/
+tmp/
+
+# Node (ja kādreiz būs build)
+node_modules/
+
+# Arhīvi un manuālās kopijas (saglabātas uz diska, bet ne Git)
+*.zip
+*- kopija*/
+efpic-pro - kopija*/
+
+# Cursor lokālā sesija (ne projekta noteikumi)
+.cursor/projects/

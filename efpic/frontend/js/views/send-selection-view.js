@@ -1,0 +1,165 @@
+var efpic = efpic || {};
+
+efpic.SendView = Backbone.View.extend({
+
+	model: efpic.appState,
+	tagName: 'div',
+	className: 'efpic-modal',
+	id: 'efpic-send',
+
+	template: _.template( jQuery( "#efpic-send-selection" ).html() ),
+
+	initialize: function( options ) {
+		this.collection = options.collection;
+		this.router = options.router;
+		this.appstate = JSON.parse( appstate );
+
+		// Key bindings
+		_.bindAll( this , 'keyAction' );
+		$( document ).on( 'keydown', this.keyAction);
+	},
+
+	render: function() {
+		var imagecount = this.collection.length;
+		var selected = this.collection.where({selected: true}).length;
+		var numberOfComments = 0;
+		this.collection.filter( function( model ) {
+			if ( '' != model.get('markers') && null != model.get('markers') ) {
+				var temp = Object.keys( model.get('markers') ).length;
+				if ( temp > 0 ) {
+					numberOfComments = numberOfComments + temp;
+				}
+			}
+		});
+
+		var sendSelectionTemplate = this.template({selected: selected, imagecount: imagecount, title: this.model.get( 'title' ), comments: numberOfComments});
+		this.$el.html( sendSelectionTemplate );
+		return this;
+
+	},
+
+	events: {
+		'click #efpic-send-button': 'sendSelection',
+		'keydown': 'keyAction'
+	},
+
+	sendSelection: function( e ) {
+
+		e.preventDefault();
+
+		// Get imageID from models in the collection where selected is true
+		var selection = _.map( this.collection.where({selected: true}), function( s ){ return s.attributes.imageID; });
+
+		var allMarkers = {};
+
+		var temp = this.collection.map( function( model ){
+			var id = model.get( 'imageID' );
+			var markers = model.get( 'markers' );
+
+			if ( '' != markers && null != markers ) {
+				if ( 0 < Object.keys( markers ).length ) {
+					allMarkers['id_'+id] = markers;
+				}
+			}
+			markers = '';
+		});
+
+		var allStars = {};
+
+		var temp_stars = this.collection.map( function( model ){
+			var id = model.get( 'imageID' );
+			var stars = model.get( 'stars' );
+
+			if ( '' != stars && null != stars ) {
+				if ( 0 < Object.keys( stars ).length ) {
+					allStars['id_'+id] = stars;
+				}
+			}
+			stars = '';
+		});
+
+		// Get values from approval form
+		var values = {};
+		var fields = document.querySelectorAll( '[name^=efpic-approval-form]' );
+		_.each( fields, function( e ) {
+			// Get the title from selectbox option, not just the value
+			var title = e.querySelectorAll( "[selected]" );
+			if ( typeof title[0] !== 'undefined' ) {
+				title[0].innerText;
+				values[e.id] = { value:e.value, label:e.labels[0].innerText, title:title[0].innerText }
+			}
+			else {
+				values[e.id] = { value:e.value, label:e.labels[0].innerText }
+			}
+		});
+
+		$( '<div class="loading">loading</div>' ).insertBefore( '#efpic-send-button' );
+		$( '#efpic-send-button' ).hide();
+
+		var current = function successCallback() {}
+		current.model = this.model;
+		current.router = this.router;
+
+		//Send AJAX request
+		$.post( this.model.get( 'ajaxurl' ), {
+
+			action: 'efpic_send_selection',
+			security: this.model.get( 'nonce' ),
+			postid: this.model.get( 'postid' ),
+			ident: this.model.get( 'ident' ),
+			selection: selection,
+			markers: allMarkers,
+			stars: allStars,
+			approval_fields: values,
+			intent: 'approve'
+
+		}, function( response ) {
+
+			if ( response.success == true ) {
+
+				// Set poststatus to approved
+				current.model.set({'poststatus': 'approved'});
+				efpic.poststatus = 'approved';
+
+				// On success, show approved view
+				location.href = "#approved";
+
+			}
+			else {
+				// Show error message
+				// TODO: Better handle possible errors, eg. the message or data being empty on return!
+				// TODO: Find a better error message... also, why does it not switch to approved, on the second try?!
+				console.log( response );
+				var message = 'Something went wrong. Please try again, and if the problem persists, contact support.';
+				if ( response.data != null ) {
+					message = response.data.message;
+				}
+				$( '.efpic-collection' ).append('<div class="overlay fail"><div class="message"><p>' + message + '</p><p><a class="efpic-button small primary js-close-message" href="#">OK</a></p></div></div>');
+				$( '.loading' ).remove();
+				$( '#efpic-send-button' ).show();
+			}
+
+		}).fail( function() {
+			// Ajax fail
+			$( '.efpic-collection' ).append('<div class="overlay fail"><div class="message"><p>' + this.appstate.request_failed_error + '</p><p><a class="efpic-button small primary js-close-message" href="#">OK</a></p></div></div>');
+		});
+
+	},
+
+	keyAction: function( e ) {
+
+		// ESC key
+		if ( e.keyCode == 27 ) {
+			e.preventDefault();
+			this.router.navigate('index', {trigger: true} );
+		}
+	},
+
+	remove: function() {
+		// Unbind keydown
+		$( document ).off( 'keydown', this.keyAction );
+		// Remove yourself
+        $( '#efpic-send' ).remove();
+	}
+
+});
