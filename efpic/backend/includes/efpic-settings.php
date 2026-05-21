@@ -290,24 +290,6 @@ function efpic_get_settings() {
 		'default' => 'WP_Image_Editor_Imagick'
 	];
 
-	// Add telemetry settings
-	$settings['telemetry'] = [
-		'title' => __( 'Telemetry', 'efpic' ),
-		'description' => __( 'Help us improve efpic by providing real world usage data.', 'efpic' ) . ' 🧡',
-		'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#007791" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"></line><line x1="12" y1="20" x2="12" y2="4"></line><line x1="6" y1="20" x2="6" y2="14"></line></svg>',
-		'priority' => 40,
-		'settings' => [
-			'telemetry_settings' => [
-				'type' => 'html',
-				'output' => 'efpic_settings_telemetry',
-				'label' => __( 'Activate efpic telemetry', 'efpic' ),
-				'description' => '',
-				'default' => 'off',
-				'validation' => 'efpic_telemetry_settings_validate'
-			]
-		]
-	];
-
 	$settings = apply_filters( 'efpic_settings', $settings );
 
 	// Sort by priority
@@ -679,60 +661,6 @@ function efpic_settings_debug() {
 
 
 /**
- * Add telemetry setting.
- *
- * @since 2.0.0
- *
- * @return The telemetry page HTML output
- */
-function efpic_settings_telemetry() {
-	ob_start();
-	echo '<fieldset class="efpic_settings__settings-item">';
-	$default_telemetry_options = array(
-		'consent' => false,
-	);
-	$telemetry_options = wp_parse_args( get_option( 'efpic_telemetry_settings' ), $default_telemetry_options );
-	?>
-		<p><input type="checkbox" name="efpic_telemetry_settings[consent]" id="efpic_telemetry_consent"<?php checked( $telemetry_options['consent'], true ); ?> /> <label for="efpic_telemetry_consent" class="after"><?php _e( 'Activate efpic telemetry', 'efpic' ); ?></label></p>
-		<div class="efpic-statistics-info-box">
-		<?php
-			if ( isset( $telemetry_options['consent'] ) AND $telemetry_options['consent'] == true ) { 
-		?>
-			<p><?php _e( 'You have activated efpic telemetry and are currently allowing us to gather anonymized efpic usage data.', 'efpic' ); ?><br /><a href="https://efpic.io/docs/telemetry/"><?php _e( 'Learn more about how we use this data', 'efpic' ); ?></a></p>
-		<?php
-			}
-			else {
-		?>
-			<p><?php _e( '<strong>By activating efpic telemetry, you allow us to gather anonymized efpic usage data.</strong><br />This data will help us to learn how efpic is used and it will directly inform future development.', 'efpic' ); ?></p>
-			<ul>
-				<li>💯 <?php _e( 'The transmitted data is 100% anonymous.', 'efpic' ); ?></li>
-				<li>🛑 <?php _e( 'No images or client communication are ever transmitted.', 'efpic' ); ?></li>
-				<li>👀 <?php _e( 'You can actually download and look at the raw data that we are compiling, once activated.', 'efpic' ); ?></li>
-				<li>✅ <?php _e( 'You can disable efpic telemetry at any time by unchecking the box and clicking "Save Settings".', 'efpic' ); ?></li>
-			</ul>
-			<p><a href="https://efpic.io/docs/telemetry/"><?php _e( 'Learn more about how we use this data', 'efpic' ); ?></a></p>
-		<?php } ?>
-		</div>
-	<?php
-		if ( isset( $telemetry_options['consent'] ) AND $telemetry_options['consent'] == true AND ! empty( efpic_prepare_telemetry_data_package() ) ) { ?>
-		<hr />
-		<p><?php _e( 'Current telemetry data cache:', 'efpic' ); ?></p>
-		<?php
-			echo '<p><textarea class="efpic-telemetry-cache">';
-			echo efpic_prepare_telemetry_data_package();
-			echo '</textarea></p>';
-			$next_run = date( 'Y-m-d H:i:s', wp_next_scheduled( 'efpic_run_telemetry_transmit' ) );
-			/* translators: %s = date in the blog's date/time format */
-			echo sprintf ( __( 'Next transmission scheduled for %s.', 'efpic' ), get_date_from_gmt( $next_run, get_option( 'date_format' ) . ' ' . get_option( 'time_format' ) ) );
-		?>
-	<?php }
-	echo '</fieldset>';
-
-	return ob_get_clean();
-}
-
-
-/**
  * Check if from email/name are defined by WP Mail SMTP.
  *
  * @since 2.0.0
@@ -934,84 +862,6 @@ function efpic_validate_notification_email( $email ) {
 	}
 
 	return sanitize_email( $email );
-}
-
-
-/**
- * Validate efpic telemetry settings.
- *
- * @since 1.10.0
- *
- * @param array $args The settings form data
- */
-function efpic_telemetry_settings_validate( $args ) {
-	// Only run validation once:
-	// Circumvent a core issue, see: https://core.trac.wordpress.org/ticket/21989
-	if ( did_action( 'efpic_telemetry_validated_settings' ) ) {
-		return $args;
-	}
-
-	// Load telemetry settings
-	$efpic_telemetry_settings = get_option( 'efpic_telemetry_settings' );
-
-	// Validate telemetry consent checkbox
-	if ( isset( $args['consent'] ) AND $args['consent'] == 'on' ) {
-		$args['consent'] = true;
-
-		// Check if telemetry is already active. If so: do nothing!
-		if ( ! empty( $efpic_telemetry_settings['consent'] ) AND $efpic_telemetry_settings['consent'] == true ) {
-			// Update consent date
-			$args['datetime'] = $efpic_telemetry_settings['datetime'];
-		}
-		// Newly activated telemetry
-		else {
-			// Get processed post IDs
-			$processed = get_option( 'efpic_telemetry_processed', [] );
-
-			// Save telemetry option as active
-			$args['consent'] = true;
-			$args['datetime'] = time();
-
-			// We do not need to clear the telemetry cache. It clears itself once it has been sent the next time
-			$process_collections = get_posts( [
-				'post_type' => 'efpic_collection',
-				'post_status' => [ 'approved', 'expired', 'delivered' ],
-				'posts_per_page' => -1,
-				'orderby' => 'date',
-				'order' => 'ASC',
-				'fields' => 'ids',
-				'post__not_in' => $processed,
-			] );
-
-			foreach( $process_collections as $collection_id ) {
-				efpic_compile_collection_telemetry_data( $collection_id );
-			}
-
-			// Process orders
-			$process_orders = get_posts( [
-				'post_type' => 'efpic_order',
-				'post_status' => [ 'completed', 'failed', 'refunded' ],
-				'posts_per_page' => -1,
-				'orderby' => 'date',
-				'order' => 'ASC',
-				'fields' => 'ids',
-				'post__not_in' => $processed,
-			] );
-
-			foreach( $process_orders as $order_id ) {
-				efpic_compile_order_telemetry_data( $order_id );
-			}
-		}
-	}
-	else {
-		$args['consent'] = false;
-		$args['datetime'] = time();
-	}
-
-	// Mark that his has already run
-	do_action( 'efpic_telemetry_validated_settings' );
-
-	return $args;
 }
 
 

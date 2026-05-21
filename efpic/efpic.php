@@ -37,12 +37,6 @@ if ( ! function_exists( 'efpic_setup' ) ) {
 		$upload_dir = wp_upload_dir();
 		define( 'EFPIC_UPLOAD_DIR', $upload_dir['basedir'] . '/efpic' );
 
-		// Define telemetry URL
-		define( 'EFPIC_TELEMETRY_URL', 'https://efpic.io/wp-json/efpic-telemetry/v1/' );
-
-		// Define telemetry version
-		Define( 'EFPIC_TELEMETRY_VERSION', '2.0' );
-
 		// Include functions to render admin menu and settings page
 		require EFPIC_PATH . 'backend/includes/efpic-settings.php';
 
@@ -88,7 +82,7 @@ if ( ! function_exists( 'efpic_setup' ) ) {
 		// Deprecated functions, filters and hooks
 		require EFPIC_PATH . 'backend/includes/deprecated.php';
 
-		// Handle efpic telemetry
+		// Disable telemetry (cleanup cron + DB)
 		require EFPIC_PATH . 'backend/includes/efpic-telemetry.php';
 
 		// Register efpic Blocks
