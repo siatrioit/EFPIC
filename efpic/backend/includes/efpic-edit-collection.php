@@ -554,12 +554,7 @@ function efpic_display_share_options_form( $post, $step = 2, $disabled = false )
 				?><input type="email" id="efpicmultiemailfield" rows="1" spellcheck="false" autocomplete="off" autocapitalize="off" autocorrect="off" tabindex="1" aria-autocomplete="list" aria-haspopup="false" aria-expanded="false" autocomplete="off" list="email-history" name="notASearchField" /></span>
 				<?php efpic_the_email_history_datalist(); ?>
 			<input type="text" id="efpic-<?php echo $type; ?>-email-address" name="efpic_<?php echo $type; ?>_email_address" value="<?php echo ${'efpic_' . $type . '_email_address'}; ?>" <?php if ( $disabled ) { echo 'disabled="disabled"'; } ?> autocomplete="off" />
-		<?php if ( ! efpic_is_pro_active() ) { ?>
-		<span class="efpic-multi-client-pro-hint hidden"><span class="efpic-multi-client-pro-hint__icon">🚀</span> <span class="efpic-multi-client-pro-hint__content"><?php
-			/* translators: Opening and closing link tags */
-			echo sprintf( __( 'Send your collection to multiple clients with %sefpic Pro%s.', 'efpic' ), '<a href="https://efpic.io/pro/?utm_source=efpic_plugin&utm_medium=mutli-client-hint" target="_blank">', '</a>' );
-		?></span></span></p>
-		<?php } ?>
+		<span class="efpic-multi-client-pro-hint hidden"><?php efpic_render_ad_slot( 'multi-client-hint', 'efpic-multi-client-pro-hint__content' ); ?></span></p>
 
 		<p><label for="efpic-<?php echo $type; ?>-description" title="<?php _e( 'The description will be sent to your client via email.', 'efpic' ); ?>"><?php _e( 'Message', 'efpic' ); ?>:</label>
 			<textarea class="js-efpic-collection-description" id="efpic-<?php echo $type; ?>-description" name="efpic_<?php echo $type; ?>_description" cols="60" rows="13"<?php if ( $disabled ) { echo ' disabled="disabled"'; } ?>><?php if ( esc_attr( ${'efpic_' . $type . '_description'} ) ) {

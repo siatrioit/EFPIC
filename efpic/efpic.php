@@ -100,7 +100,8 @@ if ( ! function_exists( 'efpic_setup' ) ) {
 		// Add efpic debug info to Site Health screen
 		require EFPIC_PATH . 'backend/includes/efpic-site-health.php';
 
-		// Handle efpic Pro upselling
+		// Empty ad slots + legacy Pro promo hooks (banners disabled)
+		require EFPIC_PATH . 'backend/includes/efpic-ad-slots.php';
 		require EFPIC_PATH . 'backend/includes/efpic-pro.php';
 
 		// Check the settings version, run upgrader
@@ -319,17 +320,14 @@ add_action( 'init', 'efpic_check_pro_compat' );
  * @since 1.3.1
  */
 function efpic_add_pro_metabox() {
-	if ( ! efpic_is_pro_license_valid() ) {
-
-		add_meta_box(
-			'efpic-pro-metabox',
-			__( 'Get efpic pro', 'efpic' ),
-			'efpic_display_pro_metabox',
-			'efpic_collection',
-			'side',
-			'high'
-		);
-	}
+	add_meta_box(
+		'efpic-pro-metabox',
+		'',
+		'efpic_display_pro_metabox',
+		'efpic_collection',
+		'side',
+		'high'
+	);
 }
 
 add_action( 'add_meta_boxes', 'efpic_add_pro_metabox' );
@@ -342,31 +340,7 @@ add_action( 'add_meta_boxes', 'efpic_add_pro_metabox' );
  * @since 2.0.0 New box design and content
  */
 function efpic_display_pro_metabox() {
-?>
-	<div class="efpic-pro-meta-box">
-		<h2 class="efpic-pro-meta-box__title"><?php echo __( 'Upgrade Your Proofing Workflow', 'efpic' ); ?></h2>
-		<div class="efpic-pro-meta-box__content">
-			<ul>
-				<li><?php _e( 'Add personal branding', 'efpic' ); ?></li>
-				<li><?php _e( 'Enable markers and comments on individual images', 'efpic' ); ?></li>
-				<li><?php _e( 'Accept payments via PayPal or Stripe', 'efpic' ); ?></li>
-				<li><?php _e( 'Many more professional features', 'efpic' ); ?></li>
-			</ul>
-			<p class="efpic-pro-meta-box__button-wrap"><a class="button button-primary efpic-pro__button" href="https://go.efpic.io/get-efpic-pro" target="_blank"><?php _e( 'Get efpic Pro', 'efpic' ); ?> <svg style="transform: translateY(3px);"  xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#007791" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h13M12 5l7 7-7 7"/></svg></a></p>
-			<div class="efpic-pro-meta-box__reviews">
-				<p>
-					<svg width="16" height="16" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg"><path d="m6.75365082.46448007c.30569615-.61930676 1.1888161-.61930676 1.49451225 0l1.86507723 3.77985326 4.1748568.61109495c.6453032.09432073.9240557.84870204.5363234 1.33810964l-.0754029.08342717-3.0197773 2.94036824.7130072 4.15513057c.1106198.6449702-.5249381 1.144844-1.1119645.922308l-.0972521-.0438773-3.73279062-1.9635613-3.73145727 1.9635613c-.57918124.3045856-1.25104449-.1453116-1.22088044-.7723782l.01166386-.1060525.71167385-4.15513057-3.018444-2.94036824c-.46718009-.45503341-.25023224-1.22945432.35090953-1.39822842l.11001096-.02330839 4.17352351-.61109495z" fill="#ffd700" transform="translate(.5 .5)"/></svg>
-					<svg width="16" height="16" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg"><path d="m6.75365082.46448007c.30569615-.61930676 1.1888161-.61930676 1.49451225 0l1.86507723 3.77985326 4.1748568.61109495c.6453032.09432073.9240557.84870204.5363234 1.33810964l-.0754029.08342717-3.0197773 2.94036824.7130072 4.15513057c.1106198.6449702-.5249381 1.144844-1.1119645.922308l-.0972521-.0438773-3.73279062-1.9635613-3.73145727 1.9635613c-.57918124.3045856-1.25104449-.1453116-1.22088044-.7723782l.01166386-.1060525.71167385-4.15513057-3.018444-2.94036824c-.46718009-.45503341-.25023224-1.22945432.35090953-1.39822842l.11001096-.02330839 4.17352351-.61109495z" fill="#ffd700" transform="translate(.5 .5)"/></svg>
-					<svg width="16" height="16" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg"><path d="m6.75365082.46448007c.30569615-.61930676 1.1888161-.61930676 1.49451225 0l1.86507723 3.77985326 4.1748568.61109495c.6453032.09432073.9240557.84870204.5363234 1.33810964l-.0754029.08342717-3.0197773 2.94036824.7130072 4.15513057c.1106198.6449702-.5249381 1.144844-1.1119645.922308l-.0972521-.0438773-3.73279062-1.9635613-3.73145727 1.9635613c-.57918124.3045856-1.25104449-.1453116-1.22088044-.7723782l.01166386-.1060525.71167385-4.15513057-3.018444-2.94036824c-.46718009-.45503341-.25023224-1.22945432.35090953-1.39822842l.11001096-.02330839 4.17352351-.61109495z" fill="#ffd700" transform="translate(.5 .5)"/></svg>
-					<svg width="16" height="16" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg"><path d="m6.75365082.46448007c.30569615-.61930676 1.1888161-.61930676 1.49451225 0l1.86507723 3.77985326 4.1748568.61109495c.6453032.09432073.9240557.84870204.5363234 1.33810964l-.0754029.08342717-3.0197773 2.94036824.7130072 4.15513057c.1106198.6449702-.5249381 1.144844-1.1119645.922308l-.0972521-.0438773-3.73279062-1.9635613-3.73145727 1.9635613c-.57918124.3045856-1.25104449-.1453116-1.22088044-.7723782l.01166386-.1060525.71167385-4.15513057-3.018444-2.94036824c-.46718009-.45503341-.25023224-1.22945432.35090953-1.39822842l.11001096-.02330839 4.17352351-.61109495z" fill="#ffd700" transform="translate(.5 .5)"/></svg>
-					<svg width="16" height="16" viewBox="0 0 16 15" xmlns="http://www.w3.org/2000/svg"><g fill="none" transform="translate(.5 .5)"><path d="m6.75365082.46448007c.30569615-.61930676 1.1888161-.61930676 1.49451225 0l1.86507723 3.77985326 4.1748568.61109495c.6453032.09432073.9240557.84870204.5363234 1.33810964l-.0754029.08342717-3.0197773 2.94036824.7130072 4.15513057c.1106198.6449702-.5249381 1.144844-1.1119645.922308l-.0972521-.0438773-3.73279062-1.9635613-3.73145727 1.9635613c-.57918124.3045856-1.25104449-.1453116-1.22088044-.7723782l.01166386-.1060525.71167385-4.15513057-3.018444-2.94036824c-.46718009-.45503341-.25023224-1.22945432.35090953-1.39822842l.11001096-.02330839 4.17352351-.61109495z" fill="#fffdf0"/><path d="m7.50024028.00000364v12.28732966l-3.73145727 1.9635613c-.57918124.3045856-1.25104449-.1453116-1.22088044-.7723782l.01166386-.1060525.71167385-4.15513057-3.018444-2.94036824c-.46718009-.45503341-.25023224-1.22945432.35090953-1.39822842l.11001096-.02330839 4.17352351-.61109495 1.86641054-3.77985326c.13336744-.27018775.37733399-.42249948.63539651-.45693517z" fill="#ffd700"/></g></svg>
-					<span class="efpic-pro-meta-box__rating">4.7 / 5</span>
-				</p>
-				<p><a class="efpic-pro-meta-box__link" href="https://go.efpic.io/user-reviews" target="_blank"><?php _e( 'Check out efpic user reviews', 'efpic' ); ?></a></p>
-			</div>
-		</div>
-	</div>
-<?php
+	efpic_render_ad_slot( 'pro-metabox', 'efpic-pro-meta-box' );
 }
 
 
@@ -498,61 +472,7 @@ add_action( 'init', 'efpic_trigger_proof_file_download' );
  * @since 1.6.0
  */
 function efpic_display_pro_hint() {
-	if ( ! efpic_is_pro_active() ) {
-
-		$pro_hints = [
-			[
-				/* translators: Opening and closing link tags */
-				'text' => sprintf( __( '<strong>Get precise feedback</strong> &ndash; Learn %show to enable comments & markers%s on individual images.', 'efpic' ), ' <a href="https://go.efpic.io/get-feedback" target="_blank">', '</a>' ),
-				'icon' => '🖍️'
-			],
-			[
-				/* translators: Opening and closing link tags */
-				'text' => sprintf( __( '<strong>Dealing with a lot of images?</strong> Learn %show to upload via FTP and import from your web server%s.', 'efpic' ), '<a href="https://go.efpic.io/lots-of-images" target="_blank">', '</a>' ),
-				'icon' => '😱'
-			],
-			[
-				/* translators: Opening and closing link tags */
-				'text' => sprintf( __( '<strong>Protect your images</strong> &ndash; Learn %show to automatically add a watermark%s to your images.', 'efpic' ), ' <a href="https://go.efpic.io/protect-your-images" target="_blank">', '</a>' ),
-				'icon' => '🔒'
-			],
-			[
-				/* translators: Opening and closing link tags */
-				'text' => sprintf( __( '<strong>Need more control?</strong> Learn %show to define the number of images%s your client needs to select.', 'efpic' ), ' <a href="https://go.efpic.io/more-control" target="_blank">', '</a>' ),
-				'icon' => '🎚️'
-			],
-			[
-				/* translators: Opening and closing link tags */
-				'text' => sprintf( __( '<strong>Allow image downloads?</strong> Learn %show to enable image downloads%s for your collections.', 'efpic' ), ' <a href="https://go.efpic.io/allow-image-downloads" target="_blank">', '</a>' ),
-				'icon' => '⬇️'
-			],
-			[
-				/* translators: Opening and closing link tags */
-				'text' => sprintf( __( '<strong>Done with post processing?</strong> Learn %show to deliver your final images%s to your clients.', 'efpic' ), ' <a href="https://go.efpic.io/done-post-processing" target="_blank">', '</a>' ),
-				'icon' => '✅'
-			],
-			[
-				/* translators: Opening and closing link tags */
-				'text' => sprintf( __( '<strong>Sell images</strong> &ndash; Learn %show to accept payments via PayPal or Stripe%s right from your proofing galleries.', 'efpic' ), ' <a href="https://go.efpic.io/sell-images" target="_blank">', '</a>' ),
-				'icon' => '💸'
-			],
-		];
-
-		// Randomize which pro hint to display
-		$display_pro_hint = rand( 1, count( $pro_hints ) ) - 1;
-	?>
-	<div class="efpic-pro-hint">
-		<div class="efpic-pro-hint-inner">
-			<div class="efpic-pro-hint-content">
-				<span class="efpic-pro-hint-icon"><?php echo $pro_hints[$display_pro_hint]['icon']; ?></span>
-				<?php echo $pro_hints[$display_pro_hint]['text']; ?>
-			</div>
-			<div class="efpic-pro-hint__badge">Pro</div>
-
-		</div>
-	</div>
-	<?php
-	}
+	efpic_render_ad_slot( 'pro-hint', 'efpic-pro-hint' );
 }
 
 

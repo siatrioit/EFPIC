@@ -286,7 +286,7 @@ function efpic_get_settings() {
 		'type' => 'radio',
 		'options' => $image_processors,
 		'title' =>  __( 'Image processor', 'efpic' ),
-		'description' => __( 'Switch between different image processors to improve performance when uploading/importing images.<br /><strong>Please be aware, that this affects all media uploads on your site, not just efpic images.</strong>', 'efpic' ) . ' <a class="efpic-help" href="https://go.efpic.io/image-processors">' . __( 'Help', 'efpic-pro' ) . '</a>',
+		'description' => __( 'Switch between different image processors to improve performance when uploading/importing images.<br /><strong>Please be aware, that this affects all media uploads on your site, not just efpic images.</strong>', 'efpic' ),
 		'default' => 'WP_Image_Editor_Imagick'
 	];
 
@@ -1137,73 +1137,7 @@ function efpic_settings_upgrade() {
  * @param string $banner_id The banner ID
  */
 function efpic_settings_pro_box( $banner_id ) {
-	$ad = [];
-
-	switch( $banner_id ) {
-		case 'custom-thank-you-page':
-			$ad = [
-				[
-					'id' => 'redirect',
-					'headline' => __( 'Improve client loyalty with a custom „Thank You“ page', 'efpic' ),
-					'icon' => '🔀',
-					'link-text' => __( 'Learn how to redirect to a custom page after approval', 'efpic' ),
-					'url' => 'https://go.efpic.io/custom-thank-you-page',
-					'image' => EFPIC_URL . '/backend/images/pro/redirect.png',
-				]
-			];
-			break;
-		case 'customize-collection':
-			$ad = [
-				[
-					'id' => 'color',
-					'headline' => __( 'Want to add your logo and customize the theme color?', 'efpic' ),
-					'icon' => '💡',
-					'link-text' => __( 'Learn how to add personal branding to your galleries', 'efpic' ),
-					'url' => 'https://go.efpic.io/customize-collection',
-					'image' => EFPIC_URL . '/backend/images/pro/color-picker.png',
-				]
-			];
-			break;
-		case 'collection-protection':
-			$ad = [
-				[
-					'id' => 'watermark',
-					'headline' => __( 'Additional protection for your work', 'efpic' ),
-					'icon' => '🔒',
-					'link-text' => __( 'Learn how to add a watermark to your images during upload', 'efpic' ),
-					'url' => 'https://go.efpic.io/collection-protection',
-					'image' => EFPIC_URL . '/backend/images/pro/watermark.png',
-				]
-			];
-			break;
-		case 'email-message-templates':
-			$ad = [
-				[
-					'id' => 'message-templates',
-					'headline' => __( 'Save time with re-usable message templates', 'efpic' ),
-					'icon' => '🗄️',
-					'link-text' => __( 'Learn how to use prepared messages for different types of clients', 'efpic' ),
-					'url' => 'https://go.efpic.io/email-message-templates',
-					'image' => EFPIC_URL . '/backend/images/pro/email-templates.png',
-				]
-			];
-			break;
-	}
-
-	$ad = $ad[rand(0,count($ad)-1)];
-
 	ob_start();
-	?>
-	<div class="efpic-pro-box efpic-pro-box--<?php echo $ad['id']; ?>">
-		<div class="efpic-pro-box__inner">
-			<div class="efpic-pro-box__icon">Pro</div>
-			<h2 class="efpic-pro-box__headline"><?php echo $ad['headline']; ?></h2>
-			<p class="efpic-pro-box__claim"><?php echo $ad['icon']; ?> <a class="efpic-pro-box__link" href="<?php echo $ad['url']; ?>" target="_blank"><?php echo $ad['link-text']; ?></a></p>
-		</div>
-		<div class="efpic-pro-box__image_wrap">
-			<img class="efpic-pro-box__image" src="<?php echo $ad['image']; ?>" />
-		</div>
-	</div>
-	<?php
+	efpic_render_ad_slot( sanitize_html_class( $banner_id ), 'efpic-pro-box' );
 	return ob_get_clean();
 }

@@ -88,7 +88,7 @@ function efpic_errors( $post_id, $post ) {
 				// Check if Pro
 				if ( ! efpic_is_pro_active() ) {
 					/* translators: Opening and closing link tags */
-					efpic_add_notification( 'efpic_multi_email_requires_pro', 'notice notice-error is-dismissible', sprintf( __( '%sefpic Pro%s is required to send a collection to multiple clients.', 'efpic' ), '<a href="https://efpic.io/pro/" target="_blank">', '</a>' ) );
+					efpic_add_notification( 'efpic_multi_email_requires_pro', 'notice notice-error is-dismissible', __( 'efpic Pro is required to send a collection to multiple clients.', 'efpic' ) );
 				}
 
 				// Check them individually

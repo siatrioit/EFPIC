@@ -92,11 +92,11 @@ function welcome_screen_content() {
 					<li><?php /* translators: %s = opening and closing link tags */ echo sprintf( __( 'If you can\'t find the answer to your question, please use the official WordPress.org %ssupport forum%s.', 'efpic' ), '<a href="https://wordpress.org/support/plugin/efpic">', '</a>' ); ?></li>
 					<p><?php /* translators: %s = opening and closing link tags */ echo sprintf( __( 'Pro customers may contact us via our %ssupport page%s.', 'efpic' ), '<a href="https://efpic.io/support/">', '</a>' ); ?></p>
 				</ul>
-				<hr />
-				<h2>Stay up-to-date</h2>
-				<p><?php echo /* translators: %s = opening and closing link tags */ sprintf( __( 'To get the latest updates and be notified when we release new efpic Pro features, %ssign up for our newsletter%s.', 'efpic' ), '<a href="https://efpic.io/#newsletter">', '</a>' ); ?></p>
 			</div>
-			<?php efpic_display_pro_metabox(); ?>
+			<div class="column col-33">
+				<?php efpic_render_ad_slot( 'welcome-sidebar', 'efpic-welcome-custom-slot' ); ?>
+				<?php efpic_display_pro_metabox(); ?>
+			</div>
 		</div>
 	</div>
 </div>
