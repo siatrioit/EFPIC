@@ -16,25 +16,41 @@ $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
 Set-Location $root
 
+function Get-GitExe {
+    $candidates = @(
+        "git",
+        "${env:ProgramFiles}\Git\cmd\git.exe",
+        "${env:ProgramFiles(x86)}\Git\cmd\git.exe"
+    )
+    foreach ($c in $candidates) {
+        if (Get-Command $c -ErrorAction SilentlyContinue) { return $c }
+        if (Test-Path $c) { return $c }
+    }
+    Write-Error "Git nav atrasts. Parstartejiet terminali pec instalacijas."
+}
+
+$git = Get-GitExe
+$gitConfig = @("-c", "user.name=Edgars", "-c", "user.email=dev@edgarsfoto.lv")
+
 if (-not (Test-Path ".git")) {
     Write-Error "Nav Git repozitorija: $root"
 }
 
-$status = git status --porcelain
+$status = & $git @gitConfig status --porcelain
 if ([string]::IsNullOrWhiteSpace($status)) {
-    Write-Host "Nav izmaiņu — commit nav nepieciešams."
+    Write-Host "Nav izmainu - commit nav nepieciesams."
     exit 0
 }
 
-git add -A
+& $git @gitConfig add -A
 Write-Host ""
 Write-Host "=== Izmaiņas ===" -ForegroundColor Cyan
-git status -sb
+& $git @gitConfig status -sb
 Write-Host ""
 
-git commit -m $Message
+& $git @gitConfig commit -m $Message
 if ($LASTEXITCODE -ne 0) {
-    Write-Error "Commit neizdevās."
+    Write-Error "Commit neizdevas."
 }
 
 Write-Host "Commit izveidots." -ForegroundColor Green
@@ -43,10 +59,10 @@ if ($Tag) {
     if ([string]::IsNullOrWhiteSpace($TagName)) {
         $TagName = "snapshot/$(Get-Date -Format 'yyyy-MM-dd_HHmm')"
     }
-    git tag -a $TagName -m $Message
+    & $git @gitConfig tag -a $TagName -m $Message
     Write-Host "Tags: $TagName" -ForegroundColor Green
 }
 
 Write-Host ""
-Write-Host "Pēdējie commiti:" -ForegroundColor Cyan
-git log -5 --oneline --decorate
+Write-Host "Pedejie commiti:" -ForegroundColor Cyan
+& $git @gitConfig log -5 --oneline --decorate
