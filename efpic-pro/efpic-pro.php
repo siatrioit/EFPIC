@@ -3,7 +3,7 @@
  * Plugin Name: efpic Pro
  * Description: Professional photo proofing features for photographers.
  * Plugin URI: https://www.edgarsfoto.lv
- * Version: 1.0.2
+ * Version: 1.0.3
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Requires Plugins: efpic
@@ -51,7 +51,7 @@ if ( ! function_exists( 'efpic_pro_setup' ) ) {
 
 	function efpic_pro_setup() {
 		// Define plugin version
-		define( 'EFPIC_PRO', '1.0.2' );
+		define( 'EFPIC_PRO', '1.0.3' );
 
 		define( 'EFPIC_PRO_NAME', 'efpic Pro' );
 		define( 'EFPIC_PRO_LICENSE_PAGE', 'efpic-pro' );
