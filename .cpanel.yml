@@ -7,19 +7,20 @@ deployment:
     - echo "==== EFPIC deploy start: $(date) ====" >> "$LOGFILE"
     - echo "Repo: $(pwd)" >> "$LOGFILE"
     - echo "Target: $PLUGINPATH" >> "$LOGFILE"
-    - mkdir -p "$PLUGINPATH/efpic" "$PLUGINPATH/efpic-pro" >> "$LOGFILE" 2>&1
-    - echo "Target perms (before):" >> "$LOGFILE"; ls -ld "$PLUGINPATH/efpic" "$PLUGINPATH/efpic-pro" >> "$LOGFILE" 2>&1; ls -l "$PLUGINPATH/efpic/efpic.php" >> "$LOGFILE" 2>&1 || true
-    - chmod -R u+rwX "$PLUGINPATH/efpic" "$PLUGINPATH/efpic-pro" >> "$LOGFILE" 2>&1 || true
-    - if command -v rsync >/dev/null 2>&1; then echo "Using rsync" >> "$LOGFILE"; rsync -a --delete "./efpic/" "$PLUGINPATH/efpic/" >> "$LOGFILE" 2>&1; rsync -a --delete "./efpic-pro/" "$PLUGINPATH/efpic-pro/" >> "$LOGFILE" 2>&1; else echo "rsync not found, using cp" >> "$LOGFILE"; rm -rf "$PLUGINPATH/efpic" "$PLUGINPATH/efpic-pro" >> "$LOGFILE" 2>&1; cp -a "./efpic" "$PLUGINPATH/efpic" >> "$LOGFILE" 2>&1; cp -a "./efpic-pro" "$PLUGINPATH/efpic-pro" >> "$LOGFILE" 2>&1; fi
+    - echo "Target perms (before):" >> "$LOGFILE"; ls -ld "$PLUGINPATH/efpic" "$PLUGINPATH/efpic-pro" >> "$LOGFILE" 2>&1 || true; ls -l "$PLUGINPATH/efpic/efpic.php" >> "$LOGFILE" 2>&1 || true
+    - echo "Force re-install (rm + cp)..." >> "$LOGFILE"
+    - rm -rf "$PLUGINPATH/efpic" "$PLUGINPATH/efpic-pro" >> "$LOGFILE" 2>&1 || true
+    - mkdir -p "$PLUGINPATH/efpic" "$PLUGINPATH/efpic-pro" >> "$LOGFILE" 2>&1 || true
+    - cp -a "./efpic/." "$PLUGINPATH/efpic/" >> "$LOGFILE" 2>&1
+    - cp -a "./efpic-pro/." "$PLUGINPATH/efpic-pro/" >> "$LOGFILE" 2>&1
     - echo "Deployed efpic.php version line:" >> "$LOGFILE"
     - grep -n "Version:" "$PLUGINPATH/efpic/efpic.php" >> "$LOGFILE" 2>&1 || true
-    - echo "deployed_at=$(date)" > "$PLUGINPATH/efpic/.deployed-from-cpanel.txt"
-    - echo "repo=$(pwd)" >> "$PLUGINPATH/efpic/.deployed-from-cpanel.txt"
-    - echo "head=$(git rev-parse HEAD 2>/dev/null || echo unknown)" >> "$PLUGINPATH/efpic/.deployed-from-cpanel.txt"
-    - echo "efpic_php_version=$(grep -m1 \"Version:\" \"$PLUGINPATH/efpic/efpic.php\" 2>/dev/null || echo unknown)" >> "$PLUGINPATH/efpic/.deployed-from-cpanel.txt"
-    - echo "deployed_at=$(date)" > "$PLUGINPATH/efpic-pro/.deployed-from-cpanel.txt"
-    - echo "repo=$(pwd)" >> "$PLUGINPATH/efpic-pro/.deployed-from-cpanel.txt"
-    - echo "head=$(git rev-parse HEAD 2>/dev/null || echo unknown)" >> "$PLUGINPATH/efpic-pro/.deployed-from-cpanel.txt"
-    - echo "deploy_marker=$(date +%s)" > "$PLUGINPATH/efpic/.deploy-marker-$(date +%s).txt" || true
-    - echo "deploy_marker=$(date +%s)" > "$PLUGINPATH/efpic-pro/.deploy-marker-$(date +%s).txt" || true
+    - export TS="$(date +%s)"
+    - echo "deployed_at=$(date)" > "$PLUGINPATH/efpic/.deploy-$TS.txt" || true
+    - echo "repo=$(pwd)" >> "$PLUGINPATH/efpic/.deploy-$TS.txt" || true
+    - echo "head=$(git rev-parse HEAD 2>/dev/null || echo unknown)" >> "$PLUGINPATH/efpic/.deploy-$TS.txt" || true
+    - echo "efpic_php_version=$(grep -m1 \"Version:\" \"$PLUGINPATH/efpic/efpic.php\" 2>/dev/null || echo unknown)" >> "$PLUGINPATH/efpic/.deploy-$TS.txt" || true
+    - echo "deployed_at=$(date)" > "$PLUGINPATH/efpic-pro/.deploy-$TS.txt" || true
+    - echo "repo=$(pwd)" >> "$PLUGINPATH/efpic-pro/.deploy-$TS.txt" || true
+    - echo "head=$(git rev-parse HEAD 2>/dev/null || echo unknown)" >> "$PLUGINPATH/efpic-pro/.deploy-$TS.txt" || true
     - echo "==== EFPIC deploy done: $(date) ====" >> "$LOGFILE"
