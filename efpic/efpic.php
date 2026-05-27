@@ -3,7 +3,7 @@
  * Plugin Name: efpic
  * Plugin URI: https:www.edgarsfoto.lv
  * Description: Send a collection of photographs to your client for approval.
- * Version: 1.0.0
+ * Version: 1.0.1
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: Edgars
@@ -25,7 +25,7 @@ if ( ! function_exists( 'efpic_setup' ) ) {
 	function efpic_setup() {
 
 		// Define plugin version
-		define( 'EFPIC_VERSION', '3.5.1' );
+		define( 'EFPIC_VERSION', '1.0.1' );
 
 		// Define path for this plugin
 		define( 'EFPIC_PATH', plugin_dir_path(__FILE__) );
