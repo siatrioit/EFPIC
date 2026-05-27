@@ -1414,6 +1414,19 @@ label[for=efpic-copy-filenames], #efpic-copy-filenames {
   margin: 1px 6px 0 0;
   width: 50px;
 }
+.efpic-collection-options #efpic-selection-options #efpic-selection-options-options .efpic-in-price-extra {
+  float: left;
+  margin-left: 8px;
+}
+.efpic-collection-options #efpic-selection-options #efpic-selection-options-options .efpic-in-price-extra label {
+  margin: 6px 6px 0 0;
+  font-weight: normal;
+}
+.efpic-collection-options #efpic-selection-options #efpic-selection-options-options #efpic-selection-option-extra-image-cost {
+  float: left;
+  margin: 1px 0 0 0;
+  width: 80px;
+}
 .efpic-collection-options #efpic-selection-options #efpic-selection-options-options .efpic-range {
   margin: 0;
   float: left;

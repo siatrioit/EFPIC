@@ -152,8 +152,8 @@ efpic.Router = Backbone.Router.extend({
 			return;
 		}
 
-		// If selection is restricted, but the target is not valid
-		if ( ( restriction == 'at least' && num < from ) || ( restriction == 'a maximum of' && num > from ) || ( restriction == 'exactly' && num != from ) || ( restriction == 'in the range of' && ( num < from || num > to ) ) ) {
+		// If selection is restricted, but the target is not valid (In Price allows any count; extra cost shown in status bar)
+		if ( restriction != 'in price' && ( ( restriction == 'at least' && num < from ) || ( restriction == 'a maximum of' && num > from ) || ( restriction == 'exactly' && num != from ) || ( restriction == 'in the range of' && ( num < from || num > to ) ) ) ) {
 			this.navigate( 'index', {trigger: true} );
 			this.el.append('<div class="overlay fail"><div class="message"><p>' + this.appstate.attributes.selection_restriction.selection_info + '</p><p><a class="efpic-button small primary js-close-message">OK</a></p></div></div>');
 			return;

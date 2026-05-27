@@ -38,6 +38,17 @@ defined( 'EFPIC_PRO' ) OR exit;
 		<a class="efpic-info-button" href="#collection-info" title="<?php _e( 'Show Information about this collection', 'efpic-pro' ); ?>"><?php _e( 'Show Information about this collection', 'efpic-pro' ); ?></a>
 		<span class="efpic-selected-num"><@= selected @></span> / <span class="efpic-total-num"><@= all @></span>
 		<@
+			if ( typeof appstate.attributes.selection_restriction !== 'undefined' && appstate.attributes.selection_restriction.restriction === 'in price' && appstate.attributes.selection_restriction.selection_option == true ) {
+		@>
+		<div class="efpic-in-price-info">
+			<span class="efpic-in-price-info__label"><@= in_price_label @></span>
+			<span class="efpic-in-price-info__summary"><@= in_price_summary @></span>
+			<@ if ( in_price_extra_line ) { @>
+			<span class="efpic-in-price-info__extra"><@= in_price_extra_line @></span>
+			<@ } @>
+		</div>
+		<@
+			}
 			if ( typeof appstate.attributes.selection_restriction !== 'undefined' ) {
 				if ( appstate.attributes.selection_restriction.selection_option == true && restriction_warning == true ) {
 			@>

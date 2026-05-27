@@ -31,7 +31,12 @@ function efpic_selection_options_add_collection_option( $options_output ) {
 			'restriction' => false,
 			'from' => false,
 			'to' => false,
+			'extra_image_cost' => '',
 		);
+	}
+
+	if ( ! isset( $options['extra_image_cost'] ) ) {
+		$options['extra_image_cost'] = '';
 	}
 
 	// Disable option when collection has been sent
@@ -55,15 +60,23 @@ function efpic_selection_options_add_collection_option( $options_output ) {
 				<option value="at least" ' . selected( 'at least', $options['restriction'], false ) . '>' . __( 'at least', 'efpic-pro' ) . '</option>
 				<option value="a maximum of" ' . selected( 'a maximum of', $options['restriction'], false ) . '>' . __( 'a maximum of', 'efpic-pro' ) . '</option>
 				<option value="in the range of" ' . selected( 'in the range of', $options['restriction'], false ) . '>' . __( 'in the range of', 'efpic-pro' ) . '</option>
+				<option value="in price" ' . selected( 'in price', $options['restriction'], false ) . '>' . __( 'In Price', 'efpic-pro' ) . '</option>
 			</select>
-			<input type="number" name="efpic-selection-option-image-from" id="efpic-selection-option-image-from"';
-			if ( isset( $options['from'] ) AND ! empty( $options['from'] ) ) { echo ' value="' . $options['from'] . '"'; }
+			<input type="number" min="1" step="1" name="efpic-selection-option-image-from" id="efpic-selection-option-image-from"';
+			if ( isset( $options['from'] ) AND ! empty( $options['from'] ) ) { echo ' value="' . esc_attr( $options['from'] ) . '"'; }
 			echo $disabled . ' />';
 		echo ' <span class="efpic-range"';
 		if ( 'in the range of' != $options['restriction'] ) { echo ' style="display: none;"'; }
-		echo '><span class="efpic-optional-range">' . __( 'to', 'efpic-pro' ) . '</span> <input type="number" name="efpic-selection-option-image-to" id="efpic-selection-option-image-to"';
-			if ( isset( $options['to'] ) AND ! empty( $options['to'] ) ) { echo ' value="' . $options['to'] . '"'; }
-		echo $disabled . ' /></span> <span>' . __( 'image(s)', 'efpic-pro' ) . '</span></p>';
+		echo '><span class="efpic-optional-range">' . __( 'to', 'efpic-pro' ) . '</span> <input type="number" min="1" step="1" name="efpic-selection-option-image-to" id="efpic-selection-option-image-to"';
+			if ( isset( $options['to'] ) AND ! empty( $options['to'] ) ) { echo ' value="' . esc_attr( $options['to'] ) . '"'; }
+		echo $disabled . ' /></span> <span class="efpic-selection-images-label">' . __( 'image(s)', 'efpic-pro' ) . '</span>';
+		echo ' <span class="efpic-in-price-extra"';
+		if ( 'in price' != $options['restriction'] ) { echo ' style="display: none;"'; }
+		echo '><label for="efpic-selection-option-extra-image-cost">' . __( 'Extra image cost', 'efpic-pro' ) . '</label> <input type="number" min="0" step="0.01" name="efpic-selection-option-extra-image-cost" id="efpic-selection-option-extra-image-cost"';
+		if ( '' !== $options['extra_image_cost'] && false !== $options['extra_image_cost'] ) {
+			echo ' value="' . esc_attr( $options['extra_image_cost'] ) . '"';
+		}
+		echo $disabled . ' /></span></p>';
 
 	echo '</div>';
 
@@ -73,6 +86,41 @@ function efpic_selection_options_add_collection_option( $options_output ) {
 }
 
 add_filter( 'efpic_collection_options', 'efpic_selection_options_add_collection_option', 100 );
+
+
+/**
+ * Toggle range / In Price fields in admin.
+ */
+function efpic_selection_options_admin_script() {
+	$screen = get_current_screen();
+
+	if ( ! $screen || 'efpic_collection' !== $screen->post_type || 'post' !== $screen->base ) {
+		return;
+	}
+	?>
+	<script>
+	jQuery( function( $ ) {
+		function efpicSelectionOptionsToggle() {
+			var val = $( '#efpic-selection-option' ).val();
+			if ( val === 'in the range of' ) {
+				$( '.efpic-range' ).show();
+			} else {
+				$( '.efpic-range' ).hide();
+			}
+			if ( val === 'in price' ) {
+				$( '.efpic-in-price-extra' ).show();
+			} else {
+				$( '.efpic-in-price-extra' ).hide();
+			}
+		}
+		$( '#efpic-selection-option' ).on( 'change', efpicSelectionOptionsToggle );
+		efpicSelectionOptionsToggle();
+	} );
+	</script>
+	<?php
+}
+
+add_action( 'admin_footer', 'efpic_selection_options_admin_script' );
 
 
 /**
@@ -97,8 +145,8 @@ function efpic_selection_options_save_collection( $post_id ) {
 	}
 
 	// Validate selection options
-	$allowed_options = array( 'exactly', 'at least', 'a maximum of', 'in the range of' );
-	if ( ! in_array( $_POST['efpic-selection-option'], $allowed_options ) ) {
+	$allowed_options = array( 'exactly', 'at least', 'a maximum of', 'in the range of', 'in price' );
+	if ( ! isset( $_POST['efpic-selection-option'] ) || ! in_array( $_POST['efpic-selection-option'], $allowed_options, true ) ) {
 		return $post_id;
 	}
 
@@ -142,12 +190,29 @@ function efpic_selection_options_save_collection( $post_id ) {
 			$to = '';
 		}
 
+		$extra_image_cost = '';
+
+		if ( 'in price' === $_POST['efpic-selection-option'] ) {
+			if ( ! isset( $_POST['efpic-selection-option-extra-image-cost'] ) || '' === $_POST['efpic-selection-option-extra-image-cost'] ) {
+				efpic_add_notification( 'efpic_selection_option_extra_cost_missing', 'notice notice-error is-dismissible', __( 'When using In Price, please enter the extra image cost.', 'efpic-pro' ) );
+				return $post_id;
+			}
+
+			$extra_image_cost = round( floatval( $_POST['efpic-selection-option-extra-image-cost'] ), 2 );
+
+			if ( $extra_image_cost < 0 ) {
+				efpic_add_notification( 'efpic_selection_option_extra_cost_invalid', 'notice notice-error is-dismissible', __( 'Extra image cost must be zero or greater.', 'efpic-pro' ) );
+				return $post_id;
+			}
+		}
+
 		// Build options array
 		$temp = array(
 			'selection_option' => true,
 			'restriction' => $_POST['efpic-selection-option'],
 			'from' => $from,
-			'to' => $to
+			'to' => $to,
+			'extra_image_cost' => $extra_image_cost,
 		);
 
 		update_post_meta( $post_id, '_efpic_collection_selection_options', $temp );
@@ -174,13 +239,20 @@ function efpic_selection_options_appstate( $state ) {
 
 	$options = get_post_meta( $post->ID, '_efpic_collection_selection_options', true );
 
-	if ( isset( $options ) AND is_array( $options ) ) {
+	if ( isset( $options ) AND is_array( $options ) && ! empty( $options['selection_option'] ) ) {
 		$state['selection_restriction'] = $options;
 
 		// Add info message about selection options
-		$selection_info = efpic_get_selection_options_info_message( $options['restriction'], $options['from'], $options['to'] );
+		$extra_cost = isset( $options['extra_image_cost'] ) ? $options['extra_image_cost'] : '';
+		$selection_info = efpic_get_selection_options_info_message( $options['restriction'], $options['from'], $options['to'], $extra_cost );
 
 		$state['selection_restriction']['selection_info'] = $selection_info;
+
+		if ( 'in price' === $options['restriction'] ) {
+			$state['in_price_label'] = __( 'In Price', 'efpic-pro' );
+			$state['in_price_summary_tpl'] = __( 'In Price: %1$s / %2$s images', 'efpic-pro' );
+			$state['in_price_extra_tpl'] = __( '+%1$s extra images, additional cost: %2$s', 'efpic-pro' );
+		}
 	}
 
 	return $state;
@@ -198,11 +270,12 @@ add_action( 'efpic_app_state', 'efpic_selection_options_appstate' );
  * @since selection-options (0.0.3)
  *
  * @param string $restriction Which restriction is in place
- * @param int $from Minimum/general amount of images to be selected
- * @param int $to Optional. Maximum amount of images to be selected
+ * @param int    $from            Minimum/general amount of images to be selected.
+ * @param int    $to              Optional. Maximum amount of images to be selected.
+ * @param string $extra_image_cost Optional. Cost per extra image (In Price mode).
  * @return string The selection options message
  */
-function efpic_get_selection_options_info_message( $restriction, $from, $to = NULL ) {
+function efpic_get_selection_options_info_message( $restriction, $from, $to = null, $extra_image_cost = '' ) {
 	if ( 'exactly' == $restriction ) {
 		$selection_info = sprintf( _n( 'You need to select exactly one image.', 'You need to select exactly %s images.', $from, 'efpic-pro' ), $from );
 	}
@@ -215,8 +288,15 @@ function efpic_get_selection_options_info_message( $restriction, $from, $to = NU
 	elseif ( 'in the range of' == $restriction ) {
 		$selection_info = sprintf( __( 'You need to select between %s and %s images.', 'efpic-pro' ), $from,  $to );
 	}
+	elseif ( 'in price' == $restriction ) {
+		$selection_info = sprintf(
+			__( 'Your package includes %1$s images. Each additional image costs %2$s.', 'efpic-pro' ),
+			$from,
+			efpic_format_extra_image_cost( $extra_image_cost )
+		);
+	}
 
-	$selection_info = apply_filters( 'efpic_selection_options_info_message', $selection_info, $restriction, $from, $to );
+	$selection_info = apply_filters( 'efpic_selection_options_info_message', $selection_info, $restriction, $from, $to, $extra_image_cost );
 
 	return $selection_info;
 }
@@ -262,7 +342,8 @@ function efpic_selection_options_mail_part( $mail_parts, $mail_context, $post_id
 		$selection_info = '';
 
 		if ( isset( $options['selection_option'] ) AND true == $options['selection_option'] AND get_post_status( $post_id ) != 'delivery-draft' ) {
-			$selection_info = efpic_get_selection_options_info_message( $options['restriction'], $options['from'], $options['to'] );
+			$extra_cost = isset( $options['extra_image_cost'] ) ? $options['extra_image_cost'] : '';
+			$selection_info = efpic_get_selection_options_info_message( $options['restriction'], $options['from'], $options['to'], $extra_cost );
 		}
 
 		$selection_info = apply_filters( 'efpic_selection_options_selection_info', $selection_info, $post_id );

@@ -2589,6 +2589,26 @@ body.status-approved .efpic-lightbox__star-rating__button:before {
           transition: opacity 0.5s;
 }
 
+.efpic-in-price-info {
+  display: block;
+  clear: both;
+  margin-top: 6px;
+  font-size: 0.85em;
+  line-height: 1.45;
+}
+.efpic-in-price-info__label {
+  font-weight: 600;
+  margin-right: 6px;
+}
+.efpic-in-price-info__summary {
+  margin-right: 6px;
+}
+.efpic-in-price-info__extra {
+  display: block;
+  margin-top: 2px;
+  font-weight: 600;
+}
+
 .efpic-selection-alert {
   position: relative;
   margin-left: -22px;
