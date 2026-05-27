@@ -586,6 +586,24 @@ function efpic_encode_marker_comment( &$item, $key ) {
 
 
 /**
+ * Escape a JSON string for embedding in a single-quoted JavaScript literal.
+ *
+ * Without this, JSON escape sequences (e.g. \n in email text) are interpreted by
+ * the JS parser and break JSON.parse( appstate ), leaving the gallery empty.
+ *
+ * @param string $json JSON from json_encode().
+ * @return string
+ */
+function efpic_escape_json_for_inline_js( $json ) {
+	if ( false === $json || null === $json || '' === $json ) {
+		return '';
+	}
+
+	return str_replace( '\\', '\\\\', $json );
+}
+
+
+/**
  * Collection description HTML for the client info modal (from email/message meta).
  *
  * @param int $post_id Collection post ID.
@@ -681,7 +699,21 @@ function efpic_get_app_state() {
 	 */
 	$state = apply_filters( 'efpic_app_state', $state );
 
-	$app_state = json_encode( $state, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
+	$flags = JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT;
+	if ( defined( 'JSON_INVALID_UTF8_SUBSTITUTE' ) ) {
+		$flags |= JSON_INVALID_UTF8_SUBSTITUTE;
+	}
+
+	$app_state = json_encode( $state, $flags );
+
+	if ( false === $app_state ) {
+		unset( $state['collection_description_html'] );
+		$app_state = json_encode( $state, $flags );
+	}
+
+	if ( false === $app_state ) {
+		$app_state = '{}';
+	}
 
 	return $app_state;
 }

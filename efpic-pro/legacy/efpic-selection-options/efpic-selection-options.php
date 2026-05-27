@@ -262,7 +262,7 @@ function efpic_selection_options_appstate( $state ) {
 	return $state;
 }
 
-add_action( 'efpic_app_state', 'efpic_selection_options_appstate' );
+add_filter( 'efpic_app_state', 'efpic_selection_options_appstate' );
 
 
 /**

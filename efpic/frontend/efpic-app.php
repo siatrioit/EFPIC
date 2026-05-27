@@ -169,8 +169,8 @@ efpic_collection_bouncer();
 			};
 
 			// Load collection data and app state
-			var data = '<?php echo efpic_get_images(); ?>';
-			var appstate = '<?php echo efpic_get_app_state(); ?>';
+			var data = '<?php echo efpic_escape_json_for_inline_js( efpic_get_images() ); ?>';
+			var appstate = '<?php echo efpic_escape_json_for_inline_js( efpic_get_app_state() ); ?>';
 		</script>
 
 		<?php
