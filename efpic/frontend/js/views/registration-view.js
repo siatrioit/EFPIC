@@ -64,16 +64,19 @@ efpic.RegistrationView = Backbone.View.extend({
 			intent: 'register'
 		}, function( response ) {
 			if ( response.success == true ) {
-				// Display the verification notice
+				// Redirect immediately so the client can start selecting (email is sent in background).
+				if ( response.data.ident != null ) {
+					var baseUrl = window.location.href.split( '#' )[0];
+					var url = new URL( baseUrl, window.location.origin );
+					url.searchParams.set( 'ident', response.data.ident );
+					window.location.replace( url.toString() );
+					return;
+				}
+				// Fallback: no ident returned (should be rare)
 				if ( response.data.verification == 1 ) {
 					$( '.efpic-registration-before' ).hide();
 					$( '.efpic-registration-after' ).show();
 					return;
-				}
-				// Open collection with ident directly
-				else if ( response.data.ident != null ) {
-					// Redirect to collection URL with the new ident param
-					window.location.replace( window.location.href.split('#')[0] + '?ident=' + response.data.ident );
 				}
 			}
 			else {
