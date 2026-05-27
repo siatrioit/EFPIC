@@ -37,6 +37,7 @@ efpic.LightboxView = Backbone.View.extend({
 
 		// Render on change
 		this.listenTo( this.model, 'change', this.render );
+		this.listenTo( this.collection, 'change', this.render );
 
 		// Key bindings
 		_.bindAll( this , 'keyAction' );
@@ -48,7 +49,8 @@ efpic.LightboxView = Backbone.View.extend({
 	},
 
 	render: function() {
-		var lightboxTemplate = this.template( this.model.attributes, this.current );
+		var templateData = _.extend( {}, this.model.attributes, efpic.getLightboxInPriceTemplateData( this ) );
+		var lightboxTemplate = this.template( templateData, this.current );
 
 		this.$el.html( lightboxTemplate );
 		_.defer( function( view ){ view.afterRender(); }, this );

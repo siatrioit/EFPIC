@@ -31,10 +31,35 @@ efpic.getInPriceDisplay = function( appstate, selected ) {
 		var extra_tpl = ( 1 === extra_count ) ? appstate.get( 'in_price_extra_one_tpl' ) : appstate.get( 'in_price_extra_many_tpl' );
 		var extra_images = efpic.formatPriceString( extra_tpl, extra_count, '' );
 		var extra_cost = efpic.formatPriceString( appstate.get( 'in_price_extra_cost_tpl' ), extra_total, '' );
-		display.in_price_extra_line = extra_images + ' ' + extra_cost;
+		display.in_price_extra_line = extra_images + '. ' + extra_cost;
 	}
 
 	return display;
+};
+
+/**
+ * Template data for lightbox in-price display.
+ *
+ * @param {Backbone.View} view Lightbox view with collection and appstate.
+ * @return {Object}
+ */
+efpic.getLightboxInPriceTemplateData = function( view ) {
+	var selected = view.collection.where( { selected: true } ).length;
+	var all = view.collection.length;
+	var inPrice = efpic.getInPriceDisplay( view.appstate, selected );
+	var has_in_price = (
+		typeof view.appstate.attributes.selection_restriction !== 'undefined' &&
+		view.appstate.attributes.selection_restriction.restriction === 'in price' &&
+		view.appstate.attributes.selection_restriction.selection_option === true
+	);
+
+	return {
+		selected_count: selected,
+		all_count: all,
+		has_in_price: has_in_price,
+		in_price_package: inPrice.in_price_package,
+		in_price_extra_line: inPrice.in_price_extra_line
+	};
 };
 
 efpic.StatusBarView = Backbone.View.extend({

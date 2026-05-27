@@ -2103,31 +2103,58 @@ body.status-approved .efpic-star-rating__rating {
   }
 }
 
-.efpic-img-name {
+.efpic-lightbox-meta {
   position: relative;
   grid-column: 2/4;
   grid-row: 2/3;
-  display: block;
-  padding: 1.5em 2em 1.5em 1em;
-  height: 70px;
-  font-weight: 100;
-  color: rgba(87, 87, 87, 0.75);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  padding: 0.45em 2em 0.45em 1em;
+  min-height: 70px;
   text-align: left;
-  white-space: nowrap;
   overflow: hidden;
 }
 @media only screen and (min-width: 800px) {
-  .efpic-img-name {
+  .efpic-lightbox-meta {
     grid-row: 1/2;
     padding-left: 2em;
   }
 }
 @media only screen and (min-width: 800px) {
-  .efpic-download .efpic-img-name {
+  .efpic-download .efpic-lightbox-meta {
     grid-column: 2/3;
   }
 }
-.efpic-img-name:after {
+.efpic-lightbox-meta .efpic-img-name {
+  position: relative;
+  display: block;
+  padding: 0;
+  height: auto;
+  min-height: 0;
+  font-weight: 100;
+  color: rgba(87, 87, 87, 0.75);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.efpic-lightbox-in-price {
+  display: block;
+  font-size: 0.78em;
+  line-height: 1.35;
+  color: rgba(87, 87, 87, 0.9);
+}
+.efpic-lightbox-in-price__count {
+  font-weight: 600;
+  margin-right: 8px;
+}
+.efpic-lightbox-in-price__package {
+  margin-right: 6px;
+}
+.efpic-lightbox-in-price__extra {
+  display: block;
+}
+.efpic-lightbox-meta .efpic-img-name:after {
   content: "";
   display: block;
   position: absolute;
