@@ -14,6 +14,11 @@
  */
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
+// Define plugin version early so efpic Pro can verify dependency on plugins_loaded.
+if ( ! defined( 'EFPIC_VERSION' ) ) {
+	define( 'EFPIC_VERSION', '1.0.2' );
+}
+
 
 /**
  * Include functions for efpic
@@ -23,9 +28,6 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 if ( ! function_exists( 'efpic_setup' ) ) {
 
 	function efpic_setup() {
-
-		// Define plugin version
-		define( 'EFPIC_VERSION', '1.0.2' );
 
 		// Define path for this plugin
 		define( 'EFPIC_PATH', plugin_dir_path(__FILE__) );
