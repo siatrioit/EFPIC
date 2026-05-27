@@ -492,6 +492,8 @@ class Efpic_Emails {
 	 */
 	public function build() {
 
+		do_action( 'efpic_before_email_build', $this->mail_context, $this->post_id );
+
 		$args = get_object_vars( $this );
 
 		// Filter mail parts
