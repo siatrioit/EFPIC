@@ -4,6 +4,13 @@ deployment:
   tasks:
     - export PLUGINPATH="/home2/trioitlv/edgarsfoto.lv/wp-content/plugins"
     - export LOGFILE="$HOME/efpic-deploy.log"
+    - mkdir -p "$PLUGINPATH/efpic" "$PLUGINPATH/efpic-pro"
+    - echo "deployed_at=$(date)" > "$PLUGINPATH/efpic/.deployed-from-cpanel.txt"
+    - echo "repo=$(pwd)" >> "$PLUGINPATH/efpic/.deployed-from-cpanel.txt"
+    - echo "head=$(git rev-parse HEAD 2>/dev/null || echo unknown)" >> "$PLUGINPATH/efpic/.deployed-from-cpanel.txt"
+    - echo "deployed_at=$(date)" > "$PLUGINPATH/efpic-pro/.deployed-from-cpanel.txt"
+    - echo "repo=$(pwd)" >> "$PLUGINPATH/efpic-pro/.deployed-from-cpanel.txt"
+    - echo "head=$(git rev-parse HEAD 2>/dev/null || echo unknown)" >> "$PLUGINPATH/efpic-pro/.deployed-from-cpanel.txt"
     - echo "==== EFPIC deploy start: $(date) ====" >> "$LOGFILE"
     - echo "Repo: $(pwd)" >> "$LOGFILE"
     - echo "Target: $PLUGINPATH" >> "$LOGFILE"
