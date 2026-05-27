@@ -54,7 +54,7 @@ function efpic_selection_options_add_collection_option( $options_output ) {
 
 	echo '" id="efpic-selection-options-options">';
 
-	echo '<p><label for="efpic-selection-option">' . __( 'The client needs to select', 'efpic-pro' ) . '</label>
+	echo '<p class="efpic-selection-options-row"><label for="efpic-selection-option">' . __( 'The client needs to select', 'efpic-pro' ) . '</label>
 			<select name="efpic-selection-option" id="efpic-selection-option"' . $disabled . '>
 				<option value="exactly" ' . selected( 'exactly', $options['restriction'], false ) . '>' . __( 'exactly', 'efpic-pro' ) . '</option>
 				<option value="at least" ' . selected( 'at least', $options['restriction'], false ) . '>' . __( 'at least', 'efpic-pro' ) . '</option>
@@ -144,12 +144,6 @@ function efpic_selection_options_save_collection( $post_id ) {
 		return $post_id;
 	}
 
-	// Validate selection options
-	$allowed_options = array( 'exactly', 'at least', 'a maximum of', 'in the range of', 'in price' );
-	if ( ! isset( $_POST['efpic-selection-option'] ) || ! in_array( $_POST['efpic-selection-option'], $allowed_options, true ) ) {
-		return $post_id;
-	}
-
 	if ( isset( $_REQUEST['efpic_gallery_ids'] ) ) {
 		$num = count( explode( ',', $_REQUEST['efpic_gallery_ids'] ) );
 	} else {
@@ -158,6 +152,13 @@ function efpic_selection_options_save_collection( $post_id ) {
 
 	// Check options, save as meta data accordingly
 	if ( isset( $_POST['efpic_selection_options'] ) AND 'on' == $_POST['efpic_selection_options'] ) {
+
+		$allowed_options = array( 'exactly', 'at least', 'a maximum of', 'in the range of', 'in price' );
+		if ( ! isset( $_POST['efpic-selection-option'] ) || ! in_array( $_POST['efpic-selection-option'], $allowed_options, true ) ) {
+			return $post_id;
+		}
+
+		$to = '';
 
 		// Check from value
 		if ( isset( $_POST['efpic-selection-option-image-from'] ) AND ! empty( $_POST['efpic-selection-option-image-from'] ) AND 0 < intval( $_POST['efpic-selection-option-image-from'] ) ) {
@@ -185,9 +186,8 @@ function efpic_selection_options_save_collection( $post_id ) {
 				}
 			} else {
 				efpic_add_notification( 'efpic_selection_option_to_number_missing', 'notice notice-error is-dismissible', __( 'When selecting a range, please specify the maximum number of images.', 'efpic-pro' ) );
+				return $post_id;
 			}
-		} else {
-			$to = '';
 		}
 
 		$extra_image_cost = '';
@@ -276,6 +276,8 @@ add_action( 'efpic_app_state', 'efpic_selection_options_appstate' );
  * @return string The selection options message
  */
 function efpic_get_selection_options_info_message( $restriction, $from, $to = null, $extra_image_cost = '' ) {
+	$selection_info = '';
+
 	if ( 'exactly' == $restriction ) {
 		$selection_info = sprintf( _n( 'You need to select exactly one image.', 'You need to select exactly %s images.', $from, 'efpic-pro' ), $from );
 	}
@@ -299,6 +301,17 @@ function efpic_get_selection_options_info_message( $restriction, $from, $to = nu
 	$selection_info = apply_filters( 'efpic_selection_options_info_message', $selection_info, $restriction, $from, $to, $extra_image_cost );
 
 	return $selection_info;
+}
+
+
+/**
+ * Format extra image cost for display.
+ *
+ * @param float|string $cost Cost per extra image.
+ * @return string
+ */
+function efpic_format_extra_image_cost( $cost ) {
+	return number_format_i18n( (float) $cost, 2 );
 }
 
 

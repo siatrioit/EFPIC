@@ -10,6 +10,32 @@ efpic.formatPriceString = function( template, first, second ) {
 	return template.replace( '%1$s', first ).replace( '%2$s', second );
 };
 
+efpic.getInPriceDisplay = function( appstate, selected ) {
+	var display = {
+		in_price_label: '',
+		in_price_summary: '',
+		in_price_extra_line: ''
+	};
+
+	if ( typeof appstate.attributes.selection_restriction === 'undefined' || appstate.attributes.selection_restriction.restriction !== 'in price' ) {
+		return display;
+	}
+
+	var included = parseInt( appstate.attributes.selection_restriction.from, 10 ) || 0;
+	var unit_cost = parseFloat( appstate.attributes.selection_restriction.extra_image_cost ) || 0;
+
+	display.in_price_label = appstate.get( 'in_price_label' );
+	display.in_price_summary = efpic.formatPriceString( appstate.get( 'in_price_summary_tpl' ), selected, included );
+
+	if ( selected > included ) {
+		var extra_count = selected - included;
+		var extra_total = ( extra_count * unit_cost ).toFixed( 2 );
+		display.in_price_extra_line = efpic.formatPriceString( appstate.get( 'in_price_extra_tpl' ), extra_count, extra_total );
+	}
+
+	return display;
+};
+
 efpic.StatusBarView = Backbone.View.extend({
 
 	model: efpic.singleImage,
@@ -56,23 +82,7 @@ efpic.StatusBarView = Backbone.View.extend({
 			animation = '';
 		}
 
-		var in_price_label = '';
-		var in_price_summary = '';
-		var in_price_extra_line = '';
-
-		if ( typeof this.appstate.attributes.selection_restriction !== 'undefined' && this.appstate.attributes.selection_restriction.restriction === 'in price' ) {
-			var included = parseInt( this.appstate.attributes.selection_restriction.from, 10 ) || 0;
-			var unit_cost = parseFloat( this.appstate.attributes.selection_restriction.extra_image_cost ) || 0;
-
-			in_price_label = this.appstate.get( 'in_price_label' );
-			in_price_summary = efpic.formatPriceString( this.appstate.get( 'in_price_summary_tpl' ), selected, included );
-
-			if ( selected > included ) {
-				var extra_count = selected - included;
-				var extra_total = ( extra_count * unit_cost ).toFixed( 2 );
-				in_price_extra_line = efpic.formatPriceString( this.appstate.get( 'in_price_extra_tpl' ), extra_count, extra_total );
-			}
-		}
+		var inPriceDisplay = efpic.getInPriceDisplay( this.appstate, selected );
 
 		var statusbar = this.template({
 			all: all,
@@ -82,9 +92,9 @@ efpic.StatusBarView = Backbone.View.extend({
 			selection_restriction: this.appstate.get('selection_restriction'),
 			restriction_warning: restrictionWarning,
 			animation: animation,
-			in_price_label: in_price_label,
-			in_price_summary: in_price_summary,
-			in_price_extra_line: in_price_extra_line
+			in_price_label: inPriceDisplay.in_price_label,
+			in_price_summary: inPriceDisplay.in_price_summary,
+			in_price_extra_line: inPriceDisplay.in_price_extra_line
 		});
 		this.$el.html( statusbar );
 	},

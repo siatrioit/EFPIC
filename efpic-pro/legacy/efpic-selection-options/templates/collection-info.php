@@ -31,7 +31,11 @@ defined( 'EFPIC_PRO' ) OR exit;
 					if ( appstate.attributes.selection_restriction.selection_option == true ) {
 			@>
 			<div class="selection-options">
+				<@ if ( appstate.attributes.selection_restriction.restriction === 'in price' ) { @>
+				<p class="efpic-in-price-info"><strong><@= in_price_label @></strong> <@= in_price_summary @><@ if ( in_price_extra_line ) { @><br /><@= in_price_extra_line @><@ } @></p>
+				<@ } else { @>
 				<@= appstate.attributes.selection_restriction.selection_info @>
+				<@ } @>
 			</div>
 			<@
 					}

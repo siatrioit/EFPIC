@@ -32,7 +32,20 @@ efpic.CollectionInfo = Backbone.View.extend({
 			}
 		});
 
-		var welcomeTemplate = this.template({appstate: this.appstate, title: this.appstate.get( 'title' ), date: this.appstate.get( 'date'), imagecount: all, selected: selected, description: this.appstate.get( 'description' ), comments: numberOfComments});
+		var inPriceDisplay = efpic.getInPriceDisplay( this.appstate, selected );
+
+		var welcomeTemplate = this.template({
+			appstate: this.appstate,
+			title: this.appstate.get( 'title' ),
+			date: this.appstate.get( 'date'),
+			imagecount: all,
+			selected: selected,
+			description: this.appstate.get( 'description' ),
+			comments: numberOfComments,
+			in_price_label: inPriceDisplay.in_price_label,
+			in_price_summary: inPriceDisplay.in_price_summary,
+			in_price_extra_line: inPriceDisplay.in_price_extra_line
+		});
 		this.$el.html( welcomeTemplate );
 		return this;
 	},

@@ -1398,54 +1398,58 @@ label[for=efpic-copy-filenames], #efpic-copy-filenames {
   height: 0;
   overflow: hidden;
 }
-.efpic-collection-options #efpic-selection-options #efpic-selection-options-options label {
-  display: inline-block;
-  float: left;
-  margin: 7px 6px 0 0;
+.efpic-collection-options #efpic-selection-options #efpic-selection-options-options .efpic-selection-options-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+  margin: 0 0 5px;
+}
+.efpic-collection-options #efpic-selection-options #efpic-selection-options-options .efpic-selection-options-row label {
+  margin: 0;
   width: auto;
   font-weight: normal;
+  white-space: nowrap;
 }
-.efpic-collection-options #efpic-selection-options #efpic-selection-options-options select {
-  margin-right: 6px;
-  float: left;
+.efpic-collection-options #efpic-selection-options #efpic-selection-options-options .efpic-selection-options-row select {
+  margin: 0;
+  min-width: 140px;
 }
-.efpic-collection-options #efpic-selection-options #efpic-selection-options-options #efpic-selection-option-image-from, .efpic-collection-options #efpic-selection-options #efpic-selection-options-options #efpic-selection-option-image-to {
-  float: left;
-  margin: 1px 6px 0 0;
-  width: 50px;
-}
-.efpic-collection-options #efpic-selection-options #efpic-selection-options-options .efpic-in-price-extra {
-  float: left;
-  margin-left: 8px;
-}
-.efpic-collection-options #efpic-selection-options #efpic-selection-options-options .efpic-in-price-extra label {
-  margin: 6px 6px 0 0;
-  font-weight: normal;
-}
+.efpic-collection-options #efpic-selection-options #efpic-selection-options-options #efpic-selection-option-image-from,
+.efpic-collection-options #efpic-selection-options #efpic-selection-options-options #efpic-selection-option-image-to,
 .efpic-collection-options #efpic-selection-options #efpic-selection-options-options #efpic-selection-option-extra-image-cost {
-  float: left;
-  margin: 1px 0 0 0;
-  width: 80px;
+  margin: 0;
+  width: 72px;
+  min-width: 72px;
+  box-sizing: border-box;
 }
 .efpic-collection-options #efpic-selection-options #efpic-selection-options-options .efpic-range {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   margin: 0;
-  float: left;
 }
 .efpic-collection-options #efpic-selection-options #efpic-selection-options-options .efpic-range span {
-  margin: 6px 6px 0 0;
+  margin: 0;
 }
-.efpic-collection-options #efpic-selection-options #efpic-selection-options-options .efpic-range input {
-  float: left;
-  margin: 3px 6px 0 0;
-  width: 40px;
+.efpic-collection-options #efpic-selection-options #efpic-selection-options-options .efpic-selection-images-label {
+  margin: 0;
+  white-space: nowrap;
 }
-.efpic-collection-options #efpic-selection-options #efpic-selection-options-options span {
-  display: inline-block;
-  float: left;
-  margin: 6px 0 0 0;
+.efpic-collection-options #efpic-selection-options #efpic-selection-options-options .efpic-in-price-extra {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
 }
-.efpic-collection-options #efpic-selection-options #efpic-selection-options-options p {
-  margin: 0 0 5px;
+.efpic-collection-options #efpic-selection-options #efpic-selection-options-options .efpic-in-price-extra label {
+  margin: 0;
+  font-weight: normal;
+  white-space: nowrap;
+}
+.efpic-collection-options #efpic-selection-options #efpic-selection-options-options #efpic-selection-option-extra-image-cost {
+  width: 88px;
+  min-width: 88px;
 }
 .efpic-collection-options #efpic-mark-comment .efpic-help {
   top: 2px;
