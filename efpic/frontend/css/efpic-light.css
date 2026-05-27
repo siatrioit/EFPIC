@@ -3044,6 +3044,39 @@ body.status-approved .efpic-lightbox__star-rating__button:before {
 .efpic-modal .info-panel .selection-options {
   padding-top: 10px;
 }
+.efpic-modal .info-panel--in-price {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  gap: 1.25rem 1.75rem;
+  width: 100%;
+}
+.efpic-modal .info-panel--in-price .panel-item {
+  margin: 0;
+  min-width: 5.5rem;
+}
+.efpic-modal .info-panel--in-price .panel-value {
+  font-size: 2.5em;
+  font-weight: 600;
+  line-height: 1.1;
+}
+.efpic-modal .info-panel--in-price .panel-label {
+  font-size: 0.7em;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  opacity: 0.85;
+  margin-top: 0.35em;
+}
+.efpic-modal .info-panel--in-price .selection-options {
+  -webkit-box-flex: 1 1 100%;
+      -ms-flex: 1 1 100%;
+          flex: 1 1 100%;
+}
 .efpic-modal .additional-info {
   margin-top: 3em;
   margin-bottom: 2em;

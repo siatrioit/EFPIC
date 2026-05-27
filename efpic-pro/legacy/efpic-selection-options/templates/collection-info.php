@@ -13,36 +13,44 @@ defined( 'EFPIC_PRO' ) OR exit;
 <script id="efpic-info-view" type="text/template">
 	<div class="efpic-modal-inner">
 		<h1><@= title @></h1>
-		<div class="info-panel">
+		<div class="info-panel<@ if ( has_in_price ) { @> info-panel--in-price<@ } @>">
 			<div class="panel-item">
 				<div class="panel-value"><@= imagecount @></div>
-				<div class="panel-label"><?php _e( 'Images', 'efpic'); ?></div>
+				<div class="panel-label"><@ if ( has_in_price ) { @><@= panel_images_label @><@ } else { @><?php _e( 'Images', 'efpic' ); ?><@ } @></div>
 			</div>
 			<div class="panel-item">
 				<div class="panel-value"><@= selected @></div>
-				<div class="panel-label"><?php _e( 'selected', 'efpic'); ?></div>
+				<div class="panel-label"><?php _e( 'selected', 'efpic' ); ?></div>
 			</div>
 			<?php
 				$panels = array();
-				echo implode( '',  apply_filters( 'efpic_info_view_panel_items', $panels ) );
+				echo implode( '', apply_filters( 'efpic_info_view_panel_items', $panels ) );
 			?>
+			<@ if ( has_in_price ) { @>
+			<div class="panel-item">
+				<div class="panel-value"><@= in_price_extra_count @></div>
+				<div class="panel-label"><@= panel_extra_processing_label @></div>
+			</div>
+			<div class="panel-item">
+				<div class="panel-value">Eur <@= in_price_extra_total @></div>
+				<div class="panel-label"><@= panel_extra_payment_label @></div>
+			</div>
+			<@ } @>
 			<@
-				if ( typeof appstate.attributes.selection_restriction !== 'undefined' ) {
+				if ( ! has_in_price && typeof appstate.attributes.selection_restriction !== 'undefined' ) {
 					if ( appstate.attributes.selection_restriction.selection_option == true ) {
 			@>
 			<div class="selection-options">
-				<@ if ( appstate.attributes.selection_restriction.restriction === 'in price' ) { @>
-				<p class="efpic-in-price-info"><@= in_price_package @><@ if ( in_price_extra_line ) { @><br /><@= in_price_extra_line @><@ } @></p>
-				<@ } else { @>
 				<@= appstate.attributes.selection_restriction.selection_info @>
-				<@ } @>
 			</div>
 			<@
 					}
 				}
 			@>
 		</div>
-		<div class="description"><@= description @>
+		<@ if ( collection_description_html ) { @>
+		<div class="description"><@= collection_description_html @></div>
+		<@ } @>
 		<?php
 			if ( get_post_status() == 'expired' ) {
 				echo '<p class="additional-info">' . __( '<em>Please Note:</em> This collection has expired. Therefore it is not possible to change your selection at this time.', 'efpic-pro' ) . '</p>';
@@ -53,9 +61,8 @@ defined( 'EFPIC_PRO' ) OR exit;
 				echo '<p class="additional-info">' . sprintf( __( '<em>Please Note:</em> This collection will expire on %s and you won\'t be able to make changes after that.', 'efpic-pro' ), $expiration_time ) . '</p>';
 			}
 		?>
-		</div>
 		<a class="efpic-button primary efpic-start-selection" href="#index">
-		<@ if ( efpic.poststatus != 'approved' ) { @>
+		<@ if ( appstate.attributes.poststatus != 'approved' && appstate.attributes.poststatus != 'expired' ) { @>
 		<?php _e( 'OK', 'efpic' ); ?>
 		<@ } else { @>
 		<?php _e( 'View collection', 'efpic' ); ?>

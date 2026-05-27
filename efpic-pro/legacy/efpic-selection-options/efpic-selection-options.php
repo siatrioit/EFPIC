@@ -253,6 +253,9 @@ function efpic_selection_options_appstate( $state ) {
 			$state['in_price_extra_one_tpl'] = __( '+%1$s extra image', 'efpic-pro' );
 			$state['in_price_extra_many_tpl'] = __( '+%1$s extra images', 'efpic-pro' );
 			$state['in_price_extra_cost_tpl'] = __( 'Additional payment due: Eur %1$s', 'efpic-pro' );
+			$state['info_panel_images_in_gallery_label'] = __( 'Images in gallery', 'efpic-pro' );
+			$state['info_panel_extra_processing_label'] = __( 'Extra processing', 'efpic-pro' );
+			$state['info_panel_extra_payment_label'] = __( 'Extra payment', 'efpic-pro' );
 		}
 	}
 

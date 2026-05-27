@@ -32,19 +32,16 @@ efpic.CollectionInfo = Backbone.View.extend({
 			}
 		});
 
-		var inPriceDisplay = efpic.getInPriceDisplay( this.appstate, selected );
+		var infoData = efpic.getCollectionInfoTemplateData( this.appstate, selected, all );
 
-		var welcomeTemplate = this.template({
+		var welcomeTemplate = this.template( _.extend( {
 			appstate: this.appstate,
 			title: this.appstate.get( 'title' ),
-			date: this.appstate.get( 'date'),
+			date: this.appstate.get( 'date' ),
 			imagecount: all,
 			selected: selected,
-			description: this.appstate.get( 'description' ),
-			comments: numberOfComments,
-			in_price_package: inPriceDisplay.in_price_package,
-			in_price_extra_line: inPriceDisplay.in_price_extra_line
-		});
+			comments: numberOfComments
+		}, infoData ) );
 		this.$el.html( welcomeTemplate );
 		return this;
 	},

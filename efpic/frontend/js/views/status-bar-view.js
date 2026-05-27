@@ -38,6 +38,42 @@ efpic.getInPriceDisplay = function( appstate, selected ) {
 };
 
 /**
+ * Template data for collection info modal.
+ *
+ * @param {Object} appstate Backbone app state.
+ * @param {number} selected Selected image count.
+ * @param {number} imagecount Total images in gallery.
+ * @return {Object}
+ */
+efpic.getCollectionInfoTemplateData = function( appstate, selected, imagecount ) {
+	var has_in_price = (
+		typeof appstate.attributes.selection_restriction !== 'undefined' &&
+		appstate.attributes.selection_restriction.restriction === 'in price' &&
+		appstate.attributes.selection_restriction.selection_option === true
+	);
+
+	var data = {
+		has_in_price: has_in_price,
+		panel_images_label: appstate.get( 'info_panel_images_in_gallery_label' ) || appstate.get( 'info_panel_images_label' ) || '',
+		panel_extra_processing_label: appstate.get( 'info_panel_extra_processing_label' ) || '',
+		panel_extra_payment_label: appstate.get( 'info_panel_extra_payment_label' ) || '',
+		in_price_extra_count: 0,
+		in_price_extra_total: '0.00',
+		collection_description_html: appstate.get( 'collection_description_html' ) || ''
+	};
+
+	if ( has_in_price ) {
+		var included = parseInt( appstate.attributes.selection_restriction.from, 10 ) || 0;
+		var unit_cost = parseFloat( appstate.attributes.selection_restriction.extra_image_cost ) || 0;
+
+		data.in_price_extra_count = Math.max( 0, selected - included );
+		data.in_price_extra_total = ( data.in_price_extra_count * unit_cost ).toFixed( 2 );
+	}
+
+	return data;
+};
+
+/**
  * Template data for lightbox in-price display.
  *
  * @param {Backbone.View} view Lightbox view with collection and appstate.

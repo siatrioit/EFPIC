@@ -586,6 +586,30 @@ function efpic_encode_marker_comment( &$item, $key ) {
 
 
 /**
+ * Collection description HTML for the client info modal (from email/message meta).
+ *
+ * @param int $post_id Collection post ID.
+ * @return string
+ */
+function efpic_get_collection_description_html( $post_id ) {
+	$description = get_post_meta( (int) $post_id, '_efpic_collection_description', true );
+
+	if ( empty( $description ) ) {
+		return '';
+	}
+
+	if ( ! class_exists( 'efpic\Vendor\Parsedown\Parsedown' ) ) {
+		return wp_kses_post( wpautop( $description ) );
+	}
+
+	$parsedown = new \efpic\Vendor\Parsedown\Parsedown();
+	$html      = $parsedown->text( $description );
+
+	return strip_tags( $html, array( 'a', 'br', 'em', 'hr', 'li', 'p', 'strong', 'ul', 'ol' ) );
+}
+
+
+/**
  * Create AppState JSON object
  *
  * @since 0.6.0
@@ -629,6 +653,7 @@ function efpic_get_app_state() {
 		'request_failed_error' => __( 'Error: Request failed.<br />Do you have a working internet connection?', 'efpic' ),
 		'still_draft_msg' => __( 'This collection is still a draft. You have to open it to select images.', 'efpic' ),
 		'generic_error_msg' => __( 'Something went wrong. Please try again, and if the problem persists, contact support.', 'efpic' ),
+		'collection_description_html' => efpic_get_collection_description_html( $id ),
 	);
 
 	// Add identifier
