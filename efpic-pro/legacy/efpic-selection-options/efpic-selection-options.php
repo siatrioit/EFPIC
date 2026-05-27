@@ -249,9 +249,10 @@ function efpic_selection_options_appstate( $state ) {
 		$state['selection_restriction']['selection_info'] = $selection_info;
 
 		if ( 'in price' === $options['restriction'] ) {
-			$state['in_price_label'] = __( 'In Price', 'efpic-pro' );
-			$state['in_price_summary_tpl'] = __( 'In Price: %1$s / %2$s images', 'efpic-pro' );
-			$state['in_price_extra_tpl'] = __( '+%1$s extra images, additional cost: %2$s', 'efpic-pro' );
+			$state['in_price_package_tpl'] = __( 'Service includes preparation of %1$s images.', 'efpic-pro' );
+			$state['in_price_extra_one_tpl'] = __( '+%1$s extra image', 'efpic-pro' );
+			$state['in_price_extra_many_tpl'] = __( '+%1$s extra images', 'efpic-pro' );
+			$state['in_price_extra_cost_tpl'] = __( 'Additional payment due: Eur %1$s', 'efpic-pro' );
 		}
 	}
 
@@ -292,7 +293,7 @@ function efpic_get_selection_options_info_message( $restriction, $from, $to = nu
 	}
 	elseif ( 'in price' == $restriction ) {
 		$selection_info = sprintf(
-			__( 'Your package includes %1$s images. Each additional image costs %2$s.', 'efpic-pro' ),
+			__( 'Service includes preparation of %1$s images. Each additional image costs %2$s.', 'efpic-pro' ),
 			$from,
 			efpic_format_extra_image_cost( $extra_image_cost )
 		);

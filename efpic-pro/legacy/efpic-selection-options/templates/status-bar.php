@@ -41,8 +41,7 @@ defined( 'EFPIC_PRO' ) OR exit;
 			if ( typeof appstate.attributes.selection_restriction !== 'undefined' && appstate.attributes.selection_restriction.restriction === 'in price' && appstate.attributes.selection_restriction.selection_option == true ) {
 		@>
 		<div class="efpic-in-price-info">
-			<span class="efpic-in-price-info__label"><@= in_price_label @></span>
-			<span class="efpic-in-price-info__summary"><@= in_price_summary @></span>
+			<span class="efpic-in-price-info__package"><@= in_price_package @></span>
 			<@ if ( in_price_extra_line ) { @>
 			<span class="efpic-in-price-info__extra"><@= in_price_extra_line @></span>
 			<@ } @>

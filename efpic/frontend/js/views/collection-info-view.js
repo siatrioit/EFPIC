@@ -42,8 +42,7 @@ efpic.CollectionInfo = Backbone.View.extend({
 			selected: selected,
 			description: this.appstate.get( 'description' ),
 			comments: numberOfComments,
-			in_price_label: inPriceDisplay.in_price_label,
-			in_price_summary: inPriceDisplay.in_price_summary,
+			in_price_package: inPriceDisplay.in_price_package,
 			in_price_extra_line: inPriceDisplay.in_price_extra_line
 		});
 		this.$el.html( welcomeTemplate );

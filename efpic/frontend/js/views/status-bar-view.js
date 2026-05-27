@@ -12,8 +12,7 @@ efpic.formatPriceString = function( template, first, second ) {
 
 efpic.getInPriceDisplay = function( appstate, selected ) {
 	var display = {
-		in_price_label: '',
-		in_price_summary: '',
+		in_price_package: '',
 		in_price_extra_line: ''
 	};
 
@@ -24,13 +23,15 @@ efpic.getInPriceDisplay = function( appstate, selected ) {
 	var included = parseInt( appstate.attributes.selection_restriction.from, 10 ) || 0;
 	var unit_cost = parseFloat( appstate.attributes.selection_restriction.extra_image_cost ) || 0;
 
-	display.in_price_label = appstate.get( 'in_price_label' );
-	display.in_price_summary = efpic.formatPriceString( appstate.get( 'in_price_summary_tpl' ), selected, included );
+	display.in_price_package = efpic.formatPriceString( appstate.get( 'in_price_package_tpl' ), included, '' );
 
 	if ( selected > included ) {
 		var extra_count = selected - included;
 		var extra_total = ( extra_count * unit_cost ).toFixed( 2 );
-		display.in_price_extra_line = efpic.formatPriceString( appstate.get( 'in_price_extra_tpl' ), extra_count, extra_total );
+		var extra_tpl = ( 1 === extra_count ) ? appstate.get( 'in_price_extra_one_tpl' ) : appstate.get( 'in_price_extra_many_tpl' );
+		var extra_images = efpic.formatPriceString( extra_tpl, extra_count, '' );
+		var extra_cost = efpic.formatPriceString( appstate.get( 'in_price_extra_cost_tpl' ), extra_total, '' );
+		display.in_price_extra_line = extra_images + ' ' + extra_cost;
 	}
 
 	return display;
@@ -92,8 +93,7 @@ efpic.StatusBarView = Backbone.View.extend({
 			selection_restriction: this.appstate.get('selection_restriction'),
 			restriction_warning: restrictionWarning,
 			animation: animation,
-			in_price_label: inPriceDisplay.in_price_label,
-			in_price_summary: inPriceDisplay.in_price_summary,
+			in_price_package: inPriceDisplay.in_price_package,
 			in_price_extra_line: inPriceDisplay.in_price_extra_line
 		});
 		this.$el.html( statusbar );
