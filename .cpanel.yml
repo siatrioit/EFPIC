@@ -1,0 +1,8 @@
+---
+# cPanel Git Version Control — deploy pēc "Update from Remote"
+# Repozitorija sakne → wp-content/plugins/efpic un efpic-pro
+deployment:
+  tasks:
+    - export PLUGINPATH=/home2/trioitlv/edgarsfoto.lv/wp-content/plugins
+    - /usr/bin/rsync -a --delete ./efpic/ $PLUGINPATH/efpic/
+    - /usr/bin/rsync -a --delete ./efpic-pro/ $PLUGINPATH/efpic-pro/

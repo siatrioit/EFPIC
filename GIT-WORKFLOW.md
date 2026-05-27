@@ -45,13 +45,19 @@ Atgriezties uz konkrētu snapshot:
 
 Aģents pirms riskantām izmaiņām izveido snapshot ar `-Tag`. Pēc katra pabeigta uzdevuma — commit ar skaidru ziņojumu latviski vai angliski.
 
-## Attālināta dublēšana (ieteicams)
+## Attālinātais repozitorijs
 
-Kad būs gatavs, pievienojiet GitHub/GitLab repozitoriju un:
+- **GitHub:** https://github.com/siatrioit/EFPIC
+- **Clone:** `git clone https://github.com/siatrioit/EFPIC.git`
 
-```powershell
-git remote add origin <jūsu-repo-url>
-git push -u origin main --tags
-```
+## Deploy uz serveri (cPanel)
 
-Tad dublējums ir arī ārpus šī diska.
+Repozitoriju **neklonē** tieši uz `wp-content/plugins`. Klonē atsevišķi, piem. `~/repositories/EFPIC`, tad deploy:
+
+- Automātiski: fails `.cpanel.yml` (cPanel → Git Version Control → Update/Deploy)
+- Manuāli SSH: `bash scripts/deploy-to-plugins.sh`
+
+Mērķa ceļš serverī:
+
+`/home2/trioitlv/edgarsfoto.lv/wp-content/plugins/efpic`  
+`/home2/trioitlv/edgarsfoto.lv/wp-content/plugins/efpic-pro`
