@@ -84,10 +84,9 @@ efpic.RegistrationView = Backbone.View.extend({
 				$( '.efpic-collection' ).append('<div class="overlay fail"><div class="message"><p>' + response.data.message + '</p><p><a class="efpic-button small primary js-close-message" href="#">' + response.data.button_text + '</a></p></div></div>');
 			}
 
-		}).fail( function( response ) {
-			// Ajax fail
-			$( '.efpic-collection' ).append('<div class="overlay fail"><div class="message"><p>' + this.appstate.request_failed_error + '</p><p><a class="efpic-button small primary js-close-message" href="#">OK</a></p></div></div>');
-		});
+		}).fail( _.bind( function() {
+			$( '.efpic-collection' ).append('<div class="overlay fail"><div class="message"><p>' + this.appstate.get( 'request_failed_error' ) + '</p><p><a class="efpic-button small primary js-close-message" href="#">' + this.appstate.get( 'button_ok' ) + '</a></p></div></div>');
+		}, this ) );
 	},
 
 	closeRegistration: function( e ) {

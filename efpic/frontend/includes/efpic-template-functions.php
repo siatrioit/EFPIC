@@ -620,13 +620,15 @@ function efpic_get_app_state() {
 		'error_msg_filter_selected' => __( 'You have not selected any images.', 'efpic' ),
 		'error_msg_filter_unselected' => __( 'You have no <em>unselected</em> images.', 'efpic' ),
 		'reset_filter_msg' => __( 'Reset filter to show all images', 'efpic' ),
-		'error_msg_stars_filter_empty' => __( 'No images with that many stars' ),
+		'error_msg_stars_filter_empty' => __( 'No images with that many stars', 'efpic' ),
+		'button_ok' => __( 'OK', 'efpic' ),
 		'reset_stars_filter_msg' => __( 'Reset stars filter to show available images', 'efpic' ),
 		'select_at_least_one_image_msg' => __( 'You have to select at least one image.', 'efpic' ),
 		'already_approved_msg' => __( 'This collection has already been approved.', 'efpic' ),
 		'expired_msg' => __( 'This collection has expired.', 'efpic' ),
 		'request_failed_error' => __( 'Error: Request failed.<br />Do you have a working internet connection?', 'efpic' ),
 		'still_draft_msg' => __( 'This collection is still a draft. You have to open it to select images.', 'efpic' ),
+		'generic_error_msg' => __( 'Something went wrong. Please try again, and if the problem persists, contact support.', 'efpic' ),
 	);
 
 	// Add identifier

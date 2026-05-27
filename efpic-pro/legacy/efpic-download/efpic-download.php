@@ -86,7 +86,7 @@ function efpic_download_not_ready_yet( $scripts ) {
 
 	$scripts .= '<script>$( \'.js-efpic-download-zip-not-ready\' ).click( function( e ) {
 			e.preventDefault();
-			$( \'.efpic-collection\' ).append( \'<div class="overlay success"><div class="message error"><p>' . __( 'The .zip file will be generated, when you send the collection to the client.', 'efpic-pro' ) . '</p><p><a class="efpic-button small primary js-close-message">OK</a></p></div></div>\' );
+			$( \'.efpic-collection\' ).append( \'<div class="overlay success"><div class="message error"><p>' . esc_js( __( 'The .zip file will be generated, when you send the collection to the client.', 'efpic-pro' ) ) . '</p><p><a class="efpic-button small primary js-close-message">' . esc_js( __( 'OK', 'efpic' ) ) . '</a></p></div></div>\' );
 		});</script>';
 
 	}
@@ -139,8 +139,7 @@ function efpic_initate_background_zip( $scripts ) {
 					$( \'.js-download-selected\' ).removeClass( \'processing\' );
 				}
 			}).fail( function() {
-				// Ajax fail
-				$( \'.efpic-collection\' ).append( \'<div class="overlay fail"><div class="message"><p>Error: Request failed.<br />Do you have a working internet connection?</p><p><a class="efpic-button small primary js-close-message" href="#">OK</a></p></div></div>\' );
+				$( \'.efpic-collection\' ).append( \'<div class="overlay fail"><div class="message"><p>' . esc_js( __( 'Error: Request failed.<br />Do you have a working internet connection?', 'efpic' ) ) . '</p><p><a class="efpic-button small primary js-close-message" href="#">' . esc_js( __( 'OK', 'efpic' ) ) . '</a></p></div></div>\' );
 			});
 		}
 		

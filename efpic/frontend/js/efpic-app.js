@@ -187,9 +187,7 @@ efpic.doTheSave = function( image ) {
 		$( '.efpic-save' ).removeClass( 'hidden' );
 
 	}).fail( function() {
-		// Ajax fail
-		// TODO: Make translatable
-		$( '.efpic-collection' ).append('<div class="overlay fail"><div class="message"><p>Error: Request failed.<br />Do you have a working internet connection?</p><p><a class="efpic-button small primary js-close-message" href="#">OK</a></p></div></div>');
+		$( '.efpic-collection' ).append('<div class="overlay fail"><div class="message"><p>' + appState.get( 'request_failed_error' ) + '</p><p><a class="efpic-button small primary js-close-message" href="#">' + appState.get( 'button_ok' ) + '</a></p></div></div>');
 
 		// Remove spinner, show save button
 		$( '.loading' ).remove();

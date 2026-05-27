@@ -152,7 +152,9 @@ function efpic_get_client_lv_translations() {
 		'Enter' => 'Ievadīt',
 		'Password:' => 'Parole:',
 		'View Images' => 'Skatīt bildes',
-		'<em>Please Note:</em> This collection will expire on %s and you won\'t be able to make changes after that.' => '<em>Lūdzu, ņemiet vērā:</em> šī galerija beigsies %s, un pēc tam atlasi vairs nevarēs mainīt.',
+		'Please finish your selection' => 'Lūdzu, pabeidziet atlasi',
+		"You recently started selecting images for the collection \"%s\".\n\nWe just wanted to remind you, that you still have to finally approve your selection.\n\n" => "Jūs nesen sākāt atlasīt bildes galerijai „%s”.\n\nAtgādinām, ka vēl jāapstiprina jūsu atlase.\n\n",
+		'Something went wrong. Please try again, and if the problem persists, contact support.' => 'Kaut kas nogāja greizi. Mēģiniet vēlreiz; ja problēma atkārtojas, sazinieties ar atbalstu.',
 	);
 
 	$pro = array(
@@ -183,7 +185,37 @@ function efpic_get_client_lv_translations() {
 		'Save' => 'Saglabāt',
 		'Add Comment' => 'Pievienot komentāru',
 		'comments' => 'komentāri',
+		'<strong>Error:</strong> Nonce check failed.<br />Refresh your browser window.' => '<strong>Kļūda:</strong> drošības pārbaude neizdevās.<br />Pārlādējiet pārlūkprogrammas logu.',
+		'Error: Post id is not set.' => 'Kļūda: galerijas ID nav norādīts.',
+		'Error: Please review the following fields:' => 'Kļūda: lūdzu, pārbaudiet šos laukus:',
+		'No images selected.' => 'Nav atlasītu bilžu.',
+		'Zip file created.' => 'ZIP fails izveidots.',
+		'Error. Zip file could not be created.' => 'Kļūda. ZIP failu neizdevās izveidot.',
+		'The .zip file will be generated, when you send the collection to the client.' => 'ZIP fails tiks ģenerēts, kad nosūtīsiet galeriju klientam.',
+		'All' => 'Visas',
+		'Selected' => 'Atlasītās',
+		'Download ZIP' => 'Lejupielādēt ZIP',
+		'Send<span> selection</span>…' => 'Nosūtīt<span> atlasi</span>…',
+		'<em>Please Note:</em> This collection has expired. Therefore it is not possible to change your selection at this time.' => '<em>Lūdzu, ņemiet vērā:</em> šī galerija ir beigusies. Pašlaik atlasi vairs nevar mainīt.',
+		'Download Images' => 'Lejupielādēt bildes',
+		'You can download your images by clicking on the buttons below.' => 'Bildes var lejupielādēt, noklikšķinot uz pogām zemāk.',
+		'Download All' => 'Lejupielādēt visas',
+		'Show Images' => 'Rādīt bildes',
+		'Hide Images' => 'Paslēpt bildes',
+		'You need to select exactly one image.' => 'Jāatlasī tieši viena bilde.',
+		'You need to select exactly %s images.' => 'Jāatlasī tieši %s bildes.',
+		'You need to select at least one image.' => 'Jāatlasī vismaz viena bilde.',
+		'You need to select at least %s images.' => 'Jāatlasī vismaz %s bildes.',
+		'You are allowed to select exactly one image.' => 'Drīkst atlasīt tikai vienu bildi.',
+		'You are allowed to select a maximum of %s images.' => 'Drīkst atlasīt ne vairāk kā %s bildes.',
+		'Unselected' => 'Neatlasītas',
+		'Reset filters' => 'Notīrīt filtrus',
+		'Show Information about this collection' => 'Rādīt informāciju par šo galeriju',
+		'saved' => 'saglabāts',
+		'Download' => 'Lejupielādēt',
 		'has comment' => 'ar komentāru',
+		'Success' => 'Veiksmīgi',
+		'Error' => 'Kļūda',
 	);
 
 	$map = array();
@@ -223,6 +255,31 @@ function efpic_translate_client_string( $text, $domain = 'efpic' ) {
 }
 
 /**
+ * Latvian plural translations for client-facing strings.
+ *
+ * @return array<string, array{one:string, other:string}>
+ */
+function efpic_get_client_lv_plural_translations() {
+	return apply_filters(
+		'efpic_client_lv_plural_translations',
+		array(
+			'efpic-pro|You need to select exactly one image.|You need to select exactly %s images.' => array(
+				'one' => 'Jāatlasī tieši viena bilde.',
+				'other' => 'Jāatlasī tieši %s bildes.',
+			),
+			'efpic-pro|You need to select at least one image.|You need to select at least %s images.' => array(
+				'one' => 'Jāatlasī vismaz viena bilde.',
+				'other' => 'Jāatlasī vismaz %s bildes.',
+			),
+			'efpic-pro|You are allowed to select exactly one image.|You are allowed to select a maximum of %s images.' => array(
+				'one' => 'Drīkst atlasīt tikai vienu bildi.',
+				'other' => 'Drīkst atlasīt ne vairāk kā %s bildes.',
+			),
+		)
+	);
+}
+
+/**
  * Filter gettext for client-facing pages and emails.
  *
  * @param string $translation Current translation.
@@ -244,7 +301,69 @@ function efpic_filter_client_gettext( $translation, $text, $domain ) {
 	return efpic_translate_client_string( $text, $domain );
 }
 
+/**
+ * Filter gettext_with_context for client-facing strings.
+ *
+ * @param string $translation Current translation.
+ * @param string $text          Msgid.
+ * @param string $context       Context.
+ * @param string $domain        Text domain.
+ * @return string
+ */
+function efpic_filter_client_gettext_with_context( $translation, $text, $context, $domain ) {
+	if ( ! in_array( $domain, array( 'efpic', 'efpic-pro' ), true ) ) {
+		return $translation;
+	}
+
+	$lang = efpic_get_client_language_context();
+
+	if ( null === $lang || 'en' === $lang ) {
+		return $translation;
+	}
+
+	if ( 'send selection button text' === $context && 'approve selection' === $text ) {
+		return 'Apstiprināt atlasi';
+	}
+
+	return efpic_filter_client_gettext( $translation, $text, $domain );
+}
+
+/**
+ * Filter ngettext for client-facing plural strings.
+ *
+ * @param string $translation Current translation.
+ * @param string $single      Singular form.
+ * @param string $plural      Plural form.
+ * @param int    $number      Number.
+ * @param string $domain      Text domain.
+ * @return string
+ */
+function efpic_filter_client_ngettext( $translation, $single, $plural, $number, $domain ) {
+	if ( ! in_array( $domain, array( 'efpic', 'efpic-pro' ), true ) ) {
+		return $translation;
+	}
+
+	$lang = efpic_get_client_language_context();
+
+	if ( null === $lang || 'en' === $lang ) {
+		return $translation;
+	}
+
+	$key = $domain . '|' . $single . '|' . $plural;
+	$map = efpic_get_client_lv_plural_translations();
+
+	if ( isset( $map[ $key ] ) ) {
+		return ( 1 === (int) $number ) ? $map[ $key ]['one'] : $map[ $key ]['other'];
+	}
+
+	$source = ( 1 === (int) $number ) ? $single : $plural;
+
+	return efpic_translate_client_string( $source, $domain );
+}
+
 add_filter( 'gettext', 'efpic_filter_client_gettext', 20, 3 );
+add_filter( 'gettext_with_context', 'efpic_filter_client_gettext_with_context', 20, 4 );
+add_filter( 'ngettext', 'efpic_filter_client_ngettext', 20, 5 );
 
 /**
  * Activate language context on collection frontend.
@@ -284,6 +403,10 @@ add_action( 'wp_ajax_efpic_send_selection', 'efpic_client_language_on_ajax', 0 )
 add_action( 'wp_ajax_nopriv_efpic_send_selection', 'efpic_client_language_on_ajax', 0 );
 add_action( 'wp_ajax_efpic_register', 'efpic_client_language_on_ajax', 0 );
 add_action( 'wp_ajax_nopriv_efpic_register', 'efpic_client_language_on_ajax', 0 );
+add_action( 'wp_ajax_efpic_create_zip', 'efpic_client_language_on_ajax', 0 );
+add_action( 'wp_ajax_nopriv_efpic_create_zip', 'efpic_client_language_on_ajax', 0 );
+add_action( 'wp_ajax_efpic_track_download', 'efpic_client_language_on_ajax', 0 );
+add_action( 'wp_ajax_nopriv_efpic_track_download', 'efpic_client_language_on_ajax', 0 );
 
 /**
  * Activate language context before client emails are built/sent.
@@ -298,6 +421,41 @@ function efpic_client_language_before_client_email( $mail_context, $post_id ) {
 }
 
 add_action( 'efpic_before_email_build', 'efpic_client_language_before_client_email', 0, 2 );
+
+/**
+ * Translate default Pro “after approval” HTML when it replaces the template message.
+ *
+ * @param string $message Approved screen HTML.
+ * @return string
+ */
+function efpic_client_language_approved_message( $message ) {
+	$lang = efpic_get_client_language_context();
+
+	if ( null === $lang || 'en' === $lang ) {
+		return $message;
+	}
+
+	$after_approval = get_option( 'efpic_after_approval' );
+
+	if ( empty( $after_approval['after_approval_message'] ) ) {
+		return $message;
+	}
+
+	$english_default = '<h1>Thank you!</h1><p>The collection has been approved and the photographer has been notified.</p><p>You can now close this browser window.</p>';
+	$normalize        = static function ( $html ) {
+		return preg_replace( '/\s+/', '', wp_strip_all_tags( $html ) );
+	};
+
+	if ( $normalize( $after_approval['after_approval_message'] ) !== $normalize( $english_default ) ) {
+		return $message;
+	}
+
+	return '<h1>' . efpic_translate_client_string( 'Thank you!', 'efpic' ) . '</h1><p>' .
+		efpic_translate_client_string( 'The collection has been approved and the photographer has been notified.', 'efpic' ) . '</p><p>' .
+		efpic_translate_client_string( 'You can now close this browser window.', 'efpic' ) . '</p>';
+}
+
+add_filter( 'efpic_approved_message', 'efpic_client_language_approved_message', 20 );
 
 /**
  * Render client language selector on collection edit screen.

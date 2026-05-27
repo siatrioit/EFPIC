@@ -12,8 +12,6 @@ efpic.SendView = Backbone.View.extend({
 	initialize: function( options ) {
 		this.collection = options.collection;
 		this.router = options.router;
-		this.appstate = JSON.parse( appstate );
-
 		// Key bindings
 		_.bindAll( this , 'keyAction' );
 		$( document ).on( 'keydown', this.keyAction);
@@ -130,19 +128,20 @@ efpic.SendView = Backbone.View.extend({
 				// TODO: Better handle possible errors, eg. the message or data being empty on return!
 				// TODO: Find a better error message... also, why does it not switch to approved, on the second try?!
 				console.log( response );
-				var message = 'Something went wrong. Please try again, and if the problem persists, contact support.';
+				var message = current.model.get( 'generic_error_msg' );
 				if ( response.data != null ) {
 					message = response.data.message;
 				}
-				$( '.efpic-collection' ).append('<div class="overlay fail"><div class="message"><p>' + message + '</p><p><a class="efpic-button small primary js-close-message" href="#">OK</a></p></div></div>');
+				$( '.efpic-collection' ).append('<div class="overlay fail"><div class="message"><p>' + message + '</p><p><a class="efpic-button small primary js-close-message" href="#">' + current.model.get( 'button_ok' ) + '</a></p></div></div>');
 				$( '.loading' ).remove();
 				$( '#efpic-send-button' ).show();
 			}
 
-		}).fail( function() {
-			// Ajax fail
-			$( '.efpic-collection' ).append('<div class="overlay fail"><div class="message"><p>' + this.appstate.request_failed_error + '</p><p><a class="efpic-button small primary js-close-message" href="#">OK</a></p></div></div>');
-		});
+		}).fail( _.bind( function() {
+			$( '.efpic-collection' ).append('<div class="overlay fail"><div class="message"><p>' + this.model.get( 'request_failed_error' ) + '</p><p><a class="efpic-button small primary js-close-message" href="#">' + this.model.get( 'button_ok' ) + '</a></p></div></div>');
+			$( '.loading' ).remove();
+			$( '#efpic-send-button' ).show();
+		}, this ) );
 
 	},
 

@@ -16,7 +16,7 @@
 			?>
 		</div>
 		<div class="efpic-approval-form">
-			<p class="col-100"><label for="efpic_approval_message"><?php _e( 'Anything else you want us to know?', 'efpic' ); ?></label><textarea name="efpic-approval-form[efpic_approval_message]" id="efpic_approval_message" placeholder="<?php __( 'Leave a comment…', 'efpic' ); ?>"></textarea></p>
+			<p class="col-100"><label for="efpic_approval_message"><?php _e( 'Anything else you want us to know?', 'efpic' ); ?></label><textarea name="efpic-approval-form[efpic_approval_message]" id="efpic_approval_message" placeholder="<?php echo esc_attr__( 'Leave a comment…', 'efpic' ); ?>"></textarea></p>
 		</div>
 		<?php
 			$efpic_approval_warning = '<p><strong>' . __( 'You are about to approve this collection.', 'efpic' ) . '</strong><br />' . __( 'Please note, that you won\'t be able to make changes to your selection after that.', 'efpic' ) . '</p>';

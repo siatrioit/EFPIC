@@ -152,14 +152,13 @@ efpic.StatusBarView = Backbone.View.extend({
 			$( '.efpic-saving' ).remove();
 			$( '.efpic-save' ).show();
 
-		}).fail( function() {
-			// Ajax fail
-			$( '.efpic-collection' ).append('<div class="overlay fail"><div class="message"><p>Error: Request failed.<br />Do you have a working internet connection?</p><p><a class="efpic-button small primary js-close-message" href="#">OK</a></p></div></div>');
+		}).fail( _.bind( function() {
+			$( '.efpic-collection' ).append('<div class="overlay fail"><div class="message"><p>' + this.appstate.get( 'request_failed_error' ) + '</p><p><a class="efpic-button small primary js-close-message" href="#">' + this.appstate.get( 'button_ok' ) + '</a></p></div></div>');
 
 			// Remove spinner, show save button
 			$( '.loading' ).remove();
 			$( '.efpic-save' ).show();
-		});
+		}, this ) );
 
 	},
 
