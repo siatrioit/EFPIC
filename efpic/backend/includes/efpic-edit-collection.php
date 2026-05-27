@@ -1404,7 +1404,11 @@ function efpic_update_collection_meta( $post_id ) {
 		}
 
 		// Clean up the collection description
-		$efpic_collection_description = implode( "\n", array_map( 'sanitize_text_field', explode( "\n", $_POST['efpic_collection_description'] ) ) );
+		if ( ! empty( $_POST['efpic_collection_description'] ) ) {
+			$efpic_collection_description = implode( "\n", array_map( 'sanitize_text_field', explode( "\n", wp_unslash( $_POST['efpic_collection_description'] ) ) ) );
+		} else {
+			$efpic_collection_description = '';
+		}
 
 		if ( ! empty( $efpic_collection_description ) ) {
 			// Update the collection description in the database
@@ -1416,7 +1420,7 @@ function efpic_update_collection_meta( $post_id ) {
 	}
 }
 
-add_action( 'save_post_efpic_collection', 'efpic_update_collection_meta' );
+add_action( 'save_post_efpic_collection', 'efpic_update_collection_meta', 5 );
 
 
 /**

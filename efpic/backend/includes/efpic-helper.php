@@ -124,7 +124,7 @@ function efpic_collection_publish( $post_id, $post ) {
 	}
 
 	// Abort if there are no delivery images, but the intent is delivery – and the delivery option is upload
-	if ( isset( $_POST['delivery_image_ids'] ) AND empty( $_POST['delivery_image_ids'] ) AND $_POST['efpic_delivery_option'] == 'upload' ) {
+	if ( isset( $_POST['delivery_image_ids'] ) && empty( $_POST['delivery_image_ids'] ) && isset( $_POST['efpic_delivery_option'] ) && 'upload' === $_POST['efpic_delivery_option'] ) {
 		return $post_id;
 	}
 
@@ -148,7 +148,7 @@ function efpic_collection_publish( $post_id, $post ) {
 	}
 
 	// Only send mail, if this method is selected
-	if ( $_POST['efpic_collection_share_method'] == 'efpic-copy-link' ) {
+	if ( isset( $_POST['efpic_collection_share_method'] ) && 'efpic-copy-link' === $_POST['efpic_collection_share_method'] ) {
 
 		if ( $post->post_status == 'delivery-draft' ) {
 			// Set the post status to "sent"

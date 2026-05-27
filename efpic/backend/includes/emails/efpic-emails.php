@@ -24,9 +24,14 @@ function efpic_messaging_logic( $post_id, $post ) {
 	if ( ! isset( $_POST['efpic_sendmail'] ) )
 		return $post_id;
 	
-	// Check if share method is set to "send-mail"
-	if ( 'efpic-send-email' != get_post_meta( $post_id, '_efpic_collection_share_method', true ) )
+	// Share method may not be in post meta yet (meta is saved in the same request).
+	$share_method = get_post_meta( $post_id, '_efpic_collection_share_method', true );
+	if ( empty( $share_method ) && isset( $_POST['efpic_collection_share_method'] ) ) {
+		$share_method = sanitize_text_field( wp_unslash( $_POST['efpic_collection_share_method'] ) );
+	}
+	if ( 'efpic-send-email' !== $share_method ) {
 		return $post_id;
+	}
 
 	// Check if nonce is set
 	if ( ! isset( $_POST['efpic_collection_metabox_nonce'] ) )
@@ -54,7 +59,7 @@ function efpic_messaging_logic( $post_id, $post ) {
 	}
 	
 	// Abort if there are no delivery images, but the intent is delivery – and the delivery option is upload
-	if ( isset( $_POST['delivery_image_ids'] ) AND empty( $_POST['delivery_image_ids'] ) AND $_POST['efpic_delivery_option'] == 'upload' ) {
+	if ( isset( $_POST['delivery_image_ids'] ) && empty( $_POST['delivery_image_ids'] ) && isset( $_POST['efpic_delivery_option'] ) && 'upload' === $_POST['efpic_delivery_option'] ) {
 		return $post_id;
 	}
 

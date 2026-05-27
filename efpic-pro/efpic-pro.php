@@ -3,7 +3,7 @@
  * Plugin Name: efpic Pro
  * Description: Professional photo proofing features for photographers.
  * Plugin URI: https://www.edgarsfoto.lv
- * Version: 1.0.1
+ * Version: 1.0.2
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Requires Plugins: efpic
@@ -51,7 +51,7 @@ if ( ! function_exists( 'efpic_pro_setup' ) ) {
 
 	function efpic_pro_setup() {
 		// Define plugin version
-		define( 'EFPIC_PRO', '1.0.1' );
+		define( 'EFPIC_PRO', '1.0.2' );
 
 		define( 'EFPIC_PRO_NAME', 'efpic Pro' );
 		define( 'EFPIC_PRO_LICENSE_PAGE', 'efpic-pro' );
@@ -65,8 +65,8 @@ if ( ! function_exists( 'efpic_pro_setup' ) ) {
 		// Define plugin basename
 		define( 'EFPIC_PRO_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 
-		// Define plugin version
-		define( 'EFPIC_CORE_REQUIRED', '2.3.6' );
+		// Minimum efpic (core) version — aligned with custom 1.x release line
+		define( 'EFPIC_CORE_REQUIRED', '1.0.0' );
 
 		// Define minimumPHP version
 		define( 'EFPIC_PHP_REQUIRED', '7.4' );
@@ -82,6 +82,11 @@ if ( ! function_exists( 'efpic_pro_setup' ) ) {
 
 		// Pro admin page (no license / no remote updates)
 		require_once EFPIC_PRO_PATH . 'inc/pro-page.php';
+
+		// Clear stale activation mode when no legacy Pro add-ons are active
+		if ( get_option( '_efpic_pro_activation_mode' ) && ! efpic_pro_has_active_old_modules() ) {
+			delete_option( '_efpic_pro_activation_mode' );
+		}
 
 		// Handle plugin activation
 		$activation_mode = get_option( '_efpic_pro_activation_mode' );
@@ -133,6 +138,8 @@ if ( ! function_exists( 'efpic_pro_setup' ) ) {
 			'efpic-pro',
 			'https://translate.efpic.io/api/translations/efpic-pro/'
 		);
+
+		define( 'EFPIC_PRO_LOADED', true );
 	}
 
 	// Mainām ielādes āķi uz plugins_loaded un iedodam prioritāti 20, 
@@ -147,6 +154,26 @@ if ( ! function_exists( 'efpic_pro_setup' ) ) {
  * @since 1.0.0
  * * @return array Old Pro module paths
  */
+/**
+ * Whether any legacy standalone Pro add-on plugin is still active.
+ *
+ * @return bool
+ */
+function efpic_pro_has_active_old_modules() {
+	if ( ! function_exists( 'is_plugin_active' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+	}
+
+	foreach ( efpic_get_old_pro_modules() as $pro_module ) {
+		if ( is_plugin_active( $pro_module ) ) {
+			return true;
+		}
+	}
+
+	return false;
+}
+
+
 function efpic_get_old_pro_modules() {
 	return [
 		'efpic-brand-customize/efpic-brand-customize.php',

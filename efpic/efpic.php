@@ -3,7 +3,7 @@
  * Plugin Name: efpic
  * Plugin URI: https:www.edgarsfoto.lv
  * Description: Send a collection of photographs to your client for approval.
- * Version: 1.0.1
+ * Version: 1.0.2
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: Edgars
@@ -25,7 +25,7 @@ if ( ! function_exists( 'efpic_setup' ) ) {
 	function efpic_setup() {
 
 		// Define plugin version
-		define( 'EFPIC_VERSION', '1.0.1' );
+		define( 'EFPIC_VERSION', '1.0.2' );
 
 		// Define path for this plugin
 		define( 'EFPIC_PATH', plugin_dir_path(__FILE__) );
@@ -289,19 +289,25 @@ add_action( 'init', 'efpic_redirect_to_overview' );
  * @since 2.0.0
  */
 function efpic_check_pro_compat() {
-	if ( defined( 'EFPIC_PRO' ) && version_compare( EFPIC_PRO, '2.5.0' ) < 0 ) {
-		/* translators: Admin notice, %s = opening and closing link tags */
-		$notice = sprintf ( __( '🚨 <strong>Action required:</strong> The version of efpic Pro you are using is not compatible with this version of efpic. %sPlease update to the latest version of efpic Pro%s.', 'efpic' ), '<a href="' . admin_url( 'plugins.php?s=efpic%20pro&plugin_status=all' ) . '">', '</a>' );
+	if ( ! function_exists( 'is_plugin_active' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
+	}
+
+	// Pro plugin is active in WP but setup did not finish (version mismatch, activation mode, etc.)
+	if ( is_plugin_active( 'efpic-pro/efpic-pro.php' ) && ! defined( 'EFPIC_PRO_LOADED' ) ) {
+		$notice = __( 'efpic Pro is activated but its modules did not load. Check admin notices on the Plugins screen or update both efpic and efpic Pro to matching versions.', 'efpic' );
 		$notice_type = 'error';
 
-		// Display admin notice
-		add_action( 'admin_notices', function() use ( $notice, $notice_type ) {
-			?>
-			<div class="efpic-pro-module-notice notice notice-<?php echo $notice_type; ?>">
-				<p><?php echo $notice; ?></p>
-			</div>
-			<?php
-		});
+		add_action(
+			'admin_notices',
+			function() use ( $notice, $notice_type ) {
+				?>
+				<div class="efpic-pro-module-notice notice notice-<?php echo esc_attr( $notice_type ); ?>">
+					<p><?php echo esc_html( $notice ); ?></p>
+				</div>
+				<?php
+			}
+		);
 	}
 }
 
@@ -480,11 +486,15 @@ function efpic_display_pro_hint() {
  * @return bool Whether Pro is active or not
  */
 function efpic_is_pro_active() {
-	if ( is_plugin_active( 'efpic-pro/efpic-pro.php' ) ) {
-		return true;
+	if ( ! function_exists( 'is_plugin_active' ) ) {
+		require_once ABSPATH . 'wp-admin/includes/plugin.php';
 	}
 
-	return false;
+	if ( ! is_plugin_active( 'efpic-pro/efpic-pro.php' ) ) {
+		return false;
+	}
+
+	return defined( 'EFPIC_PRO_LOADED' ) && EFPIC_PRO_LOADED;
 }
 
 
