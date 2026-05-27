@@ -3,8 +3,9 @@
 deployment:
   tasks:
     - export PLUGINPATH="/home2/trioitlv/edgarsfoto.lv/wp-content/plugins"
-    - echo "EFPIC deploy start: $(date)"
-    - echo "Repo: $(pwd)"
-    - echo "Target: $PLUGINPATH"
-    - if command -v rsync >/dev/null 2>&1; then echo "Using rsync"; rsync -a --delete "./efpic/" "$PLUGINPATH/efpic/"; rsync -a --delete "./efpic-pro/" "$PLUGINPATH/efpic-pro/"; else echo "rsync not found, using cp"; rm -rf "$PLUGINPATH/efpic" "$PLUGINPATH/efpic-pro"; cp -a "./efpic" "$PLUGINPATH/efpic"; cp -a "./efpic-pro" "$PLUGINPATH/efpic-pro"; fi
-    - echo "EFPIC deploy done: $(date)"
+    - export LOGFILE="$HOME/efpic-deploy.log"
+    - echo "==== EFPIC deploy start: $(date) ====" >> "$LOGFILE"
+    - echo "Repo: $(pwd)" >> "$LOGFILE"
+    - echo "Target: $PLUGINPATH" >> "$LOGFILE"
+    - if command -v rsync >/dev/null 2>&1; then echo "Using rsync" >> "$LOGFILE"; rsync -a --delete "./efpic/" "$PLUGINPATH/efpic/" >> "$LOGFILE" 2>&1; rsync -a --delete "./efpic-pro/" "$PLUGINPATH/efpic-pro/" >> "$LOGFILE" 2>&1; else echo "rsync not found, using cp" >> "$LOGFILE"; rm -rf "$PLUGINPATH/efpic" "$PLUGINPATH/efpic-pro" >> "$LOGFILE" 2>&1; cp -a "./efpic" "$PLUGINPATH/efpic" >> "$LOGFILE" 2>&1; cp -a "./efpic-pro" "$PLUGINPATH/efpic-pro" >> "$LOGFILE" 2>&1; fi
+    - echo "==== EFPIC deploy done: $(date) ====" >> "$LOGFILE"
