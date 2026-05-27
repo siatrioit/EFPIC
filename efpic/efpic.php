@@ -19,6 +19,12 @@ if ( ! defined( 'EFPIC_VERSION' ) ) {
 	define( 'EFPIC_VERSION', '1.0.2' );
 }
 
+// Load composer autoloader early (used by email templates / Parsedown).
+$efpic_autoload = plugin_dir_path( __FILE__ ) . 'vendor/autoload.php';
+if ( file_exists( $efpic_autoload ) ) {
+	require_once $efpic_autoload;
+}
+
 
 /**
  * Include functions for efpic
