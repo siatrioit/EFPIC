@@ -1,26 +1,19 @@
-# cPanel Git Version Control — deploy pēc "Update from Remote"
-# Repozitorija sakne → wp-content/plugins/efpic un efpic-pro
+---
+# cPanel Git Version Control — kopē efpic uz wp-content/plugins
+# Obligāti: pirmā rinda "---" (cPanel dokumentācija).
+# Pilnais ceļš uz spraudņu mapi tiešā hostinga vidē:
+#   PLUGINPATH=/home2/trioitlv/edgarsfoto.lv/wp-content/plugins
 deployment:
   tasks:
-    - export PLUGINPATH="/home2/trioitlv/edgarsfoto.lv/wp-content/plugins"
-    - export LOGFILE="$HOME/efpic-deploy.log"
-    - echo "==== EFPIC deploy start: $(date) ====" >> "$LOGFILE"
-    - echo "Repo: $(pwd)" >> "$LOGFILE"
-    - echo "Target: $PLUGINPATH" >> "$LOGFILE"
-    - echo "Target perms (before):" >> "$LOGFILE"; ls -ld "$PLUGINPATH/efpic" "$PLUGINPATH/efpic-pro" >> "$LOGFILE" 2>&1 || true; ls -l "$PLUGINPATH/efpic/efpic.php" >> "$LOGFILE" 2>&1 || true
-    - echo "Force re-install (rm + cp)..." >> "$LOGFILE"
-    - rm -rf "$PLUGINPATH/efpic" "$PLUGINPATH/efpic-pro" >> "$LOGFILE" 2>&1 || true
-    - mkdir -p "$PLUGINPATH/efpic" "$PLUGINPATH/efpic-pro" >> "$LOGFILE" 2>&1 || true
-    - cp -a "./efpic/." "$PLUGINPATH/efpic/" >> "$LOGFILE" 2>&1
-    - cp -a "./efpic-pro/." "$PLUGINPATH/efpic-pro/" >> "$LOGFILE" 2>&1
-    - echo "Deployed efpic.php version line:" >> "$LOGFILE"
-    - grep -n "Version:" "$PLUGINPATH/efpic/efpic.php" >> "$LOGFILE" 2>&1 || true
-    - export TS="$(date +%s)"
-    - echo "deployed_at=$(date)" > "$PLUGINPATH/efpic/.deploy-$TS.txt" || true
-    - echo "repo=$(pwd)" >> "$PLUGINPATH/efpic/.deploy-$TS.txt" || true
-    - echo "head=$(git rev-parse HEAD 2>/dev/null || echo unknown)" >> "$PLUGINPATH/efpic/.deploy-$TS.txt" || true
-    - echo "efpic_php_version=$(grep -m1 \"Version:\" \"$PLUGINPATH/efpic/efpic.php\" 2>/dev/null || echo unknown)" >> "$PLUGINPATH/efpic/.deploy-$TS.txt" || true
-    - echo "deployed_at=$(date)" > "$PLUGINPATH/efpic-pro/.deploy-$TS.txt" || true
-    - echo "repo=$(pwd)" >> "$PLUGINPATH/efpic-pro/.deploy-$TS.txt" || true
-    - echo "head=$(git rev-parse HEAD 2>/dev/null || echo unknown)" >> "$PLUGINPATH/efpic-pro/.deploy-$TS.txt" || true
-    - echo "==== EFPIC deploy done: $(date) ====" >> "$LOGFILE"
+    - export PLUGINPATH=/home2/trioitlv/edgarsfoto.lv/wp-content/plugins
+    - export LOGFILE=/home2/trioitlv/efpic-deploy.log
+    - echo "==== EFPIC deploy start $(date) ====" >> $LOGFILE
+    - echo "Repo $(pwd)" >> $LOGFILE
+    - echo "Target $PLUGINPATH" >> $LOGFILE
+    - /bin/rm -rf $PLUGINPATH/efpic $PLUGINPATH/efpic-pro || true
+    - /bin/mkdir -p $PLUGINPATH/efpic $PLUGINPATH/efpic-pro
+    - /bin/cp -a ./efpic/. $PLUGINPATH/efpic/
+    - /bin/cp -a ./efpic-pro/. $PLUGINPATH/efpic-pro/
+    - echo "efpic.php Version line:" >> $LOGFILE
+    - /bin/grep -n "Version:" $PLUGINPATH/efpic/efpic.php >> $LOGFILE 2>&1 || true
+    - echo "==== EFPIC deploy done $(date) ====" >> $LOGFILE
