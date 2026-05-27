@@ -1,8 +1,10 @@
----
 # cPanel Git Version Control — deploy pēc "Update from Remote"
 # Repozitorija sakne → wp-content/plugins/efpic un efpic-pro
 deployment:
   tasks:
-    - export PLUGINPATH=/home2/trioitlv/edgarsfoto.lv/wp-content/plugins
-    - /usr/bin/rsync -a --delete ./efpic/ $PLUGINPATH/efpic/
-    - /usr/bin/rsync -a --delete ./efpic-pro/ $PLUGINPATH/efpic-pro/
+    - export PLUGINPATH="/home2/trioitlv/edgarsfoto.lv/wp-content/plugins"
+    - echo "EFPIC deploy start: $(date)"
+    - echo "Repo: $(pwd)"
+    - echo "Target: $PLUGINPATH"
+    - if command -v rsync >/dev/null 2>&1; then echo "Using rsync"; rsync -a --delete "./efpic/" "$PLUGINPATH/efpic/"; rsync -a --delete "./efpic-pro/" "$PLUGINPATH/efpic-pro/"; else echo "rsync not found, using cp"; rm -rf "$PLUGINPATH/efpic" "$PLUGINPATH/efpic-pro"; cp -a "./efpic" "$PLUGINPATH/efpic"; cp -a "./efpic-pro" "$PLUGINPATH/efpic-pro"; fi
+    - echo "EFPIC deploy done: $(date)"
