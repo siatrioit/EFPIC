@@ -242,8 +242,31 @@ function efpic_append_email_signature( $mail_parts, $mail_context, $post_id ) {
 		return $mail_parts;
 	}
 
+	$force_color = static function ( $html ) {
+		$tags = [ 'table', 'tbody', 'thead', 'tfoot', 'tr', 'td', 'th', 'p', 'span', 'div', 'a', 'strong', 'em' ];
+
+		foreach ( $tags as $tag ) {
+			// Append to existing style=""
+			$html = preg_replace(
+				'/<' . $tag . '\\b([^>]*?)\\sstyle=(["\'])(.*?)\\2([^>]*)>/i',
+				'<' . $tag . '$1 style=$2$3;color:#111111 !important;$2$4>',
+				$html
+			);
+
+			// Add style="" if missing
+			$html = preg_replace(
+				'/<' . $tag . '\\b((?:(?!style=)[^>])*)>/i',
+				'<' . $tag . '$1 style="color:#111111 !important;">',
+				$html
+			);
+		}
+
+		return $html;
+	};
+
+	$signature = $force_color( $signature );
 	$signature = '<div style="margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.18);">' .
-		'<div style="background:#ffffff;color:#111111;padding:16px;border-radius:10px;">' .
+		'<div style="background:#ffffff;color:#111111 !important;padding:16px;border-radius:10px;">' .
 			$signature .
 		'</div>' .
 	'</div>';
