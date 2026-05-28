@@ -221,6 +221,37 @@ function efpic_send_proofing_email( $to_address, $post, $ident = '', $preview = 
 	return true;
 }
 
+/**
+ * Append a global email signature to client emails (HTML only).
+ *
+ * The signature is pulled from efpic settings and is not stored in the collection message,
+ * so it will not appear in the client info modal.
+ *
+ * @param array  $mail_parts Current mail parts.
+ * @param string $mail_context Email context.
+ * @param int    $post_id Collection post ID.
+ * @return array
+ */
+function efpic_append_email_signature( $mail_parts, $mail_context, $post_id ) {
+	if ( ! in_array( $mail_context, array( 'client_collection_new', 'client_delivery_new' ), true ) ) {
+		return $mail_parts;
+	}
+
+	$signature = (string) get_option( 'efpic_email_signature_html' );
+	if ( '' === trim( $signature ) ) {
+		return $mail_parts;
+	}
+
+	$mail_parts[] = [
+		'type' => 'html',
+		'html' => $signature,
+	];
+
+	return $mail_parts;
+}
+
+add_filter( 'efpic_mail_parts', 'efpic_append_email_signature', 50, 3 );
+
 
 /**
  * Email delivery collection to client(s)

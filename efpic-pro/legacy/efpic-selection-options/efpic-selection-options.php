@@ -134,8 +134,8 @@ function efpic_selection_options_admin_script() {
 		}
 
 		function efpicSelectionOptionsBuildMailMessage( lang, isInPrice, included, extraCost, userName ) {
-			var baseEn = "Dear Client,&#10;&#10;Please select the photos you like and send your selection back to us. We will start post-production as soon as we have your approval.&#10;&#10;Sincerely,&#10;" + userName;
-			var baseLv = "Sveiki,&#10;&#10;Lūdzu atlasiet bildes, kuras Jums patīk, un nosūtiet atlasi atpakaļ. Apstrādi uzsāksim, tiklīdz saņemsim Jūsu apstiprinājumu.&#10;&#10;Ar cieņu,&#10;" + userName;
+			var baseEn = "Dear Client,\n\nPlease select the photos you like and send your selection back to us. We will start post-production as soon as we have your approval.";
+			var baseLv = "Labdien,\n\nLūdzu atlasiet bildes, kuras Jūs vēlaties lai apstrādāju. Apstrādi uzsākšu, tiklīdz saņemšu apstiprinājuma e-pastu, ar Jūsu atlasītām bildēm.";
 
 			var msg = ( lang === 'lv' ) ? baseLv : baseEn;
 
@@ -143,10 +143,16 @@ function efpic_selection_options_admin_script() {
 				var inc = parseInt( included, 10 ) || 0;
 				var c = efpicSelectionOptionsFormatCost( extraCost, lang );
 				if ( lang === 'lv' ) {
-					msg += "&#10;&#10;Pamatpakalpojumā iekļauta " + inc + " bilžu sagatavošana. Katra papildus bilde maksā " + c + ".";
+					msg += "\n\nŅemiet vērā, ka pamatpakalpojumā iekļauta " + inc + " bilžu sagatavošana. Katra papildus bildes apstrāde maksā Eur " + c + ".";
 				} else {
-					msg += "&#10;&#10;Basic package includes preparation of " + inc + " images. Each additional image costs " + c + ".";
+					msg += "\n\nPlease note that the basic package includes preparation of " + inc + " images. Each additional image costs Eur " + c + ".";
 				}
+			}
+
+			if ( lang === 'lv' ) {
+				msg += "\n\nAr cieņu,";
+			} else {
+				msg += "\n\nSincerely,";
 			}
 
 			return msg;
@@ -482,13 +488,16 @@ function efpic_selection_options_client_mail_message( $mail_message, $user_name 
 		$lang = efpic_get_collection_client_language( $post->ID );
 	}
 
-	// Switch base template language (LV vs EN).
+	// Switch base template language (LV vs EN) and adjust wording.
 	if ( 'lv' === $lang ) {
-		$mail_message = sprintf(
-			/* translators: Default Latvian collection email body. */
-			"Sveiki,&#10;&#10;Lūdzu atlasiet bildes, kuras Jums patīk, un nosūtiet atlasi atpakaļ. Apstrādi uzsāksim, tiklīdz saņemsim Jūsu apstiprinājumu.&#10;&#10;Ar cieņu,&#10;%s",
-			$user_name
-		);
+		$mail_message =
+			"Labdien,\n\n" .
+			"Lūdzu atlasiet bildes, kuras Jūs vēlaties lai apstrādāju. Apstrādi uzsākšu, tiklīdz saņemšu apstiprinājuma e-pastu, ar Jūsu atlasītām bildēm.";
+	}
+	else {
+		$mail_message =
+			"Dear Client,\n\n" .
+			"Please select the photos you like and send your selection back to us. We will start post-production as soon as we have your approval.";
 	}
 
 	// In Price: append included count + extra cost.
@@ -508,20 +517,25 @@ function efpic_selection_options_client_mail_message( $mail_message, $user_name 
 
 		if ( 'lv' === $lang ) {
 			$mail_message .= sprintf(
-				/* translators: In Price sentence appended to Latvian default email. 1: included images, 2: extra image cost. */
-				"&#10;&#10;Pamatpakalpojumā iekļauta %1$s bilžu sagatavošana. Katra papildus bilde maksā %2$s.",
+				"\n\nŅemiet vērā, ka pamatpakalpojumā iekļauta %1$s bilžu sagatavošana. Katra papildus bildes apstrāde maksā Eur %2$s.",
 				$included,
 				$cost
 			);
 		}
 		else {
 			$mail_message .= sprintf(
-				/* translators: In Price sentence appended to English default email. 1: included images, 2: extra image cost. */
-				"&#10;&#10;Basic package includes preparation of %1$s images. Each additional image costs %2$s.",
+				"\n\nPlease note that the basic package includes preparation of %1$s images. Each additional image costs Eur %2$s.",
 				$included,
 				$cost
 			);
 		}
+	}
+
+	// End with signoff line (signature is appended separately in the actual email).
+	if ( 'lv' === $lang ) {
+		$mail_message .= "\n\nAr cieņu,";
+	} else {
+		$mail_message .= "\n\nSincerely,";
 	}
 
 	return $mail_message;

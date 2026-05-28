@@ -229,6 +229,15 @@ function efpic_get_settings() {
 				'default' => '',
 				'validation' => 'efpic_validate_notification_email'
 			],
+			'email_signature_html' => [
+				'type' => 'textarea',
+				'label' => __( 'Email signature (HTML)', 'efpic' ),
+				'description' => __( 'Optional HTML signature appended to outgoing client emails. This signature is NOT stored in the collection message and will not show in the client info modal.', 'efpic' ),
+				'hint' => __( 'You can use links and images (e.g. <a>, <img>).', 'efpic' ),
+				'placeholder' => '',
+				'default' => '',
+				'validation' => 'efpic_sanitize_email_signature_html',
+			],
 		]
 	];
 
@@ -804,6 +813,45 @@ function efpic_load_settings_page() {
  */
 function efpic_settings_validate( $value ) {
 	return sanitize_text_field( $value );
+}
+
+/**
+ * Sanitize email signature HTML (allows images and links).
+ *
+ * @param string $value Raw signature HTML.
+ * @return string
+ */
+function efpic_sanitize_email_signature_html( $value ) {
+	$value = (string) $value;
+
+	if ( '' === trim( $value ) ) {
+		return '';
+	}
+
+	$allowed = [
+		'a' => [
+			'href' => true,
+			'title' => true,
+			'target' => true,
+			'rel' => true,
+			'style' => true,
+		],
+		'img' => [
+			'src' => true,
+			'alt' => true,
+			'width' => true,
+			'height' => true,
+			'style' => true,
+		],
+		'br' => [],
+		'em' => [],
+		'strong' => [],
+		'p' => [ 'style' => true ],
+		'span' => [ 'style' => true ],
+		'div' => [ 'style' => true ],
+	];
+
+	return wp_kses( $value, $allowed );
 }
 
 

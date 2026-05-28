@@ -334,6 +334,9 @@ class Efpic_Emails {
 			if ( isset( $part['type'] ) AND $part['type'] == 'text' ) {
 				$message = $message . wp_strip_all_tags( $part['text'] ) . "\n\n";
 			}
+			elseif ( isset( $part['type'] ) AND $part['type'] == 'html' ) {
+				$message = $message . wp_strip_all_tags( $part['html'] ) . "\n\n";
+			}
 			elseif ( isset( $part['type'] ) AND $part['type'] == 'button' ) {
 				$message = $message . $part['text'] . ': ' . $part['url'] .  "\n\n";
 			}

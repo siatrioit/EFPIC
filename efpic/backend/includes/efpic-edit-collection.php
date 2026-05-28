@@ -560,11 +560,11 @@ function efpic_display_share_options_form( $post, $step = 2, $disabled = false )
 			<textarea class="js-efpic-collection-description" id="efpic-<?php echo $type; ?>-description" name="efpic_<?php echo $type; ?>_description" cols="60" rows="13"<?php if ( $disabled ) { echo ' disabled="disabled"'; } ?>><?php if ( esc_attr( ${'efpic_' . $type . '_description'} ) ) {
 					echo esc_attr( ${'efpic_' . $type . '_description'} );
 				} elseif ( 'delivery-draft' == $post->post_status ) {
-					$mail_message = sprintf( __( 'Dear Client,&#10;&#10;Your images are ready!&#10;&#10;You can download them by following the link below.&#10;&#10;Sincerely,&#10;%s', 'efpic' ), $user_name );
+					$mail_message = sprintf( __( "Dear Client,\n\nYour images are ready!\n\nYou can download them by following the link below.\n\nSincerely,\n%s", 'efpic' ), $user_name );
 					$mail_message = apply_filters( 'efpic_delivery_client_mail_message', $mail_message, $user_name );
 					echo $mail_message;
 				} elseif ( 'auto-draft' == $post->post_status ) {
-					$mail_message = sprintf( __( 'Dear Client,&#10;&#10;Please select the photos you like and send your selection back to us. We will start post-production as soon as we have your approval.&#10;&#10;Sincerely,&#10;%s', 'efpic' ), $user_name );
+					$mail_message = sprintf( __( "Dear Client,\n\nPlease select the photos you like and send your selection back to us. We will start post-production as soon as we have your approval.\n\nSincerely,\n%s", 'efpic' ), $user_name );
 					$mail_message = apply_filters( 'efpic_client_mail_message', $mail_message, $user_name );
 					echo $mail_message;
 				}
