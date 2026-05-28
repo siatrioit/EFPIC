@@ -230,7 +230,7 @@ function efpic_get_settings() {
 				'validation' => 'efpic_validate_notification_email'
 			],
 			'email_signature_html' => [
-				'type' => 'textarea',
+				'type' => 'wp_editor',
 				'label' => __( 'Email signature (HTML)', 'efpic' ),
 				'description' => __( 'Optional HTML signature appended to outgoing client emails. This signature is NOT stored in the collection message and will not show in the client info modal.', 'efpic' ),
 				'hint' => __( 'You can use links and images (e.g. <a>, <img>).', 'efpic' ),
@@ -512,6 +512,63 @@ function efpic_textarea_field( $name, $setting, $value ) {
 	return ob_get_clean();
 }
 
+/**
+ * Render wp_editor settings field.
+ *
+ * Stores content as HTML string in the option (sanitized via the setting's validation callback).
+ *
+ * @since 1.0.17
+ */
+function efpic_wp_editor_field( $name, $setting, $value ) {
+	ob_start();
+
+	echo '<fieldset class="efpic_settings__settings-item" id="efpic_setting--' . sanitize_key( $name ) . '">';
+	if ( ! empty( $setting['title'] ) ) {
+		echo '<h2>' . $setting['title'] . '</h2>';
+	}
+
+	$disabled = false;
+	if ( ! empty( $setting['disabled'] ) && $setting['disabled'] === true ) {
+		$disabled = true;
+	}
+
+	echo '<p class="efpic-settings__item">';
+	echo '<label for="efpic_' . esc_attr( $name ) . '">' . $setting['label'] . '<br /><span class="description">' . $setting['description'] . '<br /></span></label>';
+	echo '<span class="efpic-settings__input-wrap">';
+
+	// wp_editor prints directly.
+	ob_start();
+	wp_editor(
+		(string) $value,
+		'efpic_' . sanitize_key( $name ),
+		[
+			'textarea_name' => 'efpic_' . $name,
+			'textarea_rows' => 8,
+			'media_buttons' => true,
+			'teeny' => false,
+			'tinymce' => true,
+			'quicktags' => true,
+		]
+	);
+	$editor = ob_get_clean();
+
+	if ( $disabled ) {
+		// Visual hint: we can't truly disable wp_editor without extra JS/CSS.
+		echo '<div style="opacity:.6; pointer-events:none;">' . $editor . '</div>';
+	} else {
+		echo $editor;
+	}
+
+	if ( ! empty( $setting['hint'] ) ) {
+		echo '<span class="efpic-settings__input__hint">' . $setting['hint'] . '</span>';
+	}
+
+	echo '</span></p>';
+	echo '</fieldset>';
+
+	return ob_get_clean();
+}
+
 
 /**
  * Render radio button settings field.
@@ -778,6 +835,9 @@ function efpic_load_settings_page() {
 						}
 						elseif ( $setting['type'] == 'textarea' ) {
 							echo efpic_textarea_field( $key, $setting, get_option( 'efpic_' . $key ) );
+						}
+						elseif ( $setting['type'] == 'wp_editor' ) {
+							echo efpic_wp_editor_field( $key, $setting, get_option( 'efpic_' . $key ) );
 						}
 						elseif ( $setting['type'] == 'number' ) {
 							echo efpic_number_field( $key, $setting, get_option( 'efpic_' . $key ) );

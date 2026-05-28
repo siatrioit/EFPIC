@@ -242,6 +242,8 @@ function efpic_append_email_signature( $mail_parts, $mail_context, $post_id ) {
 		return $mail_parts;
 	}
 
+	$signature = '<div style="margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.18);color:rgba(238,238,238,0.9);font-size:13px;line-height:1.5;">' . $signature . '</div>';
+
 	$mail_parts[] = [
 		'type' => 'html',
 		'html' => $signature,
