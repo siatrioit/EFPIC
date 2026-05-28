@@ -2632,6 +2632,17 @@ body.status-approved .efpic-lightbox__star-rating__button:before {
   font-weight: 600;
 }
 
+@media only screen and (max-width: 739px) {
+  .efpic-in-price-info {
+    display: none;
+  }
+
+  .efpic-lightbox-in-price__package,
+  .efpic-lightbox-in-price__extra {
+    display: none;
+  }
+}
+
 .efpic-selection-alert {
   position: relative;
   margin-left: -22px;
