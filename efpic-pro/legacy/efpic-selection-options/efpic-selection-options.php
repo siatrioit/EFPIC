@@ -97,9 +97,16 @@ function efpic_selection_options_admin_script() {
 	if ( ! $screen || 'efpic_collection' !== $screen->post_type || 'post' !== $screen->base ) {
 		return;
 	}
+
+	$user_name = '';
+	if ( function_exists( 'get_the_author_meta' ) ) {
+		$user_name = (string) get_the_author_meta( 'display_name' );
+	}
 	?>
 	<script>
 	jQuery( function( $ ) {
+		var efpicSelectionOptionsUserName = <?php echo wp_json_encode( $user_name ); ?>;
+
 		function efpicSelectionOptionsToggle() {
 			var val = $( '#efpic-selection-option' ).val();
 			if ( val === 'in the range of' ) {
@@ -113,8 +120,77 @@ function efpic_selection_options_admin_script() {
 				$( '.efpic-in-price-extra' ).hide();
 			}
 		}
+		
+		function efpicSelectionOptionsFormatCost( cost, lang ) {
+			var n = parseFloat( cost );
+			if ( isNaN( n ) ) {
+				n = 0;
+			}
+			var s = n.toFixed( 2 );
+			if ( lang === 'lv' ) {
+				s = s.replace( '.', ',' );
+			}
+			return s;
+		}
+
+		function efpicSelectionOptionsBuildMailMessage( lang, isInPrice, included, extraCost, userName ) {
+			var baseEn = "Dear Client,&#10;&#10;Please select the photos you like and send your selection back to us. We will start post-production as soon as we have your approval.&#10;&#10;Sincerely,&#10;" + userName;
+			var baseLv = "Sveiki,&#10;&#10;Lūdzu atlasiet bildes, kuras Jums patīk, un nosūtiet atlasi atpakaļ. Apstrādi uzsāksim, tiklīdz saņemsim Jūsu apstiprinājumu.&#10;&#10;Ar cieņu,&#10;" + userName;
+
+			var msg = ( lang === 'lv' ) ? baseLv : baseEn;
+
+			if ( isInPrice ) {
+				var inc = parseInt( included, 10 ) || 0;
+				var c = efpicSelectionOptionsFormatCost( extraCost, lang );
+				if ( lang === 'lv' ) {
+					msg += "&#10;&#10;Pamatpakalpojumā iekļauta " + inc + " bilžu sagatavošana. Katra papildus bilde maksā " + c + ".";
+				} else {
+					msg += "&#10;&#10;Basic package includes preparation of " + inc + " images. Each additional image costs " + c + ".";
+				}
+			}
+
+			return msg;
+		}
+
+		function efpicSelectionOptionsMaybeUpdateMailMessage() {
+			var $ta = $( '#efpic-collection-description' );
+			if ( ! $ta.length ) {
+				return;
+			}
+
+			// Only auto-update until the user edits the message.
+			if ( $ta.data( 'efpicDirty' ) === true ) {
+				return;
+			}
+
+			var lang = $( '#efpic-collection-client-language' ).val() || 'en';
+			var restriction = $( '#efpic-selection-option' ).val();
+			var isInPrice = ( restriction === 'in price' ) && $( '#efpic_selection_options' ).is( ':checked' );
+			var included = $( '#efpic-selection-option-image-from' ).val();
+			var extraCost = $( '#efpic-selection-option-extra-image-cost' ).val();
+			var userName = efpicSelectionOptionsUserName || '';
+
+			var next = efpicSelectionOptionsBuildMailMessage( lang, isInPrice, included, extraCost, userName );
+			$ta.val( next );
+		}
+
+		$( document ).on( 'input', '#efpic-collection-description', function() {
+			$( this ).data( 'efpicDirty', true );
+		} );
+
+		$( document ).on( 'change input', '#efpic_selection_options, #efpic-selection-option, #efpic-selection-option-image-from, #efpic-selection-option-extra-image-cost, #efpic-collection-client-language', function() {
+			efpicSelectionOptionsToggle();
+			efpicSelectionOptionsMaybeUpdateMailMessage();
+		} );
+
+		$( document ).on( 'change', '.js-efpic-select-custom-message', function() {
+			// Choosing a template is an intentional edit: stop auto-overwrites.
+			$( '#efpic-collection-description' ).data( 'efpicDirty', true );
+		} );
+
 		$( '#efpic-selection-option' ).on( 'change', efpicSelectionOptionsToggle );
 		efpicSelectionOptionsToggle();
+		efpicSelectionOptionsMaybeUpdateMailMessage();
 	} );
 	</script>
 	<?php
@@ -358,7 +434,12 @@ function efpic_selection_options_mail_part( $mail_parts, $mail_context, $post_id
 
 		$selection_info = '';
 
-		if ( isset( $options['selection_option'] ) AND true == $options['selection_option'] AND get_post_status( $post_id ) != 'delivery-draft' ) {
+		if (
+			isset( $options['selection_option'] ) &&
+			true == $options['selection_option'] &&
+			get_post_status( $post_id ) != 'delivery-draft' &&
+			( ! isset( $options['restriction'] ) || 'in price' !== $options['restriction'] )
+		) {
 			$extra_cost = isset( $options['extra_image_cost'] ) ? $options['extra_image_cost'] : '';
 			$selection_info = efpic_get_selection_options_info_message( $options['restriction'], $options['from'], $options['to'], $extra_cost );
 		}
@@ -378,3 +459,72 @@ function efpic_selection_options_mail_part( $mail_parts, $mail_context, $post_id
 }
 
 add_filter( 'efpic_mail_parts', 'efpic_selection_options_mail_part', 10, 3 );
+
+/**
+ * Default client email message for In Price + per-collection language.
+ *
+ * The saved message is shown later in the client info modal, so it must match
+ * what the client received.
+ *
+ * @param string $mail_message Current message (possibly customized by other modules).
+ * @param string $user_name Photographer display name.
+ * @return string
+ */
+function efpic_selection_options_client_mail_message( $mail_message, $user_name ) {
+	global $post;
+
+	if ( empty( $post ) || 'efpic_collection' !== get_post_type( $post ) ) {
+		return $mail_message;
+	}
+
+	$lang = 'en';
+	if ( function_exists( 'efpic_get_collection_client_language' ) ) {
+		$lang = efpic_get_collection_client_language( $post->ID );
+	}
+
+	// Switch base template language (LV vs EN).
+	if ( 'lv' === $lang ) {
+		$mail_message = sprintf(
+			/* translators: Default Latvian collection email body. */
+			"Sveiki,&#10;&#10;Lūdzu atlasiet bildes, kuras Jums patīk, un nosūtiet atlasi atpakaļ. Apstrādi uzsāksim, tiklīdz saņemsim Jūsu apstiprinājumu.&#10;&#10;Ar cieņu,&#10;%s",
+			$user_name
+		);
+	}
+
+	// In Price: append included count + extra cost.
+	$options = get_post_meta( $post->ID, '_efpic_collection_selection_options', true );
+	$is_in_price = (
+		is_array( $options ) &&
+		! empty( $options['selection_option'] ) &&
+		isset( $options['restriction'] ) &&
+		'in price' === $options['restriction']
+	);
+
+	if ( $is_in_price ) {
+		$included = isset( $options['from'] ) ? (int) $options['from'] : 0;
+		$cost_raw = isset( $options['extra_image_cost'] ) ? (float) $options['extra_image_cost'] : 0.0;
+		$decimal = ( 'lv' === $lang ) ? ',' : '.';
+		$cost = number_format( $cost_raw, 2, $decimal, '' );
+
+		if ( 'lv' === $lang ) {
+			$mail_message .= sprintf(
+				/* translators: In Price sentence appended to Latvian default email. 1: included images, 2: extra image cost. */
+				"&#10;&#10;Pamatpakalpojumā iekļauta %1$s bilžu sagatavošana. Katra papildus bilde maksā %2$s.",
+				$included,
+				$cost
+			);
+		}
+		else {
+			$mail_message .= sprintf(
+				/* translators: In Price sentence appended to English default email. 1: included images, 2: extra image cost. */
+				"&#10;&#10;Basic package includes preparation of %1$s images. Each additional image costs %2$s.",
+				$included,
+				$cost
+			);
+		}
+	}
+
+	return $mail_message;
+}
+
+add_filter( 'efpic_client_mail_message', 'efpic_selection_options_client_mail_message', 20, 2 );
