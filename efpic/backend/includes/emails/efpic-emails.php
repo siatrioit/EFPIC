@@ -242,7 +242,11 @@ function efpic_append_email_signature( $mail_parts, $mail_context, $post_id ) {
 		return $mail_parts;
 	}
 
-	$signature = '<div style="margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.18);color:rgba(238,238,238,0.9);font-size:13px;line-height:1.5;">' . $signature . '</div>';
+	$signature = '<div style="margin-top:24px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.18);">' .
+		'<div style="background:#ffffff;color:#111111;padding:16px;border-radius:10px;">' .
+			$signature .
+		'</div>' .
+	'</div>';
 
 	$mail_parts[] = [
 		'type' => 'html',

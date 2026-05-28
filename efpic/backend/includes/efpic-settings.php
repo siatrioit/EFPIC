@@ -909,6 +909,34 @@ function efpic_sanitize_email_signature_html( $value ) {
 		'p' => [ 'style' => true ],
 		'span' => [ 'style' => true ],
 		'div' => [ 'style' => true ],
+		'table' => [
+			'style' => true,
+			'width' => true,
+			'cellpadding' => true,
+			'cellspacing' => true,
+			'border' => true,
+			'role' => true,
+		],
+		'tbody' => [],
+		'thead' => [],
+		'tfoot' => [],
+		'tr' => [ 'style' => true ],
+		'td' => [
+			'style' => true,
+			'width' => true,
+			'colspan' => true,
+			'rowspan' => true,
+			'valign' => true,
+			'align' => true,
+		],
+		'th' => [
+			'style' => true,
+			'width' => true,
+			'colspan' => true,
+			'rowspan' => true,
+			'valign' => true,
+			'align' => true,
+		],
 	];
 
 	return wp_kses( $value, $allowed );
