@@ -266,6 +266,13 @@ function efpic_get_settings() {
 		'icon' => '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#007791" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"></line><line x1="4" y1="10" x2="4" y2="3"></line><line x1="12" y1="21" x2="12" y2="12"></line><line x1="12" y1="8" x2="12" y2="3"></line><line x1="20" y1="21" x2="20" y2="16"></line><line x1="20" y1="12" x2="20" y2="3"></line><line x1="1" y1="14" x2="7" y2="14"></line><line x1="9" y1="8" x2="15" y2="8"></line><line x1="17" y1="16" x2="23" y2="16"></line></svg>',
 		'priority' => 50,
 		'settings' => [
+			'migrate_from_picu' => [
+				'type' => 'html',
+				'output' => 'efpic_settings_migrate_from_picu',
+				'label' => 'Migrate from PICU',
+				'description' => '',
+				'default' => '',
+			],
 			'debug' => [
 				'type' => 'html',
 				'output' => 'efpic_settings_debug',
@@ -326,8 +333,8 @@ function efpic_register_settings() {
 	$settings = efpic_get_settings();
 	foreach( $settings as $option_group => $group_settings ) {
 		foreach( $group_settings['settings'] as $name => $setting ) {
-			// Skip for pro ads
-			if ( $name == 'pro-banner' ) {
+			// Skip for pro ads and HTML-only panels
+			if ( $name == 'pro-banner' || ( ! empty( $setting['type'] ) && $setting['type'] === 'html' ) ) {
 				continue;
 			}
 			$name = 'efpic_' . $name;
