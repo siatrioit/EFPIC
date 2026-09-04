@@ -185,7 +185,7 @@ efpic_collection_bouncer();
 		<script src='<?php echo EFPIC_URL; ?>frontend/js/router.js'></script>
 
 		<script src='<?php echo EFPIC_URL; ?>frontend/js/efpic-app.js'></script>
-		<script src='<?php echo EFPIC_URL; ?>frontend/js/efpic-ui-helpers.js'></script>
+		<script src='<?php echo esc_url( EFPIC_URL . 'frontend/js/efpic-ui-helpers.js?v=' . filemtime( EFPIC_PATH . 'frontend/js/efpic-ui-helpers.js' ) ); ?>'></script>
 
 		<script>
 

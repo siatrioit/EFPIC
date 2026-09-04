@@ -4220,3 +4220,32 @@ body.filter-unselected.stars-filter-1 .efpic-collection .efpic-gallery-item.star
   border-color: #575757;
 }
 /*# sourceMappingURL=efpic-light.css.map */
+/* Text filter (1.0.21) */
+.efpic-text-filter {
+  display: inline-flex;
+  align-items: center;
+  margin: 0 0.5rem 0 0;
+  vertical-align: middle;
+}
+.efpic-text-filter__input {
+  width: 10rem;
+  max-width: 28vw;
+  padding: 0.4rem 0.65rem;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  background: #fff;
+  color: #222;
+  font-size: 0.85rem;
+}
+.efpic-text-filter__input:focus {
+  outline: none;
+  border-color: #888;
+}
+.efpic-gallery-item.text-filter-hidden {
+  display: none !important;
+}
+@media (max-width: 600px) {
+  .efpic-text-filter__input {
+    width: 7.5rem;
+  }
+}

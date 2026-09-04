@@ -22,7 +22,9 @@
 			$description = get_post_meta( get_the_ID(), '_efpic_collection_description', true );
 			// Parse markdown
 			$Parsedown = new Parsedown();
-			//$Parsedown->setSafeMode( true );
+			if ( method_exists( $Parsedown, 'setSafeMode' ) ) {
+				$Parsedown->setSafeMode( true );
+			}
 			$description = $Parsedown->text( $description );
 			$description = strip_tags( $description, [ 'a', 'br', 'em', 'hr', 'li', 'p', 'strong', 'ul', 'ol' ] );
 			echo $description;

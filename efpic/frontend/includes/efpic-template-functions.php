@@ -513,7 +513,7 @@ function efpic_get_image_collection( $image_ids, $post = '' ) {
 		 */
 		$current_image = apply_filters( 'efpic_single_image_data', $current_image, $post );
 
-		$image_collection[] = array(
+		$image_item = array(
 			'number' => $current_image['number'],
 			'imageID' => $current_image['imageID'],
 			'title' => $current_image['title'],
@@ -528,8 +528,23 @@ function efpic_get_image_collection( $image_ids, $post = '' ) {
 			'orientation' => $current_image['orientation'],
 			'selected' => $current_image['selected'],
 			'markers' => $current_image['markers'],
-			'stars' => $current_image['stars']
+			'stars' => $current_image['stars'],
+			'searchText' => isset( $current_image['searchText'] ) ? $current_image['searchText'] : '',
+			'iptcTitle' => isset( $current_image['iptcTitle'] ) ? $current_image['iptcTitle'] : '',
+			'iptcDescription' => isset( $current_image['iptcDescription'] ) ? $current_image['iptcDescription'] : '',
+			'iptcKeywords' => isset( $current_image['iptcKeywords'] ) ? $current_image['iptcKeywords'] : '',
 		);
+
+		/**
+		 * Filter the final Backbone image item before it is JSON-encoded.
+		 *
+		 * @since 1.0.21
+		 *
+		 * @param array   $image_item     Image payload for the frontend.
+		 * @param array   $current_image  Data after efpic_single_image_data.
+		 * @param WP_Post $post           Collection post.
+		 */
+		$image_collection[] = apply_filters( 'efpic_image_collection_item', $image_item, $current_image, $post );
 
 		$imgnum++;
 	}
@@ -621,6 +636,9 @@ function efpic_get_collection_description_html( $post_id ) {
 	}
 
 	$parsedown = new \efpic\Vendor\Parsedown\Parsedown();
+	if ( method_exists( $parsedown, 'setSafeMode' ) ) {
+		$parsedown->setSafeMode( true );
+	}
 	$html      = $parsedown->text( $description );
 
 	return strip_tags( $html, array( 'a', 'br', 'em', 'hr', 'li', 'p', 'strong', 'ul', 'ol' ) );
@@ -661,6 +679,8 @@ function efpic_get_app_state() {
 		'error_msg_no_imgs' => __( '<h2>No images found</h2><p>It seems there are no images in this collection.</p>', 'efpic' ),
 		'error_msg_filter_selected' => __( 'You have not selected any images.', 'efpic' ),
 		'error_msg_filter_unselected' => __( 'You have no <em>unselected</em> images.', 'efpic' ),
+		'error_msg_text_filter_empty' => __( 'No images match your search.', 'efpic' ),
+		'reset_text_filter_msg' => __( 'Clear search', 'efpic' ),
 		'reset_filter_msg' => __( 'Reset filter to show all images', 'efpic' ),
 		'error_msg_stars_filter_empty' => __( 'No images with that many stars', 'efpic' ),
 		'button_ok' => __( 'OK', 'efpic' ),

@@ -476,7 +476,9 @@ function efpic_pro_file_name_comp_setting() {
 			'focal_length' => __( 'focal length', 'efpic-pro' ),
 			'iso' => __( 'iso', 'efpic-pro' ),
 			'shutter_speed' => __( 'shutter speed', 'efpic-pro' ),
-			'title' => __( 'title', 'efpic-pro' )
+			'title' => __( 'title', 'efpic-pro' ),
+			'keywords' => __( 'keywords', 'efpic-pro' ),
+			'description' => __( 'description', 'efpic-pro' ),
 		);
 	?>
 
@@ -491,6 +493,8 @@ function efpic_pro_file_name_comp_setting() {
 		<span id="iso" class="new"><?php echo $title_sources['iso']; ?></span>
 		<span id="shutter_speed" class="new"><?php echo $title_sources['shutter_speed']; ?></span>
 		<span id="title" class="new"><?php echo $title_sources['title']; ?></span>
+		<span id="keywords" class="new"><?php echo $title_sources['keywords']; ?></span>
+		<span id="description" class="new"><?php echo $title_sources['description']; ?></span>
 	</div>
 
 	<div class="efpic-image-title-composition js-efpic-image-title-composition">

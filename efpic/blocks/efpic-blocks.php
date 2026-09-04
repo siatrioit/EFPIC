@@ -440,7 +440,10 @@ function efpic_prepare_collections_list_html( $collections, $attributes = [] ) {
 	}
 
 	if ( empty( $collections ) ) {
-		return '<p>' . esc_html__( 'No collections found.', 'efpic' ) . '</p>';
+		$message = ! empty( $attributes['emptyMessage'] )
+			? $attributes['emptyMessage']
+			: __( 'No collections found.', 'efpic' );
+		return '<p class="efpic-collections-list__empty">' . esc_html( $message ) . '</p>';
 	}
 
 	// Get email for ident parameter

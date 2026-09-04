@@ -584,7 +584,9 @@ class Efpic_Emails {
 			// Parse markdown (if available). If autoload isn't present, gracefully fall back to plain text.
 			if ( class_exists( Parsedown::class ) ) {
 				$Parsedown = new Parsedown();
-				// $Parsedown->setSafeMode( true );
+				if ( method_exists( $Parsedown, 'setSafeMode' ) ) {
+					$Parsedown->setSafeMode( true );
+				}
 				$message = $Parsedown->text( $message );
 				$message = strip_tags( $message, [ 'a', 'br', 'em', 'hr', 'li', 'p', 'strong', 'ul', 'ol' ] );
 			} else {

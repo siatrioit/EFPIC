@@ -8,8 +8,16 @@
   "icon": "list-view",
   "description": "Display a list of collections",
   "example": {},
-  "supports": {
-    "html": false
+	"supports": {
+    "html": false,
+    "color": {
+      "background": true,
+      "text": true
+    },
+    "spacing": {
+      "margin": true,
+      "padding": true
+    }
   },
   "attributes": {
     "postStatus": {
@@ -31,6 +39,10 @@
     "order": {
       "type": "string",
       "default": "date_desc"
+    },
+    "emptyMessage": {
+      "type": "string",
+      "default": "No collections found."
     }
   },
   "textdomain": "efpic",

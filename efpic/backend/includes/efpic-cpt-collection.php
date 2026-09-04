@@ -214,7 +214,12 @@ function efpic_add_unique_post_slug( $data, $postarr ) {
 
 	// We only want our hashed slugs for post-type "collection"
 	if ( $data['post_type'] == 'efpic_collection' AND empty( $data['post_name'] ) AND $efpic_collection_do_random_slug === true ) {
-		$data['post_name'] = substr( md5( rand() ), 0, 5 );
+		try {
+			$slug = bin2hex( random_bytes( 5 ) ); // 10 hex chars
+		} catch ( Exception $e ) {
+			$slug = substr( md5( wp_generate_password( 32, true, true ) ), 0, 10 );
+		}
+		$data['post_name'] = apply_filters( 'efpic_generate_collection_slug', $slug );
 	}
 
 	return $data;
@@ -359,7 +364,7 @@ function efpic_column_collection_status( $column, $post_id ) {
 				$proof_file_type = '.' . $proof_file_type;
 			}
 			?>
-			<a class="button efpic-download-button" role="button" tabindex="0" href="<?php echo admin_url( 'post.php?post=' . $post_id . '&action=edit&efpic-download=efpic-proof-file' ); ?>"><span class="efpic-download-button__dl"><?php _e( 'Download', 'efpic' ); ?></span> <?php _e( 'Proof', 'efpic' ); ?> (.<?php echo $proof_file_type; ?>)</a>
+			<a class="button efpic-download-button" role="button" tabindex="0" href="<?php echo esc_url( efpic_security_proof_download_url( $post_id ) ); ?>"><span class="efpic-download-button__dl"><?php _e( 'Download', 'efpic' ); ?></span> <?php _e( 'Proof', 'efpic' ); ?> (.<?php echo $proof_file_type; ?>)</a>
 		<?php }
 	}
 

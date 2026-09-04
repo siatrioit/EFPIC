@@ -34,10 +34,25 @@ function efpic_bc_image_title( $current_image ) {
 				$title['number'] = $current_image['number'];
 			}
 			elseif ( 'filename' == $pattern ) {
-				$title['filename']= $file['filename'];
+				$title['filename']= function_exists( 'efpic_get_image_filename' )
+					? efpic_get_image_filename( $current_image['imageID'] )
+					: $file['filename'];
 			}
 			elseif ( 'file_extension' == $pattern ) {
 				$title['extenstion'] = $file['extension'];
+			}
+			elseif ( 'keywords' == $pattern || 'description' == $pattern ) {
+				$iptc = function_exists( 'efpic_get_attachment_iptc' )
+					? efpic_get_attachment_iptc( $current_image['imageID'] )
+					: array();
+				if ( 'keywords' === $pattern && ! empty( $iptc['keywords'] ) ) {
+					$title['keywords'] = $iptc['keywords'];
+				}
+				if ( 'description' === $pattern && ! empty( $iptc['description'] ) ) {
+					$title['description'] = $iptc['description'];
+				} elseif ( 'description' === $pattern && ! empty( $meta['image_meta']['caption'] ) ) {
+					$title['description'] = $meta['image_meta']['caption'];
+				}
 			}
 			elseif ( isset( $meta['image_meta'][$pattern] ) AND ! empty( $meta['image_meta'][$pattern] ) ) {
 				if ( 'shutter_speed' == $pattern ) {

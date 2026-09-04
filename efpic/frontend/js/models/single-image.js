@@ -16,6 +16,11 @@ efpic.singleImage = Backbone.Model.extend({
 		markers: [],
 		stars: 0,
 		lazyloaded: false,
+		searchText: '',
+		textFilterMatch: true,
+		iptcTitle: '',
+		iptcDescription: '',
+		iptcKeywords: '',
 	}
 
 });

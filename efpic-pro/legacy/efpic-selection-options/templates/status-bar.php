@@ -16,6 +16,10 @@ defined( 'EFPIC_PRO' ) OR exit;
 		echo apply_filters( 'efpic_frontend_after_info_button', $after_info_button );
 	?>
 	<div class="efpic-display-filter">
+		<div class="efpic-text-filter">
+			<label class="screen-reader-text" for="efpic-text-filter-input"><?php esc_html_e( 'Filter images by text', 'efpic-pro' ); ?></label>
+			<input type="search" id="efpic-text-filter-input" class="efpic-text-filter__input" placeholder="<?php esc_attr_e( 'Search images…', 'efpic-pro' ); ?>" autocomplete="off" />
+		</div>
 		<a class="efpic-filter-selected">
 			<span class="efpic-filter-icon"><svg viewBox="0 0 100 100"><use xlink:href="#icon_check"></use></svg></span>
 			<span class="efpic-filter-label"><?php _e( 'Selected', 'efpic-pro' ); ?></span>

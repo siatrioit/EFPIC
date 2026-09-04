@@ -273,6 +273,13 @@ function efpic_get_settings() {
 				'description' => '',
 				'default' => '',
 			],
+			'csv_export' => [
+				'type' => 'html',
+				'output' => 'efpic_settings_csv_export',
+				'label' => 'CSV Export',
+				'description' => '',
+				'default' => '',
+			],
 			'debug' => [
 				'type' => 'html',
 				'output' => 'efpic_settings_debug',

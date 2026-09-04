@@ -226,7 +226,14 @@ function efpic_sanitize_save() {
 		$save_data['stars'] = '';
 	}
 
-	return $save_data;
+	/**
+	 * Filter sanitized selection payload before it is stored.
+	 *
+	 * @since 1.0.21
+	 *
+	 * @param array $save_data Sanitized save data.
+	 */
+	return apply_filters( 'efpic_sanitize_save', $save_data );
 }
 
 

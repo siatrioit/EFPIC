@@ -1519,7 +1519,7 @@ function efpic_add_client_to_hashes( $collection_id, $name = '', $email = '', $a
 	}
 
 	// Add new client
-	$hash = substr( md5( rand() ), 0, 10 );
+	$hash = substr( hash( 'sha256', wp_generate_password( 64, true, true ) . microtime( true ) ), 0, 16 );
 	$collection_hashes[$hash] = [
 		'name' => $name,
 		'email' => sanitize_email( $email ),

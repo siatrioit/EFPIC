@@ -1002,7 +1002,7 @@ function efpic_display_approved_view( $post, $collapsible = false ) {
 							$proof_file_type = '.' . $proof_file_type;
 						}
 					?>
-					<a class="button <?php if ( efpic_get_selection_count( $post->ID ) <= 0 ) { echo ' disabled'; } ?>" role="button" tabindex="0" href="<?php if ( efpic_get_selection_count( $post->ID ) > 0 ) { echo admin_url( 'post.php?post=' . $post->ID . '&action=edit&efpic-download=efpic-proof-file' ); } else { echo '#'; } ?>"><?php /* translators: Button text */ _e( 'Download Proof', 'efpic' ); ?> (.<?php echo $proof_file_type; ?>)</a>
+					<a class="button <?php if ( efpic_get_selection_count( $post->ID ) <= 0 ) { echo ' disabled'; } ?>" role="button" tabindex="0" href="<?php if ( efpic_get_selection_count( $post->ID ) > 0 ) { echo esc_url( efpic_security_proof_download_url( $post->ID ) ); } else { echo '#'; } ?>"><?php /* translators: Button text */ _e( 'Download Proof', 'efpic' ); ?> (.<?php echo $proof_file_type; ?>)</a>
 				</div><!-- .efpic-copy -->
 			</div><!-- .efpic-toolbar -->
 
@@ -1386,7 +1386,7 @@ function efpic_update_collection_meta( $post_id ) {
 					];
 				}
 				else {
-					$collection_hashes[substr( md5( rand() ), 0, 10 )] = [
+					$collection_hashes[ substr( hash( 'sha256', wp_generate_password( 64, true, true ) . microtime( true ) ), 0, 16 ) ] = [
 						'name' => '',
 						'email' => $address,
 						'status' => 'sent',
@@ -1702,8 +1702,8 @@ function efpic_collection_add_recipient() {
 			return;
 		}
 
-		// Add new recipient to hahses
-		$hash = substr( md5( rand() ), 0, 10 );
+		// Add new recipient to hashes
+		$hash = substr( hash( 'sha256', wp_generate_password( 64, true, true ) . microtime( true ) ), 0, 16 );
 		$collection_hashes[$hash] = [
 			'name' => $name,
 			'email' => $email,
