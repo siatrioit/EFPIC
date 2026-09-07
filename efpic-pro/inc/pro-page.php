@@ -98,7 +98,7 @@ function efpic_pro_overview_features() {
 			'title' => __( 'Client access', 'efpic-pro' ),
 			'desc'  => __( 'Magic login link so clients can open their galleries by email.', 'efpic-pro' ),
 			'url'   => admin_url( 'post-new.php?post_type=page' ),
-			'link'  => __( 'Add Client Access block to a page', 'efpic-pro' ),
+			'link'  => __( 'Add Client Access page', 'efpic-pro' ),
 		),
 		array(
 			'title' => __( 'Comments & markers', 'efpic-pro' ),
