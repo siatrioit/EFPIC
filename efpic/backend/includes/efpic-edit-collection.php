@@ -504,6 +504,7 @@ add_action( 'edit_form_after_title', 'efpic_main_edit_screen' );
  * Render Collection Options block (draft and after-send edit screens).
  *
  * @since 1.0.40
+ * @since 1.0.43 Foldable after collection is sent.
  *
  * @param int $step Step number for the heading counter.
  * @return int Next step number.
@@ -520,11 +521,125 @@ function efpic_render_collection_options_block( $step = 2 ) {
 		$efpic_collection_options_output .= '<div class="efpic-option-set" id="' . esc_attr( $key ) . '">' . $option . '</div><!-- .efpic-option-set#' . esc_attr( $key ) . ' -->';
 	}
 
-	echo '<div class="efpic-collection-options"><h2><span class="stepcounter">' . (int) $step . '</span>' . esc_html__( 'Collection Options', 'efpic' ) . '</h2>';
+	$post_id  = get_the_ID();
+	$status   = $post_id ? get_post_status( $post_id ) : '';
+	$foldable = in_array( $status, array( 'sent', 'approved', 'expired' ), true );
+	$classes  = 'efpic-collection-options';
+	if ( $foldable ) {
+		$classes .= ' efpic-foldable-section is-folded';
+		efpic_foldable_sections_enqueue_script();
+	}
+
+	echo '<div class="' . esc_attr( $classes ) . '"' . ( $foldable ? ' data-efpic-fold="options" data-efpic-fold-post="' . (int) $post_id . '"' : '' ) . '>';
+	echo '<h2' . ( $foldable ? ' class="efpic-foldable-section__toggle" role="button" tabindex="0" aria-expanded="false"' : '' ) . '>';
+	echo '<span class="stepcounter">' . (int) $step . '</span>';
+	echo '<span class="efpic-foldable-section__title">' . esc_html__( 'Collection Options', 'efpic' ) . '</span>';
+	if ( $foldable ) {
+		echo '<span class="efpic-foldable-section__hint" data-efpic-fold-hint>' . esc_html__( 'Expand', 'efpic' ) . '</span>';
+	}
+	echo '</h2>';
+	echo '<div' . ( $foldable ? ' class="efpic-foldable-section__body"' : '' ) . '>';
 	echo '<input type="hidden" name="efpic_collection_options_form" value="1" />';
-	echo $efpic_collection_options_output . '</div><!-- .efpic-collection-options -->';
+	echo $efpic_collection_options_output;
+	echo '</div><!-- .efpic-foldable-section__body -->';
+	echo '</div><!-- .efpic-collection-options -->';
 
 	return (int) $step + 1;
+}
+
+/**
+ * Enqueue foldable section script once (admin footer).
+ *
+ * @since 1.0.43
+ */
+function efpic_foldable_sections_enqueue_script() {
+	static $hooked = false;
+	if ( $hooked ) {
+		return;
+	}
+	$hooked = true;
+	add_action( 'admin_footer', 'efpic_foldable_sections_script', 55 );
+}
+
+/**
+ * Print foldable section toggle script.
+ *
+ * @since 1.0.43
+ */
+function efpic_foldable_sections_script() {
+	static $printed = false;
+	if ( $printed ) {
+		return;
+	}
+	$printed = true;
+	$expand   = esc_js( __( 'Expand', 'efpic' ) );
+	$collapse = esc_js( __( 'Collapse', 'efpic' ) );
+	?>
+	<script>
+	(function () {
+		var labelExpand = '<?php echo $expand; ?>';
+		var labelCollapse = '<?php echo $collapse; ?>';
+
+		function storageKey(section) {
+			var post = section.getAttribute('data-efpic-fold-post') || '0';
+			var name = section.getAttribute('data-efpic-fold') || 'section';
+			return 'efpic_fold_' + post + '_' + name;
+		}
+
+		function setFolded(section, folded) {
+			section.classList.toggle('is-folded', folded);
+			var toggle = section.querySelector('.efpic-foldable-section__toggle');
+			var hint = section.querySelector('[data-efpic-fold-hint]');
+			if (toggle) {
+				toggle.setAttribute('aria-expanded', folded ? 'false' : 'true');
+			}
+			if (hint) {
+				hint.textContent = folded ? labelExpand : labelCollapse;
+			}
+			try {
+				localStorage.setItem(storageKey(section), folded ? 'closed' : 'open');
+			} catch (e) { /* ignore */ }
+		}
+
+		function bindSection(section) {
+			var toggle = section.querySelector('.efpic-foldable-section__toggle');
+			if (!toggle || toggle.getAttribute('data-efpic-fold-bound')) {
+				return;
+			}
+			toggle.setAttribute('data-efpic-fold-bound', '1');
+
+			var stored = null;
+			try {
+				stored = localStorage.getItem(storageKey(section));
+			} catch (e) { /* ignore */ }
+			if (stored === 'open') {
+				setFolded(section, false);
+			} else {
+				setFolded(section, true);
+			}
+
+			function onToggle(e) {
+				if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') {
+					return;
+				}
+				e.preventDefault();
+				setFolded(section, !section.classList.contains('is-folded'));
+			}
+			toggle.addEventListener('click', onToggle);
+			toggle.addEventListener('keydown', onToggle);
+		}
+
+		function init() {
+			document.querySelectorAll('.efpic-foldable-section[data-efpic-fold]').forEach(bindSection);
+		}
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', init);
+		} else {
+			init();
+		}
+	})();
+	</script>
+	<?php
 }
 
 /**
@@ -656,15 +771,28 @@ function efpic_display_draft_view( $post ) {
 		$gallery_class .= ' is-collapsible js-collapsed';
 	}
 
+	$foldable = in_array( $post->post_status, array( 'sent', 'approved', 'expired' ), true );
+	if ( $foldable ) {
+		$gallery_class .= ' efpic-foldable-section is-folded';
+		efpic_foldable_sections_enqueue_script();
+	}
+
 	ob_start();
 ?>
-	<div class="postbox efpic-postbox <?php echo $gallery_class; ?>">
+	<div class="postbox efpic-postbox <?php echo esc_attr( $gallery_class ); ?>"<?php echo $foldable ? ' data-efpic-fold="images" data-efpic-fold-post="' . (int) $post->ID . '"' : ''; ?>>
 		<div class="efpic-postbox-inner">
 			<?php
 				$efpic_section_header_1 = __( 'Upload Images', 'efpic' );
 				$efpic_section_header_1 = apply_filters( 'efpic_section_header_1', $efpic_section_header_1 );
 			?>
-			<h2><span class="stepcounter">1</span> <?php echo $efpic_section_header_1; ?></h2>
+			<h2<?php echo $foldable ? ' class="efpic-foldable-section__toggle" role="button" tabindex="0" aria-expanded="false"' : ''; ?>>
+				<span class="stepcounter">1</span>
+				<span class="efpic-foldable-section__title"><?php echo esc_html( $efpic_section_header_1 ); ?></span>
+				<?php if ( $foldable ) : ?>
+					<span class="efpic-foldable-section__hint" data-efpic-fold-hint><?php esc_html_e( 'Expand', 'efpic' ); ?></span>
+				<?php endif; ?>
+			</h2>
+			<div<?php echo $foldable ? ' class="efpic-foldable-section__body"' : ''; ?>>
 			<?php
 				$sort_mode = efpic_get_image_sort_mode( $post->ID );
 				$sort_modes = efpic_get_image_sort_modes();
@@ -725,6 +853,7 @@ function efpic_display_draft_view( $post ) {
 				<p><a class="button efpic-upload-image-button" href="#"><?php _e( 'Upload / Edit Images', 'efpic' ); ?></a></p>
 				<p class="efpic-max-file-size"><?php echo __( 'Maximum upload size', 'efpic' ) . ': ' . size_format( wp_max_upload_size() ); ?> <a class="efpic-help" href="https://efpic.io/docs/faq#maximum-upload-size" target="_blank"><?php _e( 'Help', 'efpic' ); ?></a></p>
 			</div><!-- .efpic-gallery-uploader -->
+			</div><!-- .efpic-foldable-section__body -->
 		</div><!-- .efpic-postbox-inner -->
 	</div><!-- .postbox.efpic-postbox -->
 <?php

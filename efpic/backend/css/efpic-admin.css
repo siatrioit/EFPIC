@@ -1349,6 +1349,46 @@ label[for=efpic-copy-filenames], #efpic-copy-filenames {
   clear: both;
   display: block;
 }
+.efpic-foldable-section > .efpic-foldable-section__toggle,
+.post-type-efpic_collection #poststuff #post-body-content .efpic-foldable-section > h2.efpic-foldable-section__toggle,
+.post-type-efpic_collection #poststuff #post-body-content .efpic-postbox .efpic-foldable-section__toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+.efpic-foldable-section > .efpic-foldable-section__toggle:after,
+.post-type-efpic_collection #poststuff #post-body-content .efpic-foldable-section > h2.efpic-foldable-section__toggle:after {
+  display: none;
+}
+.efpic-foldable-section .efpic-foldable-section__toggle .stepcounter {
+  float: none;
+}
+.efpic-foldable-section__title {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+.efpic-foldable-section__hint {
+  flex: 0 0 auto;
+  margin-left: auto;
+  padding: 2px 10px;
+  border-radius: 999px;
+  background: #eef2f6;
+  color: #50575e;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  line-height: 1.6;
+}
+.efpic-foldable-section.is-folded .efpic-foldable-section__body {
+  display: none;
+}
+.efpic-foldable-section:not(.is-folded) .efpic-foldable-section__hint {
+  background: #f0f6fc;
+  color: #1d2327;
+}
 .efpic-collection-options * {
   box-sizing: inherit;
 }

@@ -45,6 +45,8 @@ function efpic_get_latvian_translations() {
 		'Selected' => 'Atlasītas',
 		'Unselected' => 'Pārējās',
 		'Reset filters' => 'Atiestatīt',
+		'Expand' => 'Izvērst',
+		'Collapse' => 'Sakļaut',
 		'Send<span> selection</span>…' => 'Nosūtīt<span> atlasi</span>…',
 		'saved' => 'saglabāts',
 		'Grid Size' => 'Izmērs',
