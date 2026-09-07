@@ -4249,3 +4249,90 @@ body.filter-unselected.stars-filter-1 .efpic-collection .efpic-gallery-item.star
     width: 7.5rem;
   }
 }
+
+/* LV text / status bar overflow fixes (1.0.24) */
+.efpic-status-bar {
+  height: auto;
+  min-height: 70px;
+  padding: 0.55rem 0.75rem;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 0.9fr) minmax(0, 1.2fr) minmax(0, 1.5fr) !important;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  box-sizing: border-box;
+}
+@media only screen and (min-width: 700px) {
+  .efpic-status-bar {
+    grid-template-columns: minmax(0, 1.6fr) minmax(0, 0.8fr) minmax(0, 1fr) minmax(0, 1.4fr) minmax(0, 1.6fr) !important;
+  }
+}
+.efpic-display-filter {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.4rem;
+  min-width: 0;
+  max-width: 100%;
+}
+.efpic-display-filter:before {
+  display: none;
+}
+.efpic-text-filter {
+  margin: 0;
+  flex: 1 1 5.5rem;
+  min-width: 0;
+  max-width: 9rem;
+}
+.efpic-text-filter__input {
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.efpic-filter-selected,
+.efpic-filter-unselected {
+  white-space: nowrap;
+}
+.efpic-filter-selected .efpic-filter-label,
+.efpic-filter-unselected .efpic-filter-label {
+  font-size: 8px;
+  letter-spacing: 0.2px;
+}
+@media only screen and (max-width: 640px) {
+  .efpic-filter-selected .efpic-filter-label,
+  .efpic-filter-unselected .efpic-filter-label {
+    display: none !important;
+  }
+  .efpic-text-filter {
+    max-width: 6.5rem;
+  }
+}
+.efpic-selection-count {
+  min-width: 0;
+}
+.efpic-collection-actions {
+  min-width: 0;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.35rem;
+}
+.efpic-pre-send {
+  margin-left: 0;
+  padding: 0.65rem 0.85em 0.55rem;
+  font-size: 0.85rem;
+  white-space: nowrap;
+  max-width: 100%;
+}
+@media only screen and (max-width: 480px) {
+  .efpic-pre-send {
+    padding: 0.55rem 0.7em 0.45rem;
+    font-size: 0.78rem;
+  }
+  .efpic-pre-send span {
+    display: none;
+  }
+}
+.efpic-save {
+  white-space: nowrap;
+}
+.efpic-filter-reset span {
+  font-size: 9px;
+}

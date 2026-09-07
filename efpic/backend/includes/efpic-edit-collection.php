@@ -647,14 +647,11 @@ function efpic_display_draft_view( $post ) {
 				<label class="efpic-sort-options__label" for="efpic-image-sort-mode">
 					<?php esc_html_e( 'Image order', 'efpic' ); ?>
 				</label>
-				<select class="efpic-sort-options__select" name="efpic_image_sort_mode" id="efpic-image-sort-mode">
+				<select class="efpic-sort-options__select" name="efpic_image_sort_mode" id="efpic-image-sort-mode" title="<?php echo esc_attr__( 'Filename order uses the original file name (natural sort, e.g. 2 before 10). Manual keeps drag & drop order.', 'efpic' ); ?>">
 					<?php foreach ( $sort_modes as $value => $label ) : ?>
 						<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $sort_mode, $value ); ?>><?php echo esc_html( $label ); ?></option>
 					<?php endforeach; ?>
 				</select>
-				<p class="description efpic-sort-options__hint">
-					<?php esc_html_e( 'Filename order uses the original file name (natural sort, e.g. 2 before 10). Manual keeps drag & drop order.', 'efpic' ); ?>
-				</p>
 			</div>
 			<div class="efpic-gallery-thumbnails">
 			<?php
