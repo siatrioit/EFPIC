@@ -2068,11 +2068,10 @@ function efpic_country_select( $selected = '', $args = [] ) {
 
 
 /**
- * Render a single On/Off toggle button (click switches state).
- *
- * Feature enable/disable must use this button style — never a checkbox.
+ * Render a single On/Off toggle switch (pill slider — never a checkbox).
  *
  * @since 1.0.32
+ * @since 1.0.33 Visual pill switch (knob slides left/right).
  *
  * @param string $name  Hidden input name.
  * @param string $value Current value: on|off.
@@ -2083,19 +2082,17 @@ function efpic_feature_on_off_toggle( $name, $value, $id = '' ) {
 	$value = ( 'off' === $value ) ? 'off' : 'on';
 	$id    = '' !== $id ? $id : $name;
 	$is_on = ( 'on' === $value );
-	$label = $is_on ? __( 'On', 'efpic' ) : __( 'Off', 'efpic' );
 
 	ob_start();
 	?>
-	<p class="efpic-feature-toggle"
-		data-efpic-toggle
-		data-label-on="<?php echo esc_attr__( 'On', 'efpic' ); ?>"
-		data-label-off="<?php echo esc_attr__( 'Off', 'efpic' ); ?>">
+	<p class="efpic-feature-toggle<?php echo $is_on ? ' is-on' : ' is-off'; ?>" data-efpic-toggle>
 		<button type="button"
-			class="button<?php echo $is_on ? ' button-primary' : ''; ?>"
+			class="efpic-feature-toggle__switch"
 			data-efpic-toggle-btn
-			aria-pressed="<?php echo $is_on ? 'true' : 'false'; ?>">
-			<span data-efpic-toggle-label><?php echo esc_html( $label ); ?></span>
+			role="switch"
+			aria-checked="<?php echo $is_on ? 'true' : 'false'; ?>"
+			aria-label="<?php echo esc_attr( $is_on ? __( 'On', 'efpic' ) : __( 'Off', 'efpic' ) ); ?>">
+			<span class="efpic-feature-toggle__knob" aria-hidden="true"></span>
 		</button>
 		<input type="hidden"
 			name="<?php echo esc_attr( $name ); ?>"
@@ -2119,9 +2116,13 @@ function efpic_feature_on_off_toggle_script() {
 		return;
 	}
 	$printed = true;
+	$label_on  = esc_js( __( 'On', 'efpic' ) );
+	$label_off = esc_js( __( 'Off', 'efpic' ) );
 	?>
 	<script>
 	(function () {
+		var labelOn = '<?php echo $label_on; ?>';
+		var labelOff = '<?php echo $label_off; ?>';
 		function bindToggles() {
 			document.querySelectorAll('[data-efpic-toggle]').forEach(function (wrap) {
 				if (wrap.getAttribute('data-efpic-toggle-bound')) {
@@ -2130,7 +2131,6 @@ function efpic_feature_on_off_toggle_script() {
 				wrap.setAttribute('data-efpic-toggle-bound', '1');
 				var btn = wrap.querySelector('[data-efpic-toggle-btn]');
 				var input = wrap.querySelector('[data-efpic-toggle-input]');
-				var label = wrap.querySelector('[data-efpic-toggle-label]');
 				if (!btn || !input) {
 					return;
 				}
@@ -2139,13 +2139,10 @@ function efpic_feature_on_off_toggle_script() {
 					var next = input.value === 'on' ? 'off' : 'on';
 					var isOn = next === 'on';
 					input.value = next;
-					btn.classList.toggle('button-primary', isOn);
-					btn.setAttribute('aria-pressed', isOn ? 'true' : 'false');
-					if (label) {
-						label.textContent = isOn
-							? (wrap.getAttribute('data-label-on') || 'On')
-							: (wrap.getAttribute('data-label-off') || 'Off');
-					}
+					wrap.classList.toggle('is-on', isOn);
+					wrap.classList.toggle('is-off', !isOn);
+					btn.setAttribute('aria-checked', isOn ? 'true' : 'false');
+					btn.setAttribute('aria-label', isOn ? labelOn : labelOff);
 				});
 			});
 		}
