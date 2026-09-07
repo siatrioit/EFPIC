@@ -584,18 +584,21 @@ select.efpic-sort-options__select {
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
+  gap: 10px;
   padding: 10px 20px;
   background-color: #f5f5f5;
   border-bottom: 1px solid #eee;
   line-height: 1;
 }
-.efpic-theft-protection-watermark-toggle input[type=checkbox] {
-  margin: 0 5px 0 0;
+.efpic-theft-protection-watermark-toggle .efpic-feature-toggle {
+  margin: 0;
+  flex: 0 0 auto;
 }
-.efpic-theft-protection-watermark-toggle label {
-  margin: 0 10px 0 0;
+.efpic-theft-protection-watermark-toggle .efpic-option-toggle-row__label {
+  margin: 0;
+  font-weight: 600;
 }
-.efpic-theft-protection-watermark-toggle.is-disabled label {
+.efpic-theft-protection-watermark-toggle.is-disabled .efpic-option-toggle-row__label {
   opacity: 0.5;
 }
 
@@ -2675,11 +2678,19 @@ input[type=radio].efpic-radio-tab-input {
   }
 }
 .efpic-post-options #collection_expires {
-  float: left;
-  margin: 1px 6px 10px 0;
+  float: none;
+  margin: 0;
 }
-.efpic-post-options label[for=collection_expires] {
-  color: #2271b1;
+.efpic-post-options .efpic-expiration-option .efpic-option-toggle-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+}
+.efpic-post-options .efpic-expiration-option .efpic-option-toggle-row__label {
+  color: #1d2327;
+  font-weight: 600;
 }
 .efpic-post-options .expiration-date__wrap {
   display: none;
@@ -2688,7 +2699,9 @@ input[type=radio].efpic-radio-tab-input {
   display: block;
   margin-bottom: 0px;
 }
-.efpic-post-options #collection_expires:checked ~ .expiration-date__wrap {
+.efpic-post-options .efpic-feature-toggle.is-on ~ .expiration-date__wrap,
+.efpic-post-options .efpic-expiration-option .efpic-feature-toggle.is-on ~ .expiration-date__wrap,
+.efpic-post-options .efpic-expiration-option:has(.efpic-feature-toggle.is-on) .expiration-date__wrap {
   display: block;
   margin: 10px -12px -8px -12px;
   padding: 0px 12px 14px 12px;
@@ -4045,12 +4058,48 @@ input[type=radio].efpic-radio-tab-input {
       -ms-flex-direction: row;
           flex-direction: row;
 }
+.efpic-settings__item.efpic-settings__item--toggle {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: flex-start;
+  gap: 12px;
+}
+.efpic-settings__item.efpic-settings__item--toggle .efpic-feature-toggle {
+  margin: 2px 0 0;
+  flex: 0 0 auto;
+}
+.efpic-settings__toggle-label {
+  flex: 1 1 auto;
+  min-width: 0;
+  line-height: 1.4;
+}
+.efpic-settings__toggle-label__title {
+  font-weight: 600;
+}
 .efpic-settings__item:last-of-type {
   border-bottom: none;
 }
-.efpic-settings__item input[type=checkbox] {
-  width: 25px;
-  height: 25px;
+.efpic-feature-toggle.is-disabled {
+  opacity: 0.45;
+  pointer-events: none;
+}
+.efpic-feature-toggle.is-disabled .efpic-feature-toggle__switch {
+  cursor: not-allowed;
+}
+.recipient__send-email-wrap.efpic-option-toggle-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-top: 10px;
+}
+.recipient__send-email-wrap .efpic-option-toggle-row__label {
+  font-weight: 500;
+  line-height: 1.35;
+}
+.efpic-post-options .efpic-option-item.efpic-expiration-option,
+.efpic-post-options .efpic-option-item.efpic-option-toggle-row {
+  display: block;
 }
 @media only screen and (min-width: 782px) {
   .efpic-settings__item input[type=checkbox] {

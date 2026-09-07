@@ -776,8 +776,14 @@ function efpic_pro_watermark_setting() {
 
 		<div class="efpic-watermark-size-scaling-wrap js-efpic-watermark-size-scaling-wrap <?php if ( $has_watermark ) { echo ' has-watermark'; } ?>">
 
-			<p class="efpic-settings__item efpic-watermark_by_default_wrap">
-				<input type="checkbox" id="watermark_by_default" name="efpic_watermark[watermark_by_default]" <?php checked( $watermark['watermark_by_default'], 'on' ); ?>/> <label for="watermark_by_default" class="after"><?php _e( 'Apply watermark by default', 'efpic-pro' ); ?><br /><span class="description"><?php _e( 'You may change this for each collection before uploading images.' ); ?></span></label>
+			<p class="efpic-settings__item efpic-settings__item--toggle efpic-watermark_by_default_wrap">
+				<?php
+				$wm_default = ( ! empty( $watermark['watermark_by_default'] ) && 'on' === $watermark['watermark_by_default'] ) ? 'on' : 'off';
+				if ( function_exists( 'efpic_feature_on_off_toggle' ) ) {
+					echo efpic_feature_on_off_toggle( 'efpic_watermark[watermark_by_default]', $wm_default, 'watermark_by_default' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+				}
+				?>
+				<span class="efpic-settings__toggle-label"><span class="efpic-settings__toggle-label__title"><?php esc_html_e( 'Apply watermark by default', 'efpic-pro' ); ?></span><br /><span class="description"><?php esc_html_e( 'You may change this for each collection before uploading images.', 'efpic-pro' ); ?></span></span>
 			</p>
 
 			<div class="efpic-watermark-position-wrap js-watermark-wrap<?php if ( $watermark['watermark_sizing'] == 'fill' ) { echo ' watermark-fill'; } ?>">

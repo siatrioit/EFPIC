@@ -20,9 +20,15 @@ defined( 'EFPIC_PRO' ) OR exit;
 function efpic_pro_expiration_option( $output, $expiration, $days ) {
 	ob_start();
 	?>
-	<div class="efpic-option-item">
-		<input type="checkbox" name="collection_expires" id="collection_expires" <?php if ( isset ( $expiration ) ) checked( $expiration, 'on' ); ?> />
-		<label for="collection_expires"><?php _e( 'Collection expires', 'efpic-pro' ); ?></label>
+	<div class="efpic-option-item efpic-expiration-option">
+		<div class="efpic-option-toggle-row">
+			<?php
+			if ( function_exists( 'efpic_feature_on_off_toggle' ) ) {
+				echo efpic_feature_on_off_toggle( 'collection_expires', ( isset( $expiration ) && 'on' === $expiration ) ? 'on' : 'off', 'collection_expires' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+			}
+			?>
+			<span class="efpic-option-toggle-row__label"><?php esc_html_e( 'Collection expires', 'efpic-pro' ); ?></span>
+		</div>
 		<?php
 			$min = current_time( 'Y-m-d' ) . 'T' . current_time( 'H:i' );
 			$expiration_time = get_post_meta( get_the_ID(), '_efpic_collection_expiration_time', true );
@@ -34,8 +40,8 @@ function efpic_pro_expiration_option( $output, $expiration, $days ) {
 			}
 		?>
 		<div class="expiration-date__wrap">
-			<label for="expiration_date"><?php _e( 'Expiration date:', 'efpic-pro' ); ?></label>
-			<input type="datetime-local" id="expiration_date" name="expiration_date" value="<?php echo $expiration_time; ?>" min="<?php echo $min; ?>" autocomplete="off" />
+			<label for="expiration_date"><?php esc_html_e( 'Expiration date:', 'efpic-pro' ); ?></label>
+			<input type="datetime-local" id="expiration_date" name="expiration_date" value="<?php echo esc_attr( $expiration_time ); ?>" min="<?php echo esc_attr( $min ); ?>" autocomplete="off" />
 		</div>
 	</div>
 	<?php
@@ -56,7 +62,7 @@ add_filter( 'efpic_expiration_option', 'efpic_pro_expiration_option', 10, 3 );
  */
 function efpic_pro_save_expiration_option( $collection_id ) {
 	// The general "on/off" state of expiration will be saved by efpic Core
-	if ( ! empty( $_POST['expiration_date'] ) AND ! empty( $_POST['collection_expires'] ) AND $_POST['collection_expires'] == 'on' ) {
+	if ( ! empty( $_POST['expiration_date'] ) && isset( $_POST['collection_expires'] ) && 'on' === $_POST['collection_expires'] ) {
 		// Get timestamp
 		$expiration_date = strtotime( $_POST['expiration_date'] );
 		// Correct timestamp with blog's timezone setting

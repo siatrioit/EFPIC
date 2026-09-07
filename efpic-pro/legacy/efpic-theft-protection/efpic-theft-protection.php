@@ -35,31 +35,53 @@ function efpic_theft_protection_watermark_notice( $efpic_before_upload ) {
 	// Check if watermark is set
 	if ( ! empty( $watermark['watermark'] ) ) {
 
-		$watermark_by_default = '';
+		$watermark_on = false;
 
 		if ( isset( $watermark['watermark_by_default'] ) AND $watermark['watermark_by_default'] == 'on' ) {
-			$watermark_by_default = ' checked="checked"';
+			$watermark_on = true;
 		}
 
 		// Check collection setting
 		$apply_watermark = get_post_meta( get_the_ID(), '_efpic_apply_watermark', true );
 		if ( isset( $apply_watermark ) AND $apply_watermark == 'on' ) {
-			$watermark_by_default = ' checked="checked"';
+			$watermark_on = true;
 		}
 		elseif ( $apply_watermark == 'off' ) {
-			$watermark_by_default = '';
+			$watermark_on = false;
 		}
 
 		ob_start();
 ?>
-	<div class="efpic-theft-protection-watermark-toggle">
-		<input type="checkbox" id="efpic-apply-watermark" name="efpic_apply_watermark"<?php echo $watermark_by_default; ?> />
-		<label for="efpic-apply-watermark"><?php _e( 'Apply watermark to new images', 'efpic-pro' ); ?></label>
+	<div class="efpic-theft-protection-watermark-toggle efpic-option-toggle-row">
+		<?php
+		if ( function_exists( 'efpic_feature_on_off_toggle' ) ) {
+			echo efpic_feature_on_off_toggle( 'efpic_apply_watermark', $watermark_on ? 'on' : 'off', 'efpic-apply-watermark' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
+		?>
+		<span class="efpic-option-toggle-row__label"><?php esc_html_e( 'Apply watermark to new images', 'efpic-pro' ); ?></span>
 		<span class="efpic-watermark-saving-indicator">
-			<span class="efpic-watermark-saving"><?php _e( 'Saving', 'efpic-pro' ); ?></span>
-			<span class="efpic-watermark-saved"><?php _e( 'Saved', 'efpic-pro' ); ?></span>
+			<span class="efpic-watermark-saving"><?php esc_html_e( 'Saving', 'efpic-pro' ); ?></span>
+			<span class="efpic-watermark-saved"><?php esc_html_e( 'Saved', 'efpic-pro' ); ?></span>
 		</span>
 	</div>
+	<script>
+	(function ($) {
+		$(function () {
+			$(document).on('change', '#efpic-apply-watermark', function () {
+				$('.efpic-watermark-saving-indicator').removeClass('is-saved').addClass('is-saving');
+				var state = $(this).val() === 'on' ? 'on' : 'off';
+				$.post(efpic_admin.ajaxurl, {
+					action: 'efpic_save_watermark_state',
+					security: efpic_admin.ajax_nonce,
+					post_id: $('#post_ID').val(),
+					efpic_apply_watermark: state
+				}).done(function () {
+					$('.efpic-watermark-saving-indicator').removeClass('is-saving').addClass('is-saved');
+				});
+			});
+		});
+	})(jQuery);
+	</script>
 
 <?php
 		return ob_get_clean() . $efpic_before_upload;

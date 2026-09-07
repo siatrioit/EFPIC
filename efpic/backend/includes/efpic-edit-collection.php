@@ -1096,14 +1096,38 @@ function efpic_display_approved_view( $post, $collapsible = false ) {
 							</span>
 							<button class="button button-primary"><?php /* translators: Button text */ _e( 'Add Client', 'efpic' ); ?></button> <button class="button js-efpic-cancel-new-recipient"><?php /* translators: Button text */ _e( 'Cancel', 'efpic' ); ?></button>
 							<?php
-								// Check checkbox by default?
-								$checked = false;
+								// Default On when original share method was email.
+								$send_email_on = false;
 								$share_method = get_post_meta( $post->ID, '_efpic_collection_share_method', true );
 								if ( $share_method == 'efpic-send-email' ) {
-									$checked = true;
+									$send_email_on = true;
 								}
 							?>
-							<p class="recipient__send-email-wrap"><input type="checkbox" id="efpic-new-recipient-send-email" name="efpic-new-recipient-send-email" disabled <?php checked( $checked, true ); ?> /> <label for="efpic-new-recipient-send-email"><?php _e( 'Send original message and collection link to this email address.', 'efpic' ); ?></label></p>
+							<p class="recipient__send-email-wrap efpic-option-toggle-row">
+								<?php
+								if ( function_exists( 'efpic_feature_on_off_toggle' ) ) {
+									echo efpic_feature_on_off_toggle( 'efpic-new-recipient-send-email', $send_email_on ? 'on' : 'off', 'efpic-new-recipient-send-email', array( 'disabled' => true ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+								}
+								?>
+								<span class="efpic-option-toggle-row__label"><?php esc_html_e( 'Send original message and collection link to this email address.', 'efpic' ); ?></span>
+							</p>
+							<script>
+							(function () {
+								var email = document.querySelector('#efpic-new-recipient-email');
+								var input = document.querySelector('#efpic-new-recipient-send-email');
+								if (!email || !input) { return; }
+								var wrap = input.closest('[data-efpic-toggle]');
+								var btn = wrap ? wrap.querySelector('[data-efpic-toggle-btn]') : null;
+								function syncDisabled() {
+									var enable = email.value !== '';
+									input.disabled = !enable;
+									if (btn) { btn.disabled = !enable; }
+									if (wrap) { wrap.classList.toggle('is-disabled', !enable); }
+								}
+								email.addEventListener('input', syncDisabled);
+								syncDisabled();
+							})();
+							</script>
 						</div><!-- .recipient__inner -->
 					</div>
 				</div><!-- .recipients-wrap -->
@@ -2379,11 +2403,13 @@ function efpic_collection_expiration_option( $post ) {
 
 	ob_start();
 	?>
-	<div class="efpic-option-item">
-		<label for="collection_expires">
-			<input type="checkbox" name="collection_expires" id="collection_expires" <?php if ( isset ( $expiration ) ) checked( $expiration, 'on' ); ?> />
-			<?php echo sprintf( _n( 'Expire after %d day', 'Expire after %d days', $days, 'efpic' ), $days ); ?>
-		</label>
+	<div class="efpic-option-item efpic-option-toggle-row efpic-expiration-option">
+		<?php
+		if ( function_exists( 'efpic_feature_on_off_toggle' ) ) {
+			echo efpic_feature_on_off_toggle( 'collection_expires', isset( $expiration ) && 'on' === $expiration ? 'on' : 'off', 'collection_expires' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
+		?>
+		<span class="efpic-option-toggle-row__label"><?php echo esc_html( sprintf( _n( 'Expire after %d day', 'Expire after %d days', $days, 'efpic' ), $days ) ); ?></span>
 	</div>
 	<?php
 	echo apply_filters( 'efpic_expiration_option', ob_get_clean(), $expiration, $days );
@@ -2398,13 +2424,15 @@ function efpic_collection_expiration_option( $post ) {
  * @param int $collection_id The collection post ID
  */
 function efpic_save_expiration_option( $collection_id ) {
-	if ( ! empty( $_POST['collection_expires'] ) AND $_POST['collection_expires'] == 'on' ) {
+	$expires_on = isset( $_POST['collection_expires'] ) && 'on' === $_POST['collection_expires'];
+
+	if ( $expires_on ) {
 		update_post_meta( $collection_id, '_efpic_collection_expiration', 'on' );
 		// Caclulate and save the expiration date
 		$expiration_date = efpic_calculate_expiration_time();
 		update_post_meta( $collection_id, '_efpic_collection_expiration_time', $expiration_date );
 	}
-	if ( get_post_status( $collection_id ) == 'draft' && empty( $_POST['collection_expires'] ) && ! isset( $_GET['reopen'] ) ) {
+	if ( get_post_status( $collection_id ) == 'draft' && ! $expires_on && ! isset( $_GET['reopen'] ) ) {
 		update_post_meta( $collection_id, '_efpic_collection_expiration', 'off' );
 		// Delete expiration date
 		delete_post_meta( $collection_id, '_efpic_collection_expiration_time' );

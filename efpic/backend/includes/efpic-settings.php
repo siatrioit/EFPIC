@@ -365,34 +365,37 @@ add_action( 'init', 'efpic_register_settings' );
 
 
 /**
- * Render checkbox settings field.
+ * Render On/Off toggle settings field (never a checkbox).
  *
  * @since 2.0.0
+ * @since 1.0.44 Uses efpic_feature_on_off_toggle.
  *
  * @param string $name The field name
  * @param array $setting The settings array
  * @param string $value The value currently stored in the db for this field
- * @return string HTML output for checkbox settings field
+ * @return string HTML output for toggle settings field
  */
 function efpic_checkbox_field( $name, $setting, $value ) {
+	$value = ( 'on' === $value ) ? 'on' : 'off';
 	ob_start();
 	echo '<fieldset class="efpic_settings__settings-item';
 	if ( isset( $setting['new'] ) && $setting['new'] === true ) {
-		echo ' efpic_settings__settings-item__new" data-new="' . __( 'new', 'efpic' );
+		echo ' efpic_settings__settings-item__new" data-new="' . esc_attr__( 'new', 'efpic' );
 	}
 	echo '" id="efpic_setting--' . sanitize_key( $name ) . '">';
 	if ( ! empty( $setting['title'] ) ) {
 		echo '<h2>' . $setting['title'] . '</h2>';
 	}
-	$disabled = false;
-	if ( ! empty( $setting['disabled'] ) && $setting['disabled'] === true ) {
-		$disabled = true;
+	$disabled = ! empty( $setting['disabled'] ) && true === $setting['disabled'];
+	echo '<div class="efpic-settings__item efpic-settings__item--toggle">';
+	if ( function_exists( 'efpic_feature_on_off_toggle' ) ) {
+		echo efpic_feature_on_off_toggle( 'efpic_' . $name, $value, 'efpic_' . $name, array( 'disabled' => $disabled ) ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
-	echo '<p class="efpic-settings__item"><input type="checkbox" id="efpic_' . $name .'" name="efpic_' . $name .'"' . disabled( $disabled, true, false ) . checked( $value, 'on', false ) . ' /> <label for="efpic_' . $name . '" class="after">' . $setting['label'] . '<br /><span class="description">' . $setting['description'] . '</span>';
-	if ( $disabled AND ! empty( $setting['disabled_hint'] ) ) {
-		echo '<br /><span class="efpic-settings__input__hint"><span class="efpic-settings__input__hint--alert">'. $setting['disabled_hint'] . '</span></span>';
+	echo '<span class="efpic-settings__toggle-label"><span class="efpic-settings__toggle-label__title">' . $setting['label'] . '</span><br /><span class="description">' . $setting['description'] . '</span>';
+	if ( $disabled && ! empty( $setting['disabled_hint'] ) ) {
+		echo '<br /><span class="efpic-settings__input__hint"><span class="efpic-settings__input__hint--alert">' . $setting['disabled_hint'] . '</span></span>';
 	}
-	echo '</label></p>';
+	echo '</span></div>';
 	echo '</fieldset>';
 
 	return ob_get_clean();
@@ -886,7 +889,15 @@ function efpic_load_settings_page() {
  * @return string The sanatized value
  */
 function efpic_settings_validate( $value ) {
-	return sanitize_text_field( $value );
+	$value = sanitize_text_field( $value );
+	if ( 'on' === $value || 'off' === $value ) {
+		return $value;
+	}
+	// Legacy empty checkbox posts → off
+	if ( '' === $value ) {
+		return 'off';
+	}
+	return $value;
 }
 
 /**

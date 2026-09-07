@@ -2076,11 +2076,12 @@ function efpic_country_select( $selected = '', $args = [] ) {
  * @since 1.0.32
  * @since 1.0.33 Visual pill switch (knob slides left/right).
  * @since 1.0.42 Optional collapse control for Collection Options panels.
+ * @since 1.0.44 Optional disabled state.
  *
  * @param string       $name  Hidden input name.
  * @param string       $value Current value: on|off.
  * @param string       $id    Optional input id (defaults to $name).
- * @param array|string $args  Optional. Pass true or array( 'collapse' => true ) to toggle .js-collapsible in the same .efpic-option-set.
+ * @param array|string $args  Optional. Keys: collapse (bool), disabled (bool).
  * @return string HTML
  */
 function efpic_feature_on_off_toggle( $name, $value, $id = '', $args = array() ) {
@@ -2094,23 +2095,31 @@ function efpic_feature_on_off_toggle( $name, $value, $id = '', $args = array() )
 		$args = array();
 	}
 	$collapse = ! empty( $args['collapse'] );
+	$disabled = ! empty( $args['disabled'] );
+
+	$wrap_class = 'efpic-feature-toggle' . ( $is_on ? ' is-on' : ' is-off' );
+	if ( $disabled ) {
+		$wrap_class .= ' is-disabled';
+	}
 
 	ob_start();
 	?>
-	<span class="efpic-feature-toggle<?php echo $is_on ? ' is-on' : ' is-off'; ?>" data-efpic-toggle<?php echo $collapse ? ' data-efpic-collapse-control' : ''; ?>>
+	<span class="<?php echo esc_attr( $wrap_class ); ?>" data-efpic-toggle<?php echo $collapse ? ' data-efpic-collapse-control' : ''; ?>>
 		<button type="button"
 			class="efpic-feature-toggle__switch"
 			data-efpic-toggle-btn
 			role="switch"
 			aria-checked="<?php echo $is_on ? 'true' : 'false'; ?>"
-			aria-label="<?php echo esc_attr( $is_on ? __( 'On', 'efpic' ) : __( 'Off', 'efpic' ) ); ?>">
+			aria-label="<?php echo esc_attr( $is_on ? __( 'On', 'efpic' ) : __( 'Off', 'efpic' ) ); ?>"
+			<?php disabled( $disabled ); ?>>
 			<span class="efpic-feature-toggle__knob" aria-hidden="true"></span>
 		</button>
 		<input type="hidden"
 			name="<?php echo esc_attr( $name ); ?>"
 			id="<?php echo esc_attr( $id ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
-			data-efpic-toggle-input />
+			data-efpic-toggle-input
+			<?php disabled( $disabled ); ?> />
 	</span>
 	<?php
 	efpic_feature_on_off_toggle_enqueue_script();
@@ -2163,6 +2172,9 @@ function efpic_feature_on_off_toggle_script() {
 				}
 				btn.addEventListener('click', function (e) {
 					e.preventDefault();
+					if (btn.disabled || input.disabled) {
+						return;
+					}
 					var next = input.value === 'on' ? 'off' : 'on';
 					var isOn = next === 'on';
 					input.value = next;
