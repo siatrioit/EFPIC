@@ -119,7 +119,10 @@ efpic_collection_bouncer();
 				ob_start();
 			?>
 			<div class="efpic-header-inner">
-				<div class="blog-name"><?php echo get_bloginfo( 'name' ); ?></div>
+				<div class="efpic-header-top">
+					<div class="blog-name"><?php echo get_bloginfo( 'name' ); ?></div>
+					<?php efpic_render_social_links( $post->ID ); ?>
+				</div>
 				<div class="efpic-collection-title">
 					<?php echo get_the_title( $post->ID ); ?>
 					<?php
@@ -200,8 +203,6 @@ efpic_collection_bouncer();
 		?>
 
 		<?php } // post_password_required() ?>
-
-		<?php efpic_render_social_links( get_the_ID() ); ?>
 
 		<?php
 			if ( get_option( 'efpic_efpic_love' ) == 'on' ) { ?>
