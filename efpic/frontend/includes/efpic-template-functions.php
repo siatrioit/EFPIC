@@ -529,10 +529,6 @@ function efpic_get_image_collection( $image_ids, $post = '' ) {
 			'selected' => $current_image['selected'],
 			'markers' => $current_image['markers'],
 			'stars' => $current_image['stars'],
-			'searchText' => isset( $current_image['searchText'] ) ? $current_image['searchText'] : '',
-			'iptcTitle' => isset( $current_image['iptcTitle'] ) ? $current_image['iptcTitle'] : '',
-			'iptcDescription' => isset( $current_image['iptcDescription'] ) ? $current_image['iptcDescription'] : '',
-			'iptcKeywords' => isset( $current_image['iptcKeywords'] ) ? $current_image['iptcKeywords'] : '',
 		);
 
 		/**
@@ -680,8 +676,6 @@ function efpic_get_app_state() {
 		'error_msg_no_imgs' => __( '<h2>No images found</h2><p>It seems there are no images in this collection.</p>', 'efpic' ),
 		'error_msg_filter_selected' => __( 'You have not selected any images.', 'efpic' ),
 		'error_msg_filter_unselected' => __( 'You have no <em>unselected</em> images.', 'efpic' ),
-		'error_msg_text_filter_empty' => __( 'No images match your search.', 'efpic' ),
-		'reset_text_filter_msg' => __( 'Clear search', 'efpic' ),
 		'reset_filter_msg' => __( 'Reset filter to show all images', 'efpic' ),
 		'error_msg_stars_filter_empty' => __( 'No images with that many stars', 'efpic' ),
 		'button_ok' => __( 'OK', 'efpic' ),

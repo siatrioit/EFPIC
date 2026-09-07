@@ -30,9 +30,7 @@ efpic.GalleryView.Item = Backbone.View.extend({
             var focused = '';
         }
 
-		var textHidden = ( this.model.get( 'textFilterMatch' ) === false ) ? ' text-filter-hidden' : '';
-
-        return 'efpic-gallery-item' + selected + stars + focused + textHidden;
+        return 'efpic-gallery-item' + selected + stars + focused;
     },
 
     id: function() {

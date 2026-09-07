@@ -4220,36 +4220,6 @@ body.filter-unselected.stars-filter-1 .efpic-collection .efpic-gallery-item.star
   border-color: #eee;
 }
 /*# sourceMappingURL=efpic-dark.css.map */
-/* Text filter (1.0.21) */
-.efpic-text-filter {
-  display: inline-flex;
-  align-items: center;
-  margin: 0 0.5rem 0 0;
-  vertical-align: middle;
-}
-.efpic-text-filter__input {
-  width: 10rem;
-  max-width: 28vw;
-  padding: 0.4rem 0.65rem;
-  border: 1px solid #666;
-  border-radius: 3px;
-  background: #1a1a1a;
-  color: #eee;
-  font-size: 0.85rem;
-}
-.efpic-text-filter__input:focus {
-  outline: none;
-  border-color: #aaa;
-}
-.efpic-gallery-item.text-filter-hidden {
-  display: none !important;
-}
-@media (max-width: 600px) {
-  .efpic-text-filter__input {
-    width: 7.5rem;
-  }
-}
-
 /* Status bar layout fix (1.0.25) — flex, no overlapping LV text */
 .efpic-status-bar {
   display: flex !important;
@@ -4278,25 +4248,6 @@ body.filter-unselected.stars-filter-1 .efpic-collection .efpic-gallery-item.star
 }
 .efpic-display-filter:before {
   display: none !important;
-}
-.efpic-text-filter {
-  display: inline-flex;
-  align-items: center;
-  margin: 0;
-  flex: 0 1 11rem;
-  min-width: 6rem;
-  max-width: 14rem;
-}
-.efpic-text-filter__input {
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-  height: 36px;
-  padding: 0.4rem 0.7rem;
-  font-size: 0.85rem;
-  font-family: inherit;
-  line-height: 1.2;
-  border-radius: 6px;
 }
 .efpic-filter-selected,
 .efpic-filter-unselected {
@@ -4376,10 +4327,6 @@ body.filter-unselected.stars-filter-1 .efpic-collection .efpic-gallery-item.star
   .efpic-filter-unselected .efpic-filter-label {
     display: none !important;
   }
-  .efpic-text-filter {
-    flex-basis: 8rem;
-    max-width: 9rem;
-  }
 }
 @media only screen and (max-width: 640px) {
   .efpic-status-bar {
@@ -4403,11 +4350,6 @@ body.filter-unselected.stars-filter-1 .efpic-collection .efpic-gallery-item.star
   }
   .efpic-pre-send span {
     display: none;
-  }
-  .efpic-text-filter {
-    flex: 1 1 auto;
-    max-width: none;
-    min-width: 5rem;
   }
 }
 

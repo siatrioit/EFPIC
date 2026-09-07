@@ -201,63 +201,6 @@ jQuery(function($){
 		});
 
 		/**
-		 * Text filter (filename + IPTC title/description/keywords).
-		 */
-		function efpicApplyTextFilter( query ) {
-			query = ( query || '' ).toLowerCase().trim();
-			body.classList.toggle( 'text-filter-active', query.length > 0 );
-
-			if ( typeof efpic === 'undefined' || ! efpic.collection ) {
-				return;
-			}
-
-			$( '.efpic-error.efpic-text-filter-empty' ).remove();
-
-			var visible = 0;
-			efpic.collection.each( function( model ) {
-				var haystack = ( model.get( 'searchText' ) || '' ).toLowerCase();
-				var match = ! query || haystack.indexOf( query ) !== -1;
-				model.set( 'textFilterMatch', match );
-				var el = document.getElementById( 'efpic-image-' + model.get( 'number' ) );
-				if ( el ) {
-					el.classList.toggle( 'text-filter-hidden', ! match );
-				}
-				if ( match ) {
-					visible++;
-				}
-			} );
-
-			if ( query && visible === 0 ) {
-				var msg = ( typeof appState !== 'undefined' && appState.get( 'error_msg_text_filter_empty' ) )
-					? appState.get( 'error_msg_text_filter_empty' )
-					: 'No images match your search.';
-				var reset = ( typeof appState !== 'undefined' && appState.get( 'reset_text_filter_msg' ) )
-					? appState.get( 'reset_text_filter_msg' )
-					: 'Clear search';
-				$( '.efpic-gallery' ).append(
-					'<div class="efpic-error efpic-text-filter-empty"><div class="error-inner"><h2>' + msg + '</h2>' +
-					'<p><a class="error-text-filter-reset" href="#index"><svg viewBox="0 0 100 100"><use xlink:href="#icon_close"></use></svg>' + reset + '</a></p></div></div>'
-				);
-			}
-
-			if ( efpic.GalleryView && efpic.GalleryView.prototype.lazyLoad ) {
-				efpic.GalleryView.prototype.lazyLoad();
-			}
-		}
-
-		$( document ).on( 'input', '.efpic-text-filter__input', function() {
-			efpicApplyTextFilter( this.value );
-		} );
-
-		$( document ).on( 'click', '.error-text-filter-reset, .filter-reset-all, .efpic-filter-reset', function() {
-			var input = document.querySelector( '.efpic-text-filter__input' );
-			if ( input ) {
-				input.value = '';
-			}
-			efpicApplyTextFilter( '' );
-		} );
-
-		/**
 		 * Listening for key input.
 		 */
 		document.addEventListener( 'keydown', function( e ) {
@@ -270,11 +213,6 @@ jQuery(function($){
 					if ( document.querySelector( '.efpic-filter__toggle' ) != null ) {
 						document.querySelector( '.efpic-filter__toggle' ).classList.remove( 'is-open' );
 					}
-				}
-				var textInput = document.querySelector( '.efpic-text-filter__input' );
-				if ( textInput && textInput.value ) {
-					textInput.value = '';
-					efpicApplyTextFilter( '' );
 				}
 			}
 		}); 

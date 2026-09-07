@@ -41,11 +41,7 @@ function efpic_get_latvian_translations() {
 		'Images were already sorted in this order.' => 'Bildes jau bija sakārtotas šajā secībā.',
 		'Undo' => 'Atsaukt',
 
-		// Text filter / status bar — keep short for layout
-		'Search images…' => 'Meklēt…',
-		'Filter images by text' => 'Meklēt bildes',
-		'No images match your search.' => 'Nav atbilstošu bilžu.',
-		'Clear search' => 'Notīrīt',
+		// Status bar — keep short for layout
 		'Selected' => 'Atlasītas',
 		'Unselected' => 'Pārējās',
 		'Reset filters' => 'Atiestatīt',

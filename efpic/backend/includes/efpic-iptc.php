@@ -126,36 +126,3 @@ function efpic_get_attachment_iptc( $attachment_id ) {
 		'keywords'    => $keywords,
 	);
 }
-
-/**
- * Build searchable text blob for client text filter.
- *
- * @param int   $attachment_id Attachment ID.
- * @param array $image_data    Current image payload.
- * @return string
- */
-function efpic_build_image_search_text( $attachment_id, $image_data = array() ) {
-	$parts = array();
-
-	$filename = efpic_get_image_filename( $attachment_id );
-	if ( $filename ) {
-		$parts[] = $filename;
-	}
-
-	$iptc = efpic_get_attachment_iptc( $attachment_id );
-	foreach ( array( 'title', 'description', 'keywords' ) as $key ) {
-		if ( ! empty( $iptc[ $key ] ) ) {
-			$parts[] = $iptc[ $key ];
-		}
-	}
-
-	if ( ! empty( $image_data['description'] ) ) {
-		$parts[] = wp_strip_all_tags( $image_data['description'] );
-	}
-
-	if ( ! empty( $image_data['title'] ) && is_array( $image_data['title'] ) ) {
-		$parts[] = implode( ' ', array_map( 'strval', $image_data['title'] ) );
-	}
-
-	return strtolower( trim( preg_replace( '/\s+/', ' ', implode( ' ', $parts ) ) ) );
-}
