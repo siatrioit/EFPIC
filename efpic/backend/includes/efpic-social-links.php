@@ -284,6 +284,58 @@ function efpic_social_link_icon_svg( $network ) {
 }
 
 /**
+ * Inject social links into gallery header (after Pro/brand filters).
+ *
+ * Brand Customize replaces the whole header HTML — this keeps icons visible.
+ *
+ * @param string $html    Header HTML.
+ * @param int    $post_id Collection ID.
+ * @return string
+ */
+function efpic_social_links_inject_header( $html, $post_id ) {
+	if ( false !== strpos( $html, 'efpic-social-links' ) ) {
+		return $html;
+	}
+
+	ob_start();
+	efpic_render_social_links( $post_id );
+	$social = ob_get_clean();
+	if ( '' === $social ) {
+		return $html;
+	}
+
+	if ( false !== strpos( $html, 'efpic-header-top' ) ) {
+		return preg_replace(
+			'/(<div class="efpic-header-top">)/',
+			'$1' . $social,
+			$html,
+			1
+		);
+	}
+
+	if ( preg_match( '/<div class="blog-name">.*?<\/div>/s', $html ) ) {
+		return preg_replace(
+			'/(<div class="blog-name">.*?<\/div>)/s',
+			'<div class="efpic-header-top">$1' . $social . '</div>',
+			$html,
+			1
+		);
+	}
+
+	if ( false !== strpos( $html, 'efpic-header-inner' ) ) {
+		return preg_replace(
+			'/(<div class="efpic-header-inner">)/',
+			'$1<div class="efpic-header-top">' . $social . '</div>',
+			$html,
+			1
+		);
+	}
+
+	return $html . $social;
+}
+add_filter( 'efpic_header', 'efpic_social_links_inject_header', 30, 2 );
+
+/**
  * Render social links in the client gallery.
  *
  * @param int|null $post_id Collection ID.

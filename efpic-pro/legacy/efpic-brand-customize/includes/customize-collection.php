@@ -342,11 +342,19 @@ function efpic_bc_custom_header_elements( $custom_header, $id ) {
 	}
 
 	$custom_header .= '<div class="efpic-header-inner">';
+	$custom_header .= '<div class="efpic-header-top">';
 
-	if (  get_option( 'efpic_site_title' ) == 'on' ) {
-			$custom_header .= '<div class="blog-name">' . get_bloginfo( 'name' ) . '</div>';
+	if ( get_option( 'efpic_site_title' ) == 'on' ) {
+		$custom_header .= '<div class="blog-name">' . get_bloginfo( 'name' ) . '</div>';
 	}
 
+	if ( function_exists( 'efpic_render_social_links' ) ) {
+		ob_start();
+		efpic_render_social_links( $id );
+		$custom_header .= ob_get_clean();
+	}
+
+	$custom_header .= '</div>'; // .efpic-header-top
 	$custom_header .= '<div class="efpic-collection-title">'.  get_the_title( $id ) . '</div>';
 	$custom_header .= '</div>';
 
