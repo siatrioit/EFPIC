@@ -221,8 +221,11 @@ function efpic_mark_comment_add_collection_option( $option_output ) {
 	// Generate option output
 	ob_start();
 
-	echo '<p>';
-	echo '<input type="checkbox" id="efpic_mark_comment" name="efpic_mark_comment_allow_comments" autocomplete="off" ' . checked( 1, $mc, false ) . ' /> <label for="efpic_mark_comment">' . __( 'Enable Comments &amp; Markers', 'efpic-pro' ) . '</label></p>';
+	echo '<p class="efpic-option-toggle-row">';
+	if ( function_exists( 'efpic_feature_on_off_toggle' ) ) {
+		echo efpic_feature_on_off_toggle( 'efpic_mark_comment_allow_comments', 1 === (int) $mc ? 'on' : 'off', 'efpic_mark_comment' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+	echo '<span class="efpic-option-toggle-row__label">' . esc_html__( 'Enable Comments & Markers', 'efpic-pro' ) . '</span></p>';
 
 	$option_output['efpic-mark-comment'] = ob_get_clean();
 

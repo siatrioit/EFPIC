@@ -2075,20 +2075,29 @@ function efpic_country_select( $selected = '', $args = [] ) {
  *
  * @since 1.0.32
  * @since 1.0.33 Visual pill switch (knob slides left/right).
+ * @since 1.0.42 Optional collapse control for Collection Options panels.
  *
- * @param string $name  Hidden input name.
- * @param string $value Current value: on|off.
- * @param string $id    Optional input id (defaults to $name).
+ * @param string       $name  Hidden input name.
+ * @param string       $value Current value: on|off.
+ * @param string       $id    Optional input id (defaults to $name).
+ * @param array|string $args  Optional. Pass true or array( 'collapse' => true ) to toggle .js-collapsible in the same .efpic-option-set.
  * @return string HTML
  */
-function efpic_feature_on_off_toggle( $name, $value, $id = '' ) {
+function efpic_feature_on_off_toggle( $name, $value, $id = '', $args = array() ) {
 	$value = ( 'off' === $value ) ? 'off' : 'on';
 	$id    = '' !== $id ? $id : $name;
 	$is_on = ( 'on' === $value );
 
+	if ( true === $args ) {
+		$args = array( 'collapse' => true );
+	} elseif ( ! is_array( $args ) ) {
+		$args = array();
+	}
+	$collapse = ! empty( $args['collapse'] );
+
 	ob_start();
 	?>
-	<span class="efpic-feature-toggle<?php echo $is_on ? ' is-on' : ' is-off'; ?>" data-efpic-toggle>
+	<span class="efpic-feature-toggle<?php echo $is_on ? ' is-on' : ' is-off'; ?>" data-efpic-toggle<?php echo $collapse ? ' data-efpic-collapse-control' : ''; ?>>
 		<button type="button"
 			class="efpic-feature-toggle__switch"
 			data-efpic-toggle-btn
@@ -2161,6 +2170,16 @@ function efpic_feature_on_off_toggle_script() {
 					wrap.classList.toggle('is-off', !isOn);
 					btn.setAttribute('aria-checked', isOn ? 'true' : 'false');
 					btn.setAttribute('aria-label', isOn ? labelOn : labelOff);
+					if (wrap.hasAttribute('data-efpic-collapse-control')) {
+						var set = wrap.closest('.efpic-option-set');
+						var panel = set ? set.querySelector('.js-collapsible') : null;
+						if (panel) {
+							panel.classList.toggle('is-collapsed', !isOn);
+						}
+					}
+					try {
+						input.dispatchEvent(new Event('change', { bubbles: true }));
+					} catch (err) { /* old browsers */ }
 				});
 			});
 		}

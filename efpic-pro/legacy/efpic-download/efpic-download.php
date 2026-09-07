@@ -353,7 +353,12 @@ function efpic_download_add_collection_option( $option_output ) {
 
 	ob_start();
 
-	echo '<p><input type="checkbox" class="js-collapse-control" id="efpic_download_images" name="efpic_download_images" ' . checked( true, $download, false ) . ' autocomplete="off" /> <label for="efpic_download_images">' . esc_html__( 'Enable image download', 'efpic-pro' ) . '&hellip;</label></p>';
+	$download_value = $download ? 'on' : 'off';
+	echo '<p class="efpic-option-toggle-row">';
+	if ( function_exists( 'efpic_feature_on_off_toggle' ) ) {
+		echo efpic_feature_on_off_toggle( 'efpic_download_images', $download_value, 'efpic_download_images', true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+	echo '<span class="efpic-option-toggle-row__label">' . esc_html__( 'Enable image download', 'efpic-pro' ) . '&hellip;</span></p>';
 	echo '<div class="js-collapsible';
 
 	if ( ! $download ) {
@@ -375,16 +380,16 @@ function efpic_download_add_collection_option( $option_output ) {
 	echo '<p><input type="radio" id="efpic_image_download_zip" name="efpic_download_option" value="zip"' . $zip_disabled . ' ' . checked( 'zip', $dl['option'], false ) . ' autocomplete="off" /> <label ' . $zip_disabled_label_class . ' for="efpic_image_download_zip">' . esc_html__( 'Automatically create .zip file from collection', 'efpic-pro' ) . '</label>' . $zip_disabled_message . '</p>';
 
 	echo '<div class="efpic-download-zip-variants" id="efpic-download-zip-variants"' . ( 'zip' === $dl['option'] ? '' : ' style="display:none;"' ) . '>';
-	echo '<p class="efpic-download-zip-variant"><span class="efpic-download-zip-variant__label">' . esc_html__( 'Download all images', 'efpic-pro' ) . '</span>';
+	echo '<p class="efpic-download-zip-variant">';
 	if ( function_exists( 'efpic_feature_on_off_toggle' ) ) {
 		echo efpic_feature_on_off_toggle( 'efpic_download_zip_all', $dl['zip_all'], 'efpic_download_zip_all' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
-	echo '</p>';
-	echo '<p class="efpic-download-zip-variant"><span class="efpic-download-zip-variant__label">' . esc_html__( 'Download selected images', 'efpic-pro' ) . '</span>';
+	echo '<span class="efpic-download-zip-variant__label">' . esc_html__( 'Download all images', 'efpic-pro' ) . '</span></p>';
+	echo '<p class="efpic-download-zip-variant">';
 	if ( function_exists( 'efpic_feature_on_off_toggle' ) ) {
 		echo efpic_feature_on_off_toggle( 'efpic_download_zip_selected', $dl['zip_selected'], 'efpic_download_zip_selected' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 	}
-	echo '</p>';
+	echo '<span class="efpic-download-zip-variant__label">' . esc_html__( 'Download selected images', 'efpic-pro' ) . '</span></p>';
 	echo '</div>';
 
 	echo '<p><input type="radio" id="efpic_image_download_url" name="efpic_download_option" value="url"' . $url_disabled . ' ' . checked( 'url', $dl['option'], false ) . ' autocomplete="off" /> <label for="efpic_image_download_url">' . esc_html__( 'Use external URL', 'efpic-pro' ) . '</label> <input style="width: 240px" type="text" name="efpic_image_download_src" placeholder="http://domain.tld/photos.zip" value="';

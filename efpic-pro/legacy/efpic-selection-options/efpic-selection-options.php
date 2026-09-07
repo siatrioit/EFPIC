@@ -42,10 +42,15 @@ function efpic_selection_options_add_collection_option( $options_output ) {
 	// Generate option output
 	ob_start();
 
-	echo '<p><input type="checkbox" class="js-collapse-control" id="efpic_selection_options" name="efpic_selection_options" ' . checked( true, $options['selection_option'], false ) . ' autocomplete="off" /> <label for="efpic_selection_options">' . __( 'Set Selection Goal', 'efpic-pro' ) . '&hellip;</label></p>';
+	$selection_on = ! empty( $options['selection_option'] );
+	echo '<p class="efpic-option-toggle-row">';
+	if ( function_exists( 'efpic_feature_on_off_toggle' ) ) {
+		echo efpic_feature_on_off_toggle( 'efpic_selection_options', $selection_on ? 'on' : 'off', 'efpic_selection_options', true ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+	echo '<span class="efpic-option-toggle-row__label">' . esc_html__( 'Set Selection Goal', 'efpic-pro' ) . '&hellip;</span></p>';
 	echo '<div class="js-collapsible';
 
-	if ( true != $options['selection_option'] ) {
+	if ( ! $selection_on ) {
 		echo ' is-collapsed';
 	}
 
