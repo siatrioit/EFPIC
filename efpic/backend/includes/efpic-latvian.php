@@ -12,8 +12,17 @@ defined( 'ABSPATH' ) || exit;
  * @return bool
  */
 function efpic_should_use_latvian_strings() {
-	$locale = function_exists( 'determine_locale' ) ? determine_locale() : get_locale();
-	return ( 0 === strpos( (string) $locale, 'lv' ) );
+	$locales = array(
+		function_exists( 'determine_locale' ) ? determine_locale() : null,
+		get_locale(),
+		function_exists( 'get_user_locale' ) ? get_user_locale() : null,
+	);
+	foreach ( $locales as $locale ) {
+		if ( is_string( $locale ) && 0 === strpos( $locale, 'lv' ) ) {
+			return true;
+		}
+	}
+	return false;
 }
 
 /**
@@ -27,7 +36,8 @@ function efpic_get_latvian_translations() {
 		return $map;
 	}
 
-	$map = array(
+	// Build into a local var first so a nested gettext call cannot cache a half-built map.
+	$built = array(
 		// Image order
 		'Image order' => 'Bilžu secība',
 		'Manual (drag & drop)' => 'Manuāli',
@@ -109,7 +119,26 @@ function efpic_get_latvian_translations() {
 		'Show all images' => 'Rādīt visas bildes',
 		'Hide images' => 'Slēpt bildes',
 		'Copy Filenames' => 'Kopēt nosaukumus',
+		'Copy Filenames %s' => 'Kopēt nosaukumus %s',
+		'Copy %s Filename' => 'Kopēt %s failu',
 		'Download Proof' => 'Lejupielādēt apstiprinājumu',
+		'Selected by all' => 'Atlasījuši visi',
+		'Selected at least once' => 'Atlasīta vismaz reizi',
+		'Selected by %s' => 'Atlasījis: %s',
+		'Not selected' => 'Neatlasītas',
+		'All' => 'Visas',
+		'Thumbnail' => 'Sīktēls',
+		'File' => 'Fails',
+		'Comments' => 'Komentāri',
+		'has comment' => 'ar komentāru',
+		'View' => 'Skatīt',
+		'Reopen' => 'Atvērt no jauna',
+		'Remove…' => 'Noņemt…',
+		'Remove...' => 'Noņemt…',
+		'Show Download History' => 'Rādīt lejupielāžu vēsturi',
+		'Hide Download History' => 'Slēpt lejupielāžu vēsturi',
+		'Date/Time' => 'Datums/laiks',
+		'Name' => 'Vārds',
 		'Collection reopened.' => 'Kolekcija atvērta atkārtoti.',
 		'Open' => 'Atvērt',
 		'Sent for selection' => 'Nosūtīts atlasei',
@@ -262,7 +291,8 @@ function efpic_get_latvian_translations() {
 	 *
 	 * @param array $map English => Latvian.
 	 */
-	$map = apply_filters( 'efpic_latvian_translations', $map );
+	$built = apply_filters( 'efpic_latvian_translations', $built );
+	$map   = $built;
 
 	return $map;
 }
@@ -284,11 +314,18 @@ function efpic_latvian_translations_extra( $map ) {
 		'All' => 'Visas',
 		'Thumbnail' => 'Sīktēls',
 		'File' => 'Fails',
+		'Comments' => 'Komentāri',
+		'has comment' => 'ar komentāru',
+		'comments' => 'komentāri',
+		'Toggle Comments' => 'Komentāri',
+		'Add Comment' => 'Pievienot komentāru',
 		'Proof' => 'Apstiprinājums',
 		'Download' => 'Lejupielādēt',
 		'Reopen' => 'Atvērt no jauna',
 		'Remove…' => 'Noņemt…',
+		'Remove...' => 'Noņemt…',
 		'View' => 'Skatīt',
+		'Message' => 'Ziņa',
 		'No events yet.' => 'Vēl nav notikumu.',
 		'All images' => 'Visas bildes',
 		'Selected images only' => 'Tikai atlasītās',
@@ -297,6 +334,8 @@ function efpic_latvian_translations_extra( $map ) {
 		'All selections by this client will be deleted. This cannot be undone.' => 'Visas šī klienta atlases tiks dzēstas. To nevarēs atsaukt.',
 		'Are you sure, you want to remove this client?' => 'Vai tiešām vēlies noņemt šo klientu?',
 		'Yes, remove client' => 'Jā, noņemt klientu',
+		'The client %s was removed from the collection.' => 'Klients %s noņemts no kolekcijas.',
+		'%s is already a client of this collection.' => '%s jau ir šīs kolekcijas klients.',
 		'Sent to client(s)' => 'Nosūtīts klientam(-iem)',
 		'Sent to additional client' => 'Nosūtīts papildu klientam',
 		'New client registered' => 'Reģistrēts jauns klients',
@@ -307,6 +346,11 @@ function efpic_latvian_translations_extra( $map ) {
 		'Reverted to draft' => 'Atgriezts melnrakstā',
 		'Reverted to delivery draft' => 'Atgriezts piegādes melnrakstā',
 		'Closed manually' => 'Aizvērts manuāli',
+		'Show Download History' => 'Rādīt lejupielāžu vēsturi',
+		'Hide Download History' => 'Slēpt lejupielāžu vēsturi',
+		'Date/Time' => 'Datums/laiks',
+		'Name' => 'Vārds',
+		'Social links' => 'Sociālie tīkli',
 		'Preparing Delivery' => 'Sagatavo piegādi',
 		'Delivery published' => 'Piegāde publicēta',
 		'Last modified' => 'Pēdējās izmaiņas',

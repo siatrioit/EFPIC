@@ -1060,11 +1060,11 @@ function efpic_display_approved_view( $post, $collapsible = false ) {
 
 					switch ( $status ) {
 						case 'approved':
-							$status_label = 'Approved';
+							$status_label = __( 'Approved', 'efpic' );
 							break;
 						default:
 							$status = 'waiting';
-							$status_label = 'Waiting';
+							$status_label = __( 'Waiting', 'efpic' );
 					}
 
 					$client_selection_data = [
@@ -1143,12 +1143,12 @@ function efpic_display_approved_view( $post, $collapsible = false ) {
 							if ( $selection_image_count > 0 ) {
 								if ( $collection_status == 'sent' ) {
 									$filter_options = array(
-										'selected' => _x( 'Selected', 'photo filter dropdown', 'efpic' ),
+										'selected' => __( 'Selected', 'efpic' ),
 									);
 								}
 								else {
 									$filter_options = array(
-										'selected' => _x( 'Approved', 'photo filter dropdown', 'efpic' ),
+										'selected' => __( 'Approved', 'efpic' ),
 									);
 								}
 							}
@@ -1156,21 +1156,21 @@ function efpic_display_approved_view( $post, $collapsible = false ) {
 							// Add multi client filter options
 							if ( ! empty( $efpic_collection_hashes ) && count( $efpic_collection_hashes ) > 1 ) {
 								if ( $selection_image_count > 0 ) {
-									$filter_options['selected-by-all'] = _x( 'Selected by all', 'photo filter dropdown', 'efpic' );
-									$filter_options['selected'] = _x( 'Selected at least once', 'photo filter dropdown', 'efpic' );
+									$filter_options['selected-by-all'] = __( 'Selected by all', 'efpic' );
+									$filter_options['selected'] = __( 'Selected at least once', 'efpic' );
 
 									// Add filter by individual client
 									foreach( $efpic_collection_hashes as $key => $hash ) {
 										/* translators %s = client name & email address */
-										$filter_options[$key] = sprintf( _x( 'Selected by %s', 'photo filter dropdown', 'efpic' ), efpic_combine_name_email( $hash['name'], $hash['email'] ) );
+										$filter_options[$key] = sprintf( __( 'Selected by %s', 'efpic' ), efpic_combine_name_email( $hash['name'], $hash['email'] ) );
 									}
 								}
 							}
 
 							// Add 'not selected' filter
-							$filter_options['not-selected'] = _x( 'Not selected', 'photo filter dropdown', 'efpic' );
+							$filter_options['not-selected'] = __( 'Not selected', 'efpic' );
 							// Add 'all' filter
-							$filter_options['all'] = _x( 'All', 'photo filter dropdown', 'efpic' );
+							$filter_options['all'] = __( 'All', 'efpic' );
 
 							// Add filter for custom options
 							$filter_options = apply_filters( 'efpic_table_filter_options', $filter_options, $post );
