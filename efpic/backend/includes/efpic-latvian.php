@@ -617,11 +617,27 @@ function efpic_latvian_translations_extra( $map ) {
 		'Delete files' => 'Dzēst failus',
 		'The source folder and all files it contains will be deleted. <strong>This cannot be undone!</strong>' => 'Avota mape un visi faili tiks dzēsti. <strong>To nevarēs atsaukt!</strong>',
 		'Website' => 'Mājaslapa',
+		'Bulk edit' => 'Masveida rediģēšana',
+		'Bulk Edit' => 'Masveida rediģēšana',
 	);
 
 	return array_merge( $map, $extra );
 }
 add_filter( 'efpic_latvian_translations', 'efpic_latvian_translations_extra', 5 );
+
+/**
+ * Whether a WordPress core (default domain) string should get an EFPIC LV override.
+ *
+ * @param string $text Original English string.
+ * @return bool
+ */
+function efpic_is_latvian_wp_core_string( $text ) {
+	static $allowed = array(
+		'Bulk edit' => true,
+		'Bulk Edit' => true,
+	);
+	return isset( $allowed[ $text ] );
+}
 
 /**
  * Apply Latvian gettext overrides.
@@ -632,7 +648,9 @@ add_filter( 'efpic_latvian_translations', 'efpic_latvian_translations_extra', 5 
  * @return string
  */
 function efpic_latvian_gettext( $translation, $text, $domain ) {
-	if ( 'efpic' !== $domain && 'efpic-pro' !== $domain ) {
+	$is_efpic = ( 'efpic' === $domain || 'efpic-pro' === $domain );
+	$is_wp    = ( 'default' === $domain && efpic_is_latvian_wp_core_string( $text ) );
+	if ( ! $is_efpic && ! $is_wp ) {
 		return $translation;
 	}
 	if ( ! efpic_should_use_latvian_strings() ) {
@@ -645,7 +663,7 @@ function efpic_latvian_gettext( $translation, $text, $domain ) {
 	}
 
 	// Brand display name: efpic -> EFPIC (keep URLs like efpic.io untouched).
-	if ( 'efpic' === $text || 'efpic' === $translation ) {
+	if ( $is_efpic && ( 'efpic' === $text || 'efpic' === $translation ) ) {
 		return 'EFPIC';
 	}
 
