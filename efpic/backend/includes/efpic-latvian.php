@@ -366,6 +366,16 @@ function efpic_latvian_translations_extra( $map ) {
 		'A random password will automatically assigned to all new efpic collections.' => 'Jaunām kolekcijām automātiski tiks piešķirta nejauša parole.',
 		'If a client started selecting images but did not finally approve the collection, efpic will automatically send a reminder after 24 hours.' => 'Ja klients sāka atlasi, bet neapstiprināja, pēc 24 h tiks nosūtīts atgādinājums.',
 		'efpic Collection base' => 'EFPIC kolekciju bāze',
+		'Social links in galleries' => 'Sociālie tīkli galerijās',
+		'Show your social profile links in client galleries. You can turn them off for individual collections.' => 'Rādi savu sociālo profilu saites klientu galerijās. Katrai kolekcijai vari atsevišķi izslēgt.',
+		'Social links' => 'Sociālie tīkli',
+		'Show photographer social links in this gallery.' => 'Rādīt fotogrāfa sociālo tīklu saites šajā galerijā.',
+		'Full URL to your %s profile (leave empty to hide).' => 'Pilna URL uz tavu %s profilu (tukšs = nerādīt).',
+		'Instagram' => 'Instagram',
+		'Facebook' => 'Facebook',
+		'TikTok' => 'TikTok',
+		'YouTube' => 'YouTube',
+		'Website' => 'Mājaslapa',
 	);
 
 	return array_merge( $map, $extra );

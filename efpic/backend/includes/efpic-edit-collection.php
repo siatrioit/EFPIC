@@ -141,6 +141,8 @@ function efpic_collection_metabox( $post ) {
 		</div>
 	<?php } ?>
 
+	<?php do_action( 'efpic_collection_post_options', $post ); ?>
+
 	</div><!-- .efpic-post-options -->
 
 	<div id="submitpost">

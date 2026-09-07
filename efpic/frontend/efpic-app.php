@@ -201,9 +201,11 @@ efpic_collection_bouncer();
 
 		<?php } // post_password_required() ?>
 
+		<?php efpic_render_social_links( get_the_ID() ); ?>
+
 		<?php
 			if ( get_option( 'efpic_efpic_love' ) == 'on' ) { ?>
-				<a class="efpic-brand" href="https://efpic.io/">powered by efpic</a>
+				<a class="efpic-brand" href="https://efpic.io/">powered by EFPIC</a>
 		<?php } ?>
 	</body>
 </html>
