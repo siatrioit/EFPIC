@@ -81,14 +81,14 @@ efpic_collection_bouncer();
 			if ( is_user_logged_in() AND current_user_can( efpic_capability() ) AND apply_filters( 'efpic_show_admin_bar', true ) ) {
 				if ( $post->post_status == 'delivered' ) { ?>
 					<div class="efpic-admin-bar delivered">
-						<div class="efpic-admin-bar-status"><?php _e( 'Delivered', 'efpic' ); ?></div>
+						<div class="efpic-admin-bar-status"><?php _e( 'Completed', 'efpic' ); ?></div>
 						<div class="efpic-admin-bar-message">
 						<?php echo sprintf( __( 'This collection has been delivered to the client on <span class="date">%s</span>.', 'efpic' ), wp_date( get_option( 'date_format' ), efpic_get_collection_history_event_time( $post->ID, 'delivered' ) ) ); ?></div>
 						<div class="efpic-admin-bar-actions"><?php edit_post_link( __( 'View Download Stats', 'efpic' ) ); ?></div>
 					</div>
 				<?php } elseif ( $post->post_status == 'delivery-draft' ) { ?>
 					<div class="efpic-admin-bar delivery-draft">
-						<div class="efpic-admin-bar-status"><?php _e( 'Delivery Draft', 'efpic' ); ?></div>
+						<div class="efpic-admin-bar-status"><?php _e( 'Delivery draft', 'efpic' ); ?></div>
 						<div class="efpic-admin-bar-message"><?php _e( 'This collection has not been sent to the client.', 'efpic' ); ?></div>
 						<div class="efpic-admin-bar-actions"><?php edit_post_link( __( 'Edit', 'efpic' ) ); ?></div>
 					</div>

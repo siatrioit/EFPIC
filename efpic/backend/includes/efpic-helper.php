@@ -380,16 +380,16 @@ function efpic_collection_event_prettify( $event ) {
 			return __( 'Reverted to delivery draft', 'efpic' );
 			break;
 		case 'expired':
-			return __( 'Expired', 'efpic' );
+			return __( 'Deadline expired', 'efpic' );
 			break;
 		case 'closed-manually':
 			return __( 'Closed manually', 'efpic' );
 			break;
 		case 'preparing-delivery':
-			$event = __( 'Preparing Delivery', 'efpic' );
+			$event = __( 'Delivery draft', 'efpic' );
 			break;	
 		case 'delivered':
-			$event = __( 'Delivered', 'efpic' );
+			$event = __( 'Completed', 'efpic' );
 			break;
 		case 'delivery-published':
 			$event = __( 'Delivery published', 'efpic' );

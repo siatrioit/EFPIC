@@ -320,7 +320,7 @@ function efpic_collection_status_open( $post ) {
 	}
 
 	$status = '<span class="status status--open">';
-	$status .= _x( 'Open', 'Collection post status', 'efpic' );
+	$status .= __( 'Sent for selection', 'efpic' );
 	$status .= '</span>';
 
 	$status_meta_output = efpic_collection_status_meta( $post->ID );
@@ -339,12 +339,16 @@ function efpic_collection_status_open( $post ) {
  */
 function efpic_collection_status_closed( $post ) {
 	$post_status = $post->post_status;
-	if ( ! in_array( $post_status, [ 'closed', 'approved', 'expired' ] ) ) {
+	if ( ! in_array( $post_status, [ 'closed', 'approved', 'expired' ], true ) ) {
 		return;
 	}
 
+	$label = ( 'expired' === $post_status )
+		? __( 'Deadline expired', 'efpic' )
+		: __( 'Client approved', 'efpic' );
+
 	$status = '<span class="status status--closed">';
-	$status .= __( 'Closed', 'efpic' );
+	$status .= $label;
 	$status .= '</span>';
 
 	$status_meta_output = efpic_collection_status_meta( $post->ID );
@@ -405,13 +409,13 @@ function efpic_collection_status_meta( $collection_id ) {
 
 	if ( $approval_time != false && $post_status == 'approved' ) { 
 		$status_meta[] = [
-			'label' => __( 'Closed', 'efpic' ),
+			'label' => __( 'Client approved', 'efpic' ),
 			'data' => wp_date( get_option( 'date_format' ), $approval_time ) . ', ' . wp_date( get_option( 'time_format' ), $approval_time ),
 		];
 	}
 	elseif ( $expired_time != false && $post_status == 'expired' ) {
 		$status_meta[] = [
-			'label' => __( 'Expired', 'efpic' ),
+			'label' => __( 'Deadline expired', 'efpic' ),
 			'data' => wp_date( get_option( 'date_format' ), $expired_time ) . ', ' . wp_date( get_option( 'time_format' ), $expired_time ),
 		];
 	}

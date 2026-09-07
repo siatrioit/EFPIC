@@ -16,21 +16,21 @@ defined( 'EFPIC_PRO' ) OR exit;
  */
 function efpic_delivery_collection_post_status() {
 	register_post_status( 'delivery-draft', array(
-		'label' => _x( 'Delivery Draft', 'post status name', 'efpic-pro' ),
+		'label' => _x( 'Delivery draft', 'post status name', 'efpic-pro' ),
 		'public' => true,
 		'exclude_from_search' => false,
 		'show_in_admin_all_list' => true,
 		'show_in_admin_status_list' => true,
-		'label_count' => _n_noop( 'Delivery Draft <span class="count">(%s)</span>', 'Delivery Draft <span class="count">(%s)</span>', 'efpic-pro' ),
+		'label_count' => _n_noop( 'Delivery draft <span class="count">(%s)</span>', 'Delivery draft <span class="count">(%s)</span>', 'efpic-pro' ),
 	) );
 
 	register_post_status( 'delivered', array(
-		'label' => _x( 'Delivered', 'post status name', 'efpic-pro' ),
+		'label' => _x( 'Completed', 'post status name', 'efpic-pro' ),
 		'public' => true,
 		'exclude_from_search' => false,
 		'show_in_admin_all_list' => true,
 		'show_in_admin_status_list' => true,
-		'label_count' => _n_noop( 'Delivered <span class="count">(%s)</span>', 'Delivered <span class="count">(%s)</span>', 'efpic-pro' ),
+		'label_count' => _n_noop( 'Completed <span class="count">(%s)</span>', 'Completed <span class="count">(%s)</span>', 'efpic-pro' ),
 	) );
 }
 
@@ -45,8 +45,8 @@ add_action( 'init', 'efpic_delivery_collection_post_status' );
  * @see efpic/efpic.php
  */
 function efpic_delivery_localization_strings( $strings ) {
-	$strings['delivered_option_label'] = __( 'Delivered', 'efpic-pro' );
-	$strings['delivery_draft_option_label'] = __( 'Delivery Draft', 'efpic-pro' );
+	$strings['delivered_option_label'] = __( 'Completed', 'efpic-pro' );
+	$strings['delivery_draft_option_label'] = __( 'Delivery draft', 'efpic-pro' );
 	return $strings;
 }
 
@@ -147,7 +147,7 @@ function efpic_collection_status_delivery_draft( $post ) {
 	}
 
 	$status = '<span class="status status--draft">';
-	$status .= __( 'Preparing delivery', 'efpic' );
+	$status .= __( 'Delivery draft', 'efpic' );
 	$status .= '</span>';
 
 	return $status;
@@ -170,7 +170,7 @@ function efpic_collection_status_delivered( $post ) {
 	}
 
 	$status = '<span class="status status--delivered">';
-	$status .= __( 'Delivered', 'efpic' );
+	$status .= __( 'Completed', 'efpic' );
 	$status .= '</span>';
 
 	$status_meta_output = efpic_collection_status_meta( $post->ID );
@@ -196,7 +196,7 @@ function efpic_delivery_status_meta( $status_meta, $collection_id ) {
 
 	if ( $delivered_time != false && in_array( $post_status, [ 'delivered' ] ) ) {
 		$status_meta[] = [
-			'label' => __( 'Delivered', 'efpic' ),
+			'label' => __( 'Completed', 'efpic' ),
 			'data' => wp_date( get_option( 'date_format' ), $delivered_time ) . ', ' . wp_date( get_option( 'time_format' ), $delivered_time )
 		];
 	}

@@ -3,7 +3,7 @@
  * Plugin Name: efpic
  * Plugin URI: https:www.edgarsfoto.lv
  * Description: Send a collection of photographs to your client for approval.
- * Version: 1.0.36
+ * Version: 1.0.37
  * Requires at least: 6.0
  * Requires PHP: 7.4
  * Author: Edgars
@@ -16,7 +16,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 // Define plugin version early so efpic Pro can verify dependency on plugins_loaded.
 if ( ! defined( 'EFPIC_VERSION' ) ) {
-	define( 'EFPIC_VERSION', '1.0.36' );
+	define( 'EFPIC_VERSION', '1.0.37' );
 }
 
 // Load composer autoloader early (used by email templates / Parsedown).
@@ -246,9 +246,9 @@ function efpic_admin_styles_scripts() {
 				'postID' => $post_id,
 				'media_modal_title' => __( 'Upload Images', 'efpic' ),
 				'media_modal_button_insert_text' => __( 'Insert Images', 'efpic' ),
-				'sent_option_label' => __( 'Sent', 'efpic' ),
-				'approved_option_label' => __( 'Approved', 'efpic' ),
-				'expired_option_label' => __( 'Expired', 'efpic' ),
+				'sent_option_label' => __( 'Sent for selection', 'efpic' ),
+				'approved_option_label' => __( 'Client approved', 'efpic' ),
+				'expired_option_label' => __( 'Deadline expired', 'efpic' ),
 				'button_text_publish' => __( 'Publish', 'efpic' ),
 				'button_text_send_to_client' => __( 'Send to Client', 'efpic' ),
 				'selection_table_no_match' => __( 'No images found', 'efpic' ),

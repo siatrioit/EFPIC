@@ -145,30 +145,30 @@ function efpic_collection_slug_output() {
 function efpic_collection_post_status() {
 
 	register_post_status( 'sent', array(
-		'label' => _x( 'Open', 'post status name', 'efpic' ),
+		'label' => _x( 'Sent for selection', 'post status name', 'efpic' ),
 		'public' => true,
 		'exclude_from_search' => false,
 		'show_in_admin_all_list' => true,
 		'show_in_admin_status_list' => true,
-		'label_count' => _n_noop( 'Open <span class="count">(%s)</span>', 'Open <span class="count">(%s)</span>', 'efpic' ),
+		'label_count' => _n_noop( 'Sent for selection <span class="count">(%s)</span>', 'Sent for selection <span class="count">(%s)</span>', 'efpic' ),
 	) );
 
 	register_post_status( 'approved', array(
-		'label' => _x( 'Closed', 'post status name', 'efpic' ),
+		'label' => _x( 'Client approved', 'post status name', 'efpic' ),
 		'public' => true,
 		'exclude_from_search' => false,
 		'show_in_admin_all_list' => true,
 		'show_in_admin_status_list' => true,
-		'label_count' => _n_noop( 'Closed <span class="count">(%s)</span>', 'Closed <span class="count">(%s)</span>', 'efpic' ),
+		'label_count' => _n_noop( 'Client approved <span class="count">(%s)</span>', 'Client approved <span class="count">(%s)</span>', 'efpic' ),
 	) );
 
 	register_post_status( 'expired', array(
-		'label' => _x( 'Expired', 'post status name', 'efpic' ),
+		'label' => _x( 'Deadline expired', 'post status name', 'efpic' ),
 		'public' => true,
 		'exclude_from_search' => false,
 		'show_in_admin_all_list' => true,
 		'show_in_admin_status_list' => true,
-		'label_count' => _n_noop( 'Expired <span class="count">(%s)</span>', 'Expired <span class="count">(%s)</span>', 'efpic' ),
+		'label_count' => _n_noop( 'Deadline expired <span class="count">(%s)</span>', 'Deadline expired <span class="count">(%s)</span>', 'efpic' ),
 	) );
 }
 
@@ -585,7 +585,7 @@ function efpic_customize_subsubsub_menu( $links ) {
 	if ( $result->found_posts > 0 ) {
 		$current = ( $wp_query->query_vars['post_status'] == [ 'approved', 'expired' ] ) ? ' class="current" aria-current="page"' : '';
 
-		$links['approved'] = '<a href="' . admin_url( 'edit.php?post_status=approved&post_type=efpic_collection' ) . '" ' . $current . '>' . __( 'Closed', 'efpic' ) . ' <span class="count">(' . $result->found_posts . ')</span></a>';
+		$links['approved'] = '<a href="' . admin_url( 'edit.php?post_status=approved&post_type=efpic_collection' ) . '" ' . $current . '>' . __( 'Client approved', 'efpic' ) . ' <span class="count">(' . $result->found_posts . ')</span></a>';
 	}
 
 	return $links;
@@ -631,10 +631,17 @@ add_action( 'parse_query', 'efpic_custom_filter_query' );
  * @return array The filtered post states.
  */
 function efpic_filter_post_states( $post_states, $post ) {
+	if ( empty( $post->post_type ) || 'efpic_collection' !== $post->post_type ) {
+		return $post_states;
+	}
+
 	$post_status = get_post_status( $post->ID );
 
-	if ( in_array( $post_status, [ 'approved', 'expired' ] ) ) {
-		$post_states = [ 'closed' => __( 'Closed', 'efpic' ) ];
+	if ( 'approved' === $post_status ) {
+		return array( 'approved' => __( 'Client approved', 'efpic' ) );
+	}
+	if ( 'expired' === $post_status ) {
+		return array( 'expired' => __( 'Deadline expired', 'efpic' ) );
 	}
 
 	return $post_states;
