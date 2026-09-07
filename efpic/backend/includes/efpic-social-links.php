@@ -189,8 +189,8 @@ function efpic_social_links_collection_post_option( $post ) {
 	$hint  = __( 'Show photographer social links in this gallery.', 'efpic' );
 	?>
 	<div class="efpic-option-item efpic-social-links-option" title="<?php echo esc_attr( $hint ); ?>">
-		<span class="efpic-social-links-option__label"><?php esc_html_e( 'Social links', 'efpic' ); ?></span>
 		<?php echo efpic_feature_on_off_toggle( 'efpic_collection_social_links', $value ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+		<span class="efpic-social-links-option__label"><?php esc_html_e( 'Social links', 'efpic' ); ?></span>
 	</div>
 	<?php
 }
