@@ -164,7 +164,14 @@ function efpic_collection_metabox( $post ) {
 			}
 			elseif ( get_post_status() == 'sent' ) {
 		?>
-				<a class="button button-primary js-efpic-close" href="<?php print wp_nonce_url( admin_url( "post.php?post=" . $post->ID . "&action=close" ), 'efpic_collection_close_' . $post->ID, 'close' ); ?>"><?php _e( 'Close', 'efpic' ); ?></a>
+				<input type="hidden" name="efpic_keep_status" value="1" />
+				<span class="efpic-save-button-wrap">
+				<?php
+				submit_button( __( 'Save', 'efpic' ), 'primary large', 'save', false, array( 'id' => 'save-post' ) );
+				?>
+				<span class="spinner"></span>
+				</span>
+				<a class="button js-efpic-close" href="<?php print wp_nonce_url( admin_url( "post.php?post=" . $post->ID . "&action=close" ), 'efpic_collection_close_' . $post->ID, 'close' ); ?>"><?php _e( 'Close', 'efpic' ); ?></a>
 				<a class="button js-efpic-edit" href="<?php print wp_nonce_url( admin_url( "post.php?post=" . $post->ID . "&action=edit" ), 'efpic_collection_reopen_' . $post->ID, 'reopen' ); ?>"><?php _e( 'Edit', 'efpic' ); ?></a>
 		<?php 
 			if ( efpic_get_selection_count( $post->ID ) > 0 ) {
@@ -239,6 +246,13 @@ function efpic_collection_metabox( $post ) {
 			}
 			else {
 		?>
+				<input type="hidden" name="efpic_keep_status" value="1" />
+				<span class="efpic-save-button-wrap">
+				<?php
+				submit_button( __( 'Save', 'efpic' ), 'primary large', 'save', false, array( 'id' => 'save-post' ) );
+				?>
+				<span class="spinner"></span>
+				</span>
 				<a class="button" href="<?php print wp_nonce_url( admin_url( "post.php?post=" . $post->ID . "&action=edit" ), 'efpic_collection_reopen_' . $post->ID, 'reopen' ); ?>"><?php _ex( 'Open', 'Button text, to open the collection', 'efpic' ); ?></a>
 				<?php if ( efpic_get_selection_count( $post->ID ) > 0 ) { ?>
 				<a class="button js-efpic-duplicate" data-id="<?php echo $post->ID; ?>" href="<?php echo wp_nonce_url( admin_url( 'post.php?efpic_duplicate_collection=' . $post->ID ), 'efpic_duplicate_collection', 'efpic_duplication_nonce' ); ?>"><?php _e( 'Duplicate', 'efpic' ); ?>&hellip;</a>
@@ -440,6 +454,10 @@ function efpic_main_edit_screen( $post ) {
 	$post_statuses = apply_filters( 'efpic_edit_screen_post_status', $post_statuses );
 
 	if ( array_key_exists( $post_status, $post_statuses ) ) {
+		// Allow image order / gallery management after the link was sent
+		if ( in_array( $post_status, array( 'sent', 'approved', 'expired' ), true ) ) {
+			efpic_display_draft_view( $post );
+		}
 		// Execute callback function to display edit view by post status
 		$post_statuses[$post_status]( $post );
 	}
@@ -1447,6 +1465,38 @@ function efpic_update_collection_meta( $post_id ) {
 }
 
 add_action( 'save_post_efpic_collection', 'efpic_update_collection_meta', 5 );
+
+
+/**
+ * Keep sent/approved/expired status when saving image order from those screens.
+ *
+ * @since 1.0.23
+ *
+ * @param array $data    Post data.
+ * @param array $postarr Raw post array.
+ * @return array
+ */
+function efpic_keep_collection_status_on_save( $data, $postarr ) {
+	if ( empty( $data['post_type'] ) || 'efpic_collection' !== $data['post_type'] ) {
+		return $data;
+	}
+	if ( empty( $_POST['efpic_keep_status'] ) ) {
+		return $data;
+	}
+
+	$post_id = ! empty( $postarr['ID'] ) ? (int) $postarr['ID'] : 0;
+	if ( $post_id < 1 ) {
+		return $data;
+	}
+
+	$current = get_post_status( $post_id );
+	if ( in_array( $current, array( 'sent', 'approved', 'expired' ), true ) ) {
+		$data['post_status'] = $current;
+	}
+
+	return $data;
+}
+add_filter( 'wp_insert_post_data', 'efpic_keep_collection_status_on_save', 20, 2 );
 
 
 /**
