@@ -4410,3 +4410,47 @@ body.filter-unselected.stars-filter-1 .efpic-collection .efpic-gallery-item.star
     min-width: 5rem;
   }
 }
+
+/* Grid size opens upward (status bar is bottom) + active filter button highlight (1.0.28) */
+.efpic-grid-size {
+  z-index: 20;
+}
+.efpic-grid-size__list {
+  top: auto !important;
+  bottom: calc(100% - 1px);
+  border-radius: 6px 6px 0 0 !important;
+  z-index: 21;
+}
+.efpic-grid-size:has(.efpic-grid-size__list.is-visible) .efpic-grid-size__toggle {
+  border-bottom: 1px solid #aeaeae !important;
+  border-top: none !important;
+  border-radius: 0 0 6px 6px !important;
+  padding-top: 14px;
+  padding-bottom: 13px;
+}
+.efpic-filter-selected,
+.efpic-filter-unselected {
+  border: 1px solid transparent;
+  border-radius: 6px;
+  transition: background-color 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+.filter-selected .efpic-filter-selected,
+.filter-unselected .efpic-filter-unselected {
+  background-color: #eee !important;
+  border-color: #eee !important;
+}
+.filter-selected .efpic-filter-selected .efpic-filter-label,
+.filter-selected .efpic-filter-selected .efpic-filter-icon,
+.filter-unselected .efpic-filter-unselected .efpic-filter-label,
+.filter-unselected .efpic-filter-unselected .efpic-filter-icon {
+  color: #222226 !important;
+}
+.filter-selected .efpic-filter-selected .efpic-filter-icon,
+.filter-unselected .efpic-filter-unselected .efpic-filter-icon {
+  background-color: transparent !important;
+  border-color: transparent !important;
+}
+.filter-selected .efpic-filter-selected .efpic-filter-icon svg,
+.filter-unselected .efpic-filter-unselected .efpic-filter-icon svg {
+  fill: #222226 !important;
+}
