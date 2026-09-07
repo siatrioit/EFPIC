@@ -145,11 +145,11 @@ add_action( 'admin_init', 'efpic_social_links_register_setting' );
  */
 function efpic_social_links_settings_html() {
 	$value = get_option( 'efpic_social_links_enabled', 'on' );
+	$hint  = __( 'Show your social profile links in client galleries. You can turn them off for individual collections.', 'efpic' );
 	ob_start();
 	?>
-	<fieldset class="efpic_settings__settings-item" id="efpic_setting--social_links_enabled">
+	<fieldset class="efpic_settings__settings-item" id="efpic_setting--social_links_enabled" title="<?php echo esc_attr( $hint ); ?>">
 		<h2><?php esc_html_e( 'Social links in galleries', 'efpic' ); ?></h2>
-		<p class="description"><?php esc_html_e( 'Show your social profile links in client galleries. You can turn them off for individual collections.', 'efpic' ); ?></p>
 		<?php echo efpic_feature_on_off_toggle( 'efpic_social_links_enabled', $value ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 	</fieldset>
 	<?php
@@ -186,11 +186,11 @@ function efpic_social_links_collection_post_option( $post ) {
 	}
 
 	$value = efpic_social_links_collection_effective_state( $post->ID );
+	$hint  = __( 'Show photographer social links in this gallery.', 'efpic' );
 	?>
-	<div class="efpic-option-item efpic-social-links-option">
+	<div class="efpic-option-item efpic-social-links-option" title="<?php echo esc_attr( $hint ); ?>">
 		<span class="efpic-social-links-option__label"><?php esc_html_e( 'Social links', 'efpic' ); ?></span>
 		<?php echo efpic_feature_on_off_toggle( 'efpic_collection_social_links', $value ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
-		<span class="efpic-hint"><?php esc_html_e( 'Show photographer social links in this gallery.', 'efpic' ); ?></span>
 	</div>
 	<?php
 }

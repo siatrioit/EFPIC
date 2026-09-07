@@ -202,7 +202,7 @@ function efpic_get_latvian_translations() {
 		'Default expiration time' => 'Noklusējuma derīguma termiņš',
 		'Time span after which a collection expires in days. (Expiration can be activated per collection.)' => 'Dienu skaits līdz derīguma beigām (ieslēdzams katrai kolekcijai).',
 		'New collections will be set to automatically expire.' => 'Jaunās kolekcijas automātiski beigs derīgumu.',
-		'Move to Trash' => 'Pārvietot uz miskasti',
+		'Move to Trash' => 'Pārvietot uz atkritni',
 		'Please note:' => 'Lūdzu, ņem vērā:',
 		'<strong>Please note:</strong> efpic will <strong>NOT</strong> send an email. Make sure to copy and send the link to your client manually.' => '<strong>Uzmanību:</strong> efpic <strong>NESŪTĪS</strong> e-pastu. Nokopē un nosūti saiti klientam pats.',
 		'The password will be sent to the client with the email.' => 'Parole tiks nosūtīta klientam e-pastā.',

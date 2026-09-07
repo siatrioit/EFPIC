@@ -159,7 +159,7 @@ function efpic_collection_metabox( $post ) {
 				<input type="hidden" name="efpic_keep_status" value="1" />
 				<span class="efpic-save-button-wrap">
 				<?php
-				submit_button( __( 'Save', 'efpic' ), 'primary large', 'save', false, array( 'id' => 'save-post' ) );
+				submit_button( __( 'Save', 'efpic' ), 'primary', 'save', false, array( 'id' => 'save-post' ) );
 				?>
 				<span class="spinner"></span>
 				</span>
@@ -178,7 +178,7 @@ function efpic_collection_metabox( $post ) {
 				<span class="efpic-save-button-wrap">
 				<?php
 				// Adds a submit button to save the collection without sending
-				submit_button( __( 'Save', 'efpic' ), 'save-draft large', 'save', false, array( 'id' => 'save-post' ) );
+				submit_button( __( 'Save', 'efpic' ), 'save-draft', 'save', false, array( 'id' => 'save-post' ) );
 				?>
 				<span class="spinner"></span>
 				</span>
@@ -194,7 +194,7 @@ function efpic_collection_metabox( $post ) {
 				}
 
 				// Adds a submit button to publish and send the collection to the client
-				submit_button( $button_text, 'primary large', 'efpic_sendmail', false, array( 'id' => 'publish' ) );
+				submit_button( $button_text, 'primary', 'efpic_sendmail', false, array( 'id' => 'publish' ) );
 
 			}
 			else {
@@ -202,7 +202,7 @@ function efpic_collection_metabox( $post ) {
 				<input type="hidden" name="efpic_keep_status" value="1" />
 				<span class="efpic-save-button-wrap">
 				<?php
-				submit_button( __( 'Save', 'efpic' ), 'primary large', 'save', false, array( 'id' => 'save-post' ) );
+				submit_button( __( 'Save', 'efpic' ), 'primary', 'save', false, array( 'id' => 'save-post' ) );
 				?>
 				<span class="spinner"></span>
 				</span>
@@ -215,6 +215,7 @@ function efpic_collection_metabox( $post ) {
 		<?php
 			}
 		?>
+				<a class="button efpic-delete-button" href="<?php echo esc_url( get_delete_post_link( $post->ID ) ); ?>"><?php esc_html_e( 'Move to Trash', 'efpic' ); ?></a>
 			</div><!-- .efpic-publishing-actions__buttons -->
 
 			<div class="efpic-publishing-actions__modals">
@@ -276,8 +277,6 @@ function efpic_collection_metabox( $post ) {
 			do_action( 'efpic_after_major_publishing_actions', $post );
 		?>
 			</div><!-- .efpic-publishing-actions__modals -->
-
-			<a class="efpic-delete" href="<?php echo get_delete_post_link( $post->ID ); ?>"><?php _e( 'Move to Trash' ); ?></a>
 		</div>
 	</div>
 <?php
