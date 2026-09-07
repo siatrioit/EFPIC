@@ -17,25 +17,24 @@ defined( 'EFPIC_PRO' ) OR exit;
 	?>
 	<div class="efpic-display-filter">
 		<div class="efpic-text-filter">
-			<label class="screen-reader-text" for="efpic-text-filter-input"><?php esc_html_e( 'Filter images by text', 'efpic-pro' ); ?></label>
-			<input type="search" id="efpic-text-filter-input" class="efpic-text-filter__input" placeholder="<?php esc_attr_e( 'Search images…', 'efpic-pro' ); ?>" autocomplete="off" />
+			<input type="search" id="efpic-text-filter-input" class="efpic-text-filter__input" placeholder="<?php esc_attr_e( 'Search images…', 'efpic-pro' ); ?>" aria-label="<?php esc_attr_e( 'Search images…', 'efpic-pro' ); ?>" autocomplete="off" />
 		</div>
-		<a class="efpic-filter-selected">
+		<a class="efpic-filter-selected" title="<?php esc_attr_e( 'Selected', 'efpic-pro' ); ?>">
 			<span class="efpic-filter-icon"><svg viewBox="0 0 100 100"><use xlink:href="#icon_check"></use></svg></span>
 			<span class="efpic-filter-label"><?php _e( 'Selected', 'efpic-pro' ); ?></span>
 		</a>
-		<a class="efpic-filter-unselected">
+		<a class="efpic-filter-unselected" title="<?php esc_attr_e( 'Unselected', 'efpic-pro' ); ?>">
 			<span class="efpic-filter-icon"><svg viewBox="0 0 100 100"><use xlink:href="#icon_close"></use></svg></span>
 			<span class="efpic-filter-label"><?php _e( 'Unselected', 'efpic-pro' ); ?></span>
 		</a>
-		<a class="efpic-filter-reset"><svg viewBox="0 0 100 100"><use xlink:href="#icon_close"></use></svg><span><?php _e( 'Reset filters', 'efpic-pro' ); ?></span></a>
+		<a class="efpic-filter-reset" title="<?php esc_attr_e( 'Reset filters', 'efpic-pro' ); ?>"><svg viewBox="0 0 100 100"><use xlink:href="#icon_close"></use></svg><span><?php _e( 'Reset filters', 'efpic-pro' ); ?></span></a>
 	</div>
 	<div class="efpic-grid-size">
-		<button class="efpic-grid-size__toggle"><?php _e( 'Grid Size', 'efpic-pro' ); ?></button>
+		<button type="button" class="efpic-grid-size__toggle"><?php _e( 'Grid Size', 'efpic-pro' ); ?></button>
 		<ul class="efpic-grid-size__list">
-			<li class="efpic-grid-size__switch__wrap-small"><button class="efpic-grid-size__switch efpic-grid-size__small" id="grid-size-small"><abbr class="efpic-grid-size__abbr"><?php _e( 'S', 'efpic-pro' ); ?></abbr><span class="efpic-grid-size__size"><?php _e( 'Small', 'efpic-pro' ); ?></span></button></li>
-			<li class="efpic-grid-size__switch__wrap-medium"><button class="efpic-grid-size__switch efpic-grid-size__medium" id="grid-size-medium"><abbr class="efpic-grid-size__abbr"><?php _e( 'M', 'efpic-pro' ); ?></abbr><span class="efpic-grid-size__size"><?php _e( 'Medium', 'efpic-pro' ); ?></span></button></li>
-			<li class="efpic-grid-size__switch__wrap-large"><button class="efpic-grid-size__switch efpic-grid-size__large" id="grid-size-large"><abbr class="efpic-grid-size__abbr"><?php _e( 'L', 'efpic-pro' ); ?></abbr><span class="efpic-grid-size__size"><?php _e( 'Large', 'efpic-pro' ); ?></span></button></li>
+			<li class="efpic-grid-size__switch__wrap-small"><button type="button" class="efpic-grid-size__switch efpic-grid-size__small" id="grid-size-small"><abbr class="efpic-grid-size__abbr"><?php _e( 'S', 'efpic-pro' ); ?></abbr><span class="efpic-grid-size__size"><?php _e( 'Small', 'efpic-pro' ); ?></span></button></li>
+			<li class="efpic-grid-size__switch__wrap-medium"><button type="button" class="efpic-grid-size__switch efpic-grid-size__medium" id="grid-size-medium"><abbr class="efpic-grid-size__abbr"><?php _e( 'M', 'efpic-pro' ); ?></abbr><span class="efpic-grid-size__size"><?php _e( 'Medium', 'efpic-pro' ); ?></span></button></li>
+			<li class="efpic-grid-size__switch__wrap-large"><button type="button" class="efpic-grid-size__switch efpic-grid-size__large" id="grid-size-large"><abbr class="efpic-grid-size__abbr"><?php _e( 'L', 'efpic-pro' ); ?></abbr><span class="efpic-grid-size__size"><?php _e( 'Large', 'efpic-pro' ); ?></span></button></li>
 		</ul>
 	</div>
 	<div class="efpic-selection-count">

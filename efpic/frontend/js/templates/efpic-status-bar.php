@@ -5,18 +5,17 @@
 	?>
 	<div class="efpic-display-filter">
 		<div class="efpic-text-filter">
-			<label class="screen-reader-text" for="efpic-text-filter-input"><?php esc_html_e( 'Filter images by text', 'efpic' ); ?></label>
-			<input type="search" id="efpic-text-filter-input" class="efpic-text-filter__input" placeholder="<?php esc_attr_e( 'Search images…', 'efpic' ); ?>" autocomplete="off" />
+			<input type="search" id="efpic-text-filter-input" class="efpic-text-filter__input" placeholder="<?php esc_attr_e( 'Search images…', 'efpic' ); ?>" aria-label="<?php esc_attr_e( 'Search images…', 'efpic' ); ?>" autocomplete="off" />
 		</div>
-		<a class="efpic-filter-selected">
+		<a class="efpic-filter-selected" title="<?php esc_attr_e( 'Selected', 'efpic' ); ?>">
 			<span class="efpic-filter-icon"><svg viewBox="0 0 100 100"><use xlink:href="#icon_check"></use></svg></span>
 			<span class="efpic-filter-label"><?php _e( 'Selected', 'efpic' ); ?></span>
 		</a>
-		<a class="efpic-filter-unselected">
+		<a class="efpic-filter-unselected" title="<?php esc_attr_e( 'Unselected', 'efpic' ); ?>">
 			<span class="efpic-filter-icon"><svg viewBox="0 0 100 100"><use xlink:href="#icon_close"></use></svg></span>
 			<span class="efpic-filter-label"><?php _e( 'Unselected', 'efpic' ); ?></span>
 		</a>
-		<a class="efpic-filter-reset"><svg viewBox="0 0 100 100"><use xlink:href="#icon_close"></use></svg><span><?php _e( 'Reset filters', 'efpic' ); ?></span></a>
+		<a class="efpic-filter-reset" title="<?php esc_attr_e( 'Reset filters', 'efpic' ); ?>"><svg viewBox="0 0 100 100"><use xlink:href="#icon_close"></use></svg><span><?php _e( 'Reset filters', 'efpic' ); ?></span></a>
 	</div>
 	<div class="efpic-selection-count">
 		<a class="efpic-info-button" href="#collection-info" title="<?php _e( 'Show Information about this collection', 'efpic' ); ?>"><?php _e( 'Show Information about this collection', 'efpic' ); ?></a>

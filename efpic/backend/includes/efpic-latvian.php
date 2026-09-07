@@ -43,7 +43,7 @@ function efpic_get_latvian_translations() {
 
 		// Text filter / status bar — keep short for layout
 		'Search images…' => 'Meklēt…',
-		'Filter images by text' => 'Filtrēt bildes',
+		'Filter images by text' => 'Meklēt bildes',
 		'No images match your search.' => 'Nav atbilstošu bilžu.',
 		'Clear search' => 'Notīrīt',
 		'Selected' => 'Atlasītas',
@@ -52,9 +52,9 @@ function efpic_get_latvian_translations() {
 		'Send<span> selection</span>…' => 'Nosūtīt<span> atlasi</span>…',
 		'saved' => 'saglabāts',
 		'Grid Size' => 'Izmērs',
-		'Small' => 'S',
-		'Medium' => 'M',
-		'Large' => 'L',
+		'Small' => 'Mazs',
+		'Medium' => 'Vidējs',
+		'Large' => 'Liels',
 		'Show Information about this collection' => 'Informācija',
 
 		// Collection edit – common
