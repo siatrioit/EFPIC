@@ -51,7 +51,7 @@ if ( ! function_exists( 'efpic_pro_setup' ) ) {
 
 	function efpic_pro_setup() {
 		// Define plugin version
-		define( 'EFPIC_PRO', '1.0.42' );
+		define( 'EFPIC_PRO', '1.0.43' );
 
 		define( 'EFPIC_PRO_NAME', 'EFPIC Pro' );
 		define( 'EFPIC_PRO_LICENSE_PAGE', 'efpic-pro' );
