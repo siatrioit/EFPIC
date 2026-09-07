@@ -218,14 +218,11 @@ function efpic_mark_comment_add_collection_option( $option_output ) {
 		$mc = 0;
 	}
 
-	// Disable option when collection has been sent
-	$disabled = ( 'sent' == $post->post_status ) ? ' disabled' : '';
-
 	// Generate option output
 	ob_start();
 
 	echo '<p>';
-	echo '<input type="checkbox" id="efpic_mark_comment" name="efpic_mark_comment_allow_comments" autocomplete="off" ' . checked( 1, $mc, false ) . ' ' . $disabled . ' /> <label for="efpic_mark_comment">' . __( 'Enable Comments &amp; Markers', 'efpic-pro' ) . '</label></p>';
+	echo '<input type="checkbox" id="efpic_mark_comment" name="efpic_mark_comment_allow_comments" autocomplete="off" ' . checked( 1, $mc, false ) . ' /> <label for="efpic_mark_comment">' . __( 'Enable Comments &amp; Markers', 'efpic-pro' ) . '</label></p>';
 
 	$option_output['efpic-mark-comment'] = ob_get_clean();
 

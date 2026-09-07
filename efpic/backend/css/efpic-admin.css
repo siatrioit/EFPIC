@@ -1395,6 +1395,30 @@ label[for=efpic-copy-filenames], #efpic-copy-filenames {
   height: 0;
   overflow: hidden;
 }
+.efpic-download-zip-variants {
+  margin: 0 0 10px 24px;
+  padding: 8px 12px;
+  background: #fff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+}
+.efpic-download-zip-variant {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin: 0 0 8px !important;
+}
+.efpic-download-zip-variant:last-child {
+  margin-bottom: 0 !important;
+}
+.efpic-download-zip-variant__label {
+  font-weight: 600;
+  line-height: 1.3;
+}
+.efpic-download-zip-variant .efpic-feature-toggle {
+  margin: 0;
+}
 .efpic-collection-options #efpic-download-images #efpic-download-images-options label {
   padding: 0;
   font-weight: normal;

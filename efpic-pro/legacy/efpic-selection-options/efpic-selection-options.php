@@ -39,13 +39,10 @@ function efpic_selection_options_add_collection_option( $options_output ) {
 		$options['extra_image_cost'] = '';
 	}
 
-	// Disable option when collection has been sent
-	$disabled = ( 'sent' == $post->post_status ) ? ' disabled' : '';
-
 	// Generate option output
 	ob_start();
 
-	echo '<p><input type="checkbox" class="js-collapse-control" id="efpic_selection_options" name="efpic_selection_options" ' . checked( true, $options['selection_option'], false ) . ' ' . $disabled . ' autocomplete="off" /> <label for="efpic_selection_options">' . __( 'Set Selection Goal', 'efpic-pro' ) . '&hellip;</label></p>';
+	echo '<p><input type="checkbox" class="js-collapse-control" id="efpic_selection_options" name="efpic_selection_options" ' . checked( true, $options['selection_option'], false ) . ' autocomplete="off" /> <label for="efpic_selection_options">' . __( 'Set Selection Goal', 'efpic-pro' ) . '&hellip;</label></p>';
 	echo '<div class="js-collapsible';
 
 	if ( true != $options['selection_option'] ) {
@@ -55,7 +52,7 @@ function efpic_selection_options_add_collection_option( $options_output ) {
 	echo '" id="efpic-selection-options-options">';
 
 	echo '<p class="efpic-selection-options-row"><label for="efpic-selection-option">' . __( 'The client needs to select', 'efpic-pro' ) . '</label>
-			<select name="efpic-selection-option" id="efpic-selection-option"' . $disabled . '>
+			<select name="efpic-selection-option" id="efpic-selection-option">
 				<option value="exactly" ' . selected( 'exactly', $options['restriction'], false ) . '>' . __( 'exactly', 'efpic-pro' ) . '</option>
 				<option value="at least" ' . selected( 'at least', $options['restriction'], false ) . '>' . __( 'at least', 'efpic-pro' ) . '</option>
 				<option value="a maximum of" ' . selected( 'a maximum of', $options['restriction'], false ) . '>' . __( 'a maximum of', 'efpic-pro' ) . '</option>
@@ -64,19 +61,19 @@ function efpic_selection_options_add_collection_option( $options_output ) {
 			</select>
 			<input type="number" min="1" step="1" name="efpic-selection-option-image-from" id="efpic-selection-option-image-from"';
 			if ( isset( $options['from'] ) AND ! empty( $options['from'] ) ) { echo ' value="' . esc_attr( $options['from'] ) . '"'; }
-			echo $disabled . ' />';
+			echo ' />';
 		echo ' <span class="efpic-range"';
 		if ( 'in the range of' != $options['restriction'] ) { echo ' style="display: none;"'; }
 		echo '><span class="efpic-optional-range">' . __( 'to', 'efpic-pro' ) . '</span> <input type="number" min="1" step="1" name="efpic-selection-option-image-to" id="efpic-selection-option-image-to"';
 			if ( isset( $options['to'] ) AND ! empty( $options['to'] ) ) { echo ' value="' . esc_attr( $options['to'] ) . '"'; }
-		echo $disabled . ' /></span> <span class="efpic-selection-images-label">' . __( 'image(s)', 'efpic-pro' ) . '</span>';
+		echo ' /></span> <span class="efpic-selection-images-label">' . __( 'image(s)', 'efpic-pro' ) . '</span>';
 		echo ' <span class="efpic-in-price-extra"';
 		if ( 'in price' != $options['restriction'] ) { echo ' style="display: none;"'; }
 		echo '><label for="efpic-selection-option-extra-image-cost">' . __( 'Extra image cost', 'efpic-pro' ) . '</label> <input type="number" min="0" step="0.01" name="efpic-selection-option-extra-image-cost" id="efpic-selection-option-extra-image-cost"';
 		if ( '' !== $options['extra_image_cost'] && false !== $options['extra_image_cost'] ) {
 			echo ' value="' . esc_attr( $options['extra_image_cost'] ) . '"';
 		}
-		echo $disabled . ' /></span></p>';
+		echo ' /></span></p>';
 
 	echo '</div>';
 

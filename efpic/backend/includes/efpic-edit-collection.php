@@ -472,6 +472,7 @@ function efpic_main_edit_screen( $post ) {
 		// Allow image order / gallery management after the link was sent
 		if ( in_array( $post_status, array( 'sent', 'approved', 'expired' ), true ) ) {
 			efpic_display_draft_view( $post );
+			efpic_render_collection_options_block( 2 );
 		}
 		// Execute callback function to display edit view by post status
 		$post_statuses[$post_status]( $post );
@@ -487,26 +488,7 @@ function efpic_main_edit_screen( $post ) {
 		 * Include collection options
 		 */
 		$step = 2;
-
-		// Pro modules use this filter to add their options
-		$efpic_collection_options = apply_filters( 'efpic_collection_options', [] );
-
-		if ( is_array( $efpic_collection_options ) AND 0 < count( $efpic_collection_options ) ) {
-
-			$efpic_collection_options_output = '';
-
-			// Wrap options in divs
-			foreach ( $efpic_collection_options as $key => $option ) {
-				$efpic_collection_options_output .= '<div class="efpic-option-set" id="' . $key . '">' . $option . '</div><!-- .efpic-option-set#' . $key . ' -->';
-			}
-
-			echo '<div class="efpic-collection-options"><h2><span class="stepcounter">' . $step . '</span>' . __( 'Collection Options', 'efpic' ) . '</h2>';
-			echo '<input type="hidden" name="efpic_collection_options_form" value="1" />';
-			echo $efpic_collection_options_output . '</div><!-- .efpic-collection-options -->';
-
-			// Add one to the step number
-			$step++;
-		}
+		$step = efpic_render_collection_options_block( $step );
 
 		efpic_display_pro_hint();
 
@@ -517,6 +499,33 @@ function efpic_main_edit_screen( $post ) {
 
 add_action( 'edit_form_after_title', 'efpic_main_edit_screen' );
 
+
+/**
+ * Render Collection Options block (draft and after-send edit screens).
+ *
+ * @since 1.0.40
+ *
+ * @param int $step Step number for the heading counter.
+ * @return int Next step number.
+ */
+function efpic_render_collection_options_block( $step = 2 ) {
+	$efpic_collection_options = apply_filters( 'efpic_collection_options', array() );
+
+	if ( ! is_array( $efpic_collection_options ) || empty( $efpic_collection_options ) ) {
+		return (int) $step;
+	}
+
+	$efpic_collection_options_output = '';
+	foreach ( $efpic_collection_options as $key => $option ) {
+		$efpic_collection_options_output .= '<div class="efpic-option-set" id="' . esc_attr( $key ) . '">' . $option . '</div><!-- .efpic-option-set#' . esc_attr( $key ) . ' -->';
+	}
+
+	echo '<div class="efpic-collection-options"><h2><span class="stepcounter">' . (int) $step . '</span>' . esc_html__( 'Collection Options', 'efpic' ) . '</h2>';
+	echo '<input type="hidden" name="efpic_collection_options_form" value="1" />';
+	echo $efpic_collection_options_output . '</div><!-- .efpic-collection-options -->';
+
+	return (int) $step + 1;
+}
 
 /**
  * Display the share options on the collection edit screen.

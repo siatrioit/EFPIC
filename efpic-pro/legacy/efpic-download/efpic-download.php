@@ -10,6 +10,69 @@ defined( 'EFPIC_PRO' ) OR exit;
 
 
 /**
+ * Normalize download meta (backward compatible with pre-1.0.40 zip-only stores).
+ *
+ * @since 1.0.40
+ *
+ * @param mixed $dl Raw post meta.
+ * @return array
+ */
+function efpic_download_normalize_meta( $dl ) {
+	if ( ! is_array( $dl ) ) {
+		return array(
+			'option'       => false,
+			'url'          => '',
+			'zip_all'      => 'on',
+			'zip_selected' => 'on',
+		);
+	}
+
+	if ( empty( $dl['option'] ) ) {
+		$dl['option'] = false;
+	}
+	if ( ! isset( $dl['url'] ) ) {
+		$dl['url'] = '';
+	}
+	if ( 'zip' === $dl['option'] ) {
+		if ( ! isset( $dl['zip_all'] ) || ( 'on' !== $dl['zip_all'] && 'off' !== $dl['zip_all'] ) ) {
+			$dl['zip_all'] = 'on';
+		}
+		if ( ! isset( $dl['zip_selected'] ) || ( 'on' !== $dl['zip_selected'] && 'off' !== $dl['zip_selected'] ) ) {
+			$dl['zip_selected'] = 'on';
+		}
+	}
+
+	return $dl;
+}
+
+/**
+ * Whether ZIP download of all images is enabled.
+ *
+ * @since 1.0.40
+ *
+ * @param mixed $dl Download meta or raw meta.
+ * @return bool
+ */
+function efpic_download_zip_all_enabled( $dl ) {
+	$dl = efpic_download_normalize_meta( $dl );
+	return ( 'zip' === $dl['option'] && 'on' === $dl['zip_all'] );
+}
+
+/**
+ * Whether ZIP download of selected images is enabled.
+ *
+ * @since 1.0.40
+ *
+ * @param mixed $dl Download meta or raw meta.
+ * @return bool
+ */
+function efpic_download_zip_selected_enabled( $dl ) {
+	$dl = efpic_download_normalize_meta( $dl );
+	return ( 'zip' === $dl['option'] && 'on' === $dl['zip_selected'] );
+}
+
+
+/**
  * Add Download body class.
  *
  * @since download (0.0.2)
@@ -43,21 +106,39 @@ function efpic_download_header_button( $efpic_header, $post_ID ) {
 		return $efpic_header;
 	}
 
-	$dl = get_post_meta( $post_ID, '_efpic_collection_download_images', true );
+	$dl = efpic_download_normalize_meta( get_post_meta( $post_ID, '_efpic_collection_download_images', true ) );
 
-	if ( ! empty( $dl ) AND $dl['option'] == 'zip' ) {
-		add_action ( 'efpic_app_state', function( $state ) { $state['is_zip_download_enabled'] = true; return $state; } );
+	if ( efpic_download_zip_all_enabled( $dl ) || efpic_download_zip_selected_enabled( $dl ) ) {
+		add_action( 'efpic_app_state', function( $state ) {
+			$state['is_zip_download_enabled'] = true;
+			return $state;
+		} );
 	}
 
 	if ( isset( $dl['option'] ) AND $dl['option'] == 'url' ) {
 		return $efpic_header . '<a class="efpic-download-button" href="'. esc_url( $dl['url'] ) . '"><span>' . __( 'Download', 'efpic-pro' ) . '</span><svg viewBox="0 0 100 100"><use xlink:href="#icon-download"></use></svg></a>';
 	}
-	elseif ( isset( $dl['option'] ) AND $dl['option'] == 'zip' AND isset( $dl['url'] ) AND ! empty( $dl['url'] ) AND class_exists( 'ZipArchive' ) ) {
-		return $efpic_header . '<div class="efpic-download-options"><span class="efpic-download-label">' . __( 'Download', 'efpic-pro' ) . '</span> <a class="efpic-download-button" href="'. esc_url( $dl['url'] ) . '"><span>' . __( 'All', 'efpic-pro' ) . '</span><svg viewBox="0 0 100 100"><use xlink:href="#icon-download"></use></svg></a><a class="efpic-download-button download-selected js-download-selected" href="#"><span>' . __( 'Selected', 'efpic-pro' ) . '</span><span class="efpic-download-selected-num"></span><svg viewBox="0 0 100 100"><use xlink:href="#icon-download"></use></svg></a></div>';
-	}
-	// Zip file is not ready yet
-	elseif ( isset( $dl['option'] ) AND $dl['option'] == 'zip' AND empty( $dl['url'] ) ) {
-		return $efpic_header . '<a class="efpic-download-button js-efpic-download-zip-not-ready" href="#"><span>' . __( 'Download ZIP', 'efpic-pro' ) . '</span><svg viewBox="0 0 100 100"><use xlink:href="#icon-download"></use></svg></a>';
+
+	if ( isset( $dl['option'] ) AND $dl['option'] == 'zip' AND class_exists( 'ZipArchive' ) ) {
+		$buttons = '';
+
+		if ( efpic_download_zip_all_enabled( $dl ) ) {
+			if ( ! empty( $dl['url'] ) ) {
+				$buttons .= '<a class="efpic-download-button" href="' . esc_url( $dl['url'] ) . '"><span>' . __( 'All', 'efpic-pro' ) . '</span><svg viewBox="0 0 100 100"><use xlink:href="#icon-download"></use></svg></a>';
+			} else {
+				$buttons .= '<a class="efpic-download-button js-efpic-download-zip-not-ready" href="#"><span>' . __( 'All', 'efpic-pro' ) . '</span><svg viewBox="0 0 100 100"><use xlink:href="#icon-download"></use></svg></a>';
+			}
+		}
+
+		if ( efpic_download_zip_selected_enabled( $dl ) ) {
+			$buttons .= '<a class="efpic-download-button download-selected js-download-selected" href="#"><span>' . __( 'Selected', 'efpic-pro' ) . '</span><span class="efpic-download-selected-num"></span><svg viewBox="0 0 100 100"><use xlink:href="#icon-download"></use></svg></a>';
+		}
+
+		if ( '' === $buttons ) {
+			return $efpic_header;
+		}
+
+		return $efpic_header . '<div class="efpic-download-options"><span class="efpic-download-label">' . __( 'Download', 'efpic-pro' ) . '</span> ' . $buttons . '</div>';
 	}
 
 	return $efpic_header;
@@ -80,9 +161,9 @@ add_action( 'efpic_header', 'efpic_download_header_button', 99, 2 );
 function efpic_download_not_ready_yet( $scripts ) {
 	global $post;
 
-	$dl = get_post_meta( $post->ID, '_efpic_collection_download_images', true );
+	$dl = efpic_download_normalize_meta( get_post_meta( $post->ID, '_efpic_collection_download_images', true ) );
 
-	if ( isset( $dl['option'] ) AND $dl['option'] == 'zip' AND ! isset( $dl['url'] ) ) {
+	if ( efpic_download_zip_all_enabled( $dl ) AND empty( $dl['url'] ) ) {
 
 	$scripts .= '<script>$( \'.js-efpic-download-zip-not-ready\' ).click( function( e ) {
 			e.preventDefault();
@@ -111,10 +192,10 @@ add_action( 'efpic_custom_scripts', 'efpic_download_not_ready_yet' );
 function efpic_initate_background_zip( $scripts ) {
 	global $post;
 
-	$dl = get_post_meta( $post->ID, '_efpic_collection_download_images', true );
+	$dl = efpic_download_normalize_meta( get_post_meta( $post->ID, '_efpic_collection_download_images', true ) );
 
-	// Only add script, if download option is enabled
-	if ( isset( $dl['option'] ) AND $dl['option'] == 'zip' AND $post->post_status != 'delivery-draft' AND $post->post_status != 'delivered' ) {
+	// Only add script if selected ZIP download is enabled
+	if ( efpic_download_zip_selected_enabled( $dl ) AND $post->post_status != 'delivery-draft' AND $post->post_status != 'delivered' ) {
 
 		$scripts .= '<script>
 		efpic.createZip = function() {
@@ -189,6 +270,16 @@ function efpic_trigger_zip() {
 		exit;
 	}
 
+	$dl = efpic_download_normalize_meta( get_post_meta( $post_id, '_efpic_collection_download_images', true ) );
+	if ( ! efpic_download_zip_selected_enabled( $dl ) ) {
+		$return = array(
+			'message' => __( 'Selected image download is not enabled for this collection.', 'efpic-pro' ),
+			'button_text' => __( 'OK', 'efpic' ),
+		);
+		wp_send_json_error( $return );
+		exit;
+	}
+
 	// Sanitize selection
 	if ( isset( $_POST['selection'] ) AND ! empty( $_POST['selection'] ) ) {
 		$temp = $_POST['selection'];
@@ -253,57 +344,68 @@ add_action( 'wp_ajax_nopriv_efpic_create_zip', 'efpic_trigger_zip' );
 function efpic_download_add_collection_option( $option_output ) {
 	global $post;
 
-	$dl = get_post_meta( $post->ID, '_efpic_collection_download_images', true );
+	$dl = efpic_download_normalize_meta( get_post_meta( $post->ID, '_efpic_collection_download_images', true ) );
 
-	if ( ! is_array( $dl ) ) {
-		$dl = array(
-			'option' => false,
-			'url' => ''
-		);
-	}
+	$download = ( 'zip' === $dl['option'] || 'url' === $dl['option'] );
 
-	$download = false;
+	$zip_disabled = '';
+	$url_disabled = '';
 
-	if ( 'zip' == $dl['option'] OR 'url' == $dl['option'] ) {
-		$download = true;
-	}
-
-	// Disable option when collection has been sent
-	$disabled = ( 'sent' == $post->post_status ) ? ' disabled' : '';
-	$zip_disabled = $disabled;
-	$url_disabled = $disabled;
-
-	// Generate option output
 	ob_start();
 
-	echo '<p><input type="checkbox" class="js-collapse-control" id="efpic_download_images" name="efpic_download_images" ' . checked( true, $download, false ) . ' ' . $disabled . ' autocomplete="off" /> <label for="efpic_download_images">' . __( 'Enable image download', 'efpic-pro' ) . '&hellip;</label></p>';
+	echo '<p><input type="checkbox" class="js-collapse-control" id="efpic_download_images" name="efpic_download_images" ' . checked( true, $download, false ) . ' autocomplete="off" /> <label for="efpic_download_images">' . esc_html__( 'Enable image download', 'efpic-pro' ) . '&hellip;</label></p>';
 	echo '<div class="js-collapsible';
 
-	if ( 'zip' != $dl['option'] AND 'url' != $dl['option'] ) {
+	if ( ! $download ) {
 		echo ' is-collapsed';
 		$dl['option'] = 'zip';
 	}
 
-	// Check if zip-class is available
 	$zip_disabled_message = '';
 	$zip_disabled_label_class = '';
 
 	if ( ! class_exists( 'ZipArchive' ) ) {
 		$dl['option'] = 'url';
 		$zip_disabled = ' disabled';
-		$zip_disabled_message = '<span class="efpic-php-zip-error">Not supported. <a class="efpic-help" href="https://efpic.io/docs/pro/download/#zip-not-supported" target="_blank">' . __( 'Learn more', 'efpic-pro' ) . '</a></span>';
+		$zip_disabled_message = '<span class="efpic-php-zip-error">Not supported. <a class="efpic-help" href="https://efpic.io/docs/pro/download/#zip-not-supported" target="_blank">' . esc_html__( 'Learn more', 'efpic-pro' ) . '</a></span>';
 		$zip_disabled_label_class = 'class="efpic-php-zip-error-disabled" ';
 	}
 
 	echo '" id="efpic-download-images-options">';
-	echo '<p><input type="radio" id="efpic_image_download_zip" name="efpic_download_option" value="zip"' . $zip_disabled . ' ' . checked( 'zip', $dl['option'], false ) . ' autocomplete="off" /> <label ' . $zip_disabled_label_class . ' for="efpic_image_download_zip">' . __( 'Automatically create .zip file from collection', 'efpic-pro' ) . '</label>' . $zip_disabled_message . '</p>';
-	echo '<p><input type="radio" id="efpic_image_download_url" name="efpic_download_option" value="url"' . $url_disabled . ' ' . checked( 'url', $dl['option'], false ) . ' autocomplete="off" /> <label for="efpic_image_download_url">' . __( 'Use external URL', 'efpic-pro' ) . '</label> <input style="width: 240px" type="text" name="efpic_image_download_src" placeholder="http://domain.tld/photos.zip" value="';
+	echo '<p><input type="radio" id="efpic_image_download_zip" name="efpic_download_option" value="zip"' . $zip_disabled . ' ' . checked( 'zip', $dl['option'], false ) . ' autocomplete="off" /> <label ' . $zip_disabled_label_class . ' for="efpic_image_download_zip">' . esc_html__( 'Automatically create .zip file from collection', 'efpic-pro' ) . '</label>' . $zip_disabled_message . '</p>';
 
-	if ( isset( $dl['option'] ) AND 'url' == $dl['option'] AND isset( $dl['url'] ) AND ! empty( $dl['url'] ) ) {
-		echo $dl['url'];
+	echo '<div class="efpic-download-zip-variants" id="efpic-download-zip-variants"' . ( 'zip' === $dl['option'] ? '' : ' style="display:none;"' ) . '>';
+	echo '<p class="efpic-download-zip-variant"><span class="efpic-download-zip-variant__label">' . esc_html__( 'Download all images', 'efpic-pro' ) . '</span>';
+	if ( function_exists( 'efpic_feature_on_off_toggle' ) ) {
+		echo efpic_feature_on_off_toggle( 'efpic_download_zip_all', $dl['zip_all'], 'efpic_download_zip_all' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+	echo '</p>';
+	echo '<p class="efpic-download-zip-variant"><span class="efpic-download-zip-variant__label">' . esc_html__( 'Download selected images', 'efpic-pro' ) . '</span>';
+	if ( function_exists( 'efpic_feature_on_off_toggle' ) ) {
+		echo efpic_feature_on_off_toggle( 'efpic_download_zip_selected', $dl['zip_selected'], 'efpic_download_zip_selected' ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+	}
+	echo '</p>';
+	echo '</div>';
+
+	echo '<p><input type="radio" id="efpic_image_download_url" name="efpic_download_option" value="url"' . $url_disabled . ' ' . checked( 'url', $dl['option'], false ) . ' autocomplete="off" /> <label for="efpic_image_download_url">' . esc_html__( 'Use external URL', 'efpic-pro' ) . '</label> <input style="width: 240px" type="text" name="efpic_image_download_src" placeholder="http://domain.tld/photos.zip" value="';
+
+	if ( 'url' === $dl['option'] && ! empty( $dl['url'] ) ) {
+		echo esc_attr( $dl['url'] );
 	}
 
-	echo '" ' . $disabled . ' autocomplete="off" /></p></div>';
+	echo '" autocomplete="off" /></p></div>';
+	?>
+	<script>
+	(function ($) {
+		function efpicDownloadToggleZipVariants() {
+			var isZip = $('#efpic_image_download_zip').is(':checked');
+			$('#efpic-download-zip-variants').toggle(isZip);
+		}
+		$(document).on('change', 'input[name="efpic_download_option"]', efpicDownloadToggleZipVariants);
+		efpicDownloadToggleZipVariants();
+	})(jQuery);
+	</script>
+	<?php
 
 	$option_output['efpic-download-images'] = ob_get_clean();
 
@@ -490,15 +592,36 @@ function efpic_download_save_collection( $post_id, $post ) {
 
 		if ( isset( $_POST['efpic_download_option'] ) AND 'zip' == $_POST['efpic_download_option'] ) {
 
+			$zip_all = ( isset( $_POST['efpic_download_zip_all'] ) && 'off' === sanitize_key( wp_unslash( $_POST['efpic_download_zip_all'] ) ) ) ? 'off' : 'on';
+			$zip_selected = ( isset( $_POST['efpic_download_zip_selected'] ) && 'off' === sanitize_key( wp_unslash( $_POST['efpic_download_zip_selected'] ) ) ) ? 'off' : 'on';
+
 			$temp = array(
-				'option' => 'zip'
+				'option'       => 'zip',
+				'zip_all'      => $zip_all,
+				'zip_selected' => $zip_selected,
 			);
 
-			// Only generate zip file if the user is actually sending the collection
-			// Make sure this only run, when post status is "sent"
-			if ( 'sent' == $post->post_status AND isset( $_REQUEST['efpic_sendmail'] ) ) {
-				$url = efpic_create_download_zip();
-				$temp['url'] = esc_url_raw( $url );
+			// Keep existing all-images ZIP URL when regenerating is not needed
+			$existing = efpic_download_normalize_meta( get_post_meta( $post_id, '_efpic_collection_download_images', true ) );
+			if ( ! empty( $existing['url'] ) && 'zip' === $existing['option'] ) {
+				$temp['url'] = $existing['url'];
+			}
+
+			// Generate all-images ZIP when sending, or when enabling all-download on an already-sent collection
+			$should_build_zip = (
+				'on' === $zip_all
+				&& class_exists( 'ZipArchive' )
+				&& (
+					( 'sent' == $post->post_status AND isset( $_REQUEST['efpic_sendmail'] ) )
+					|| ( in_array( $post->post_status, array( 'sent', 'approved', 'expired' ), true ) && empty( $temp['url'] ) )
+				)
+			);
+
+			if ( $should_build_zip ) {
+				$url = efpic_create_download_zip( $post_id );
+				if ( $url ) {
+					$temp['url'] = esc_url_raw( $url );
+				}
 			}
 
 		}

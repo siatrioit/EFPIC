@@ -400,6 +400,9 @@ function efpic_collection_event_prettify( $event ) {
 		case 'images-updated':
 			return __( 'Images updated', 'efpic' );
 			break;
+		case 'client-permissions-updated':
+			return __( 'Client permissions updated', 'efpic' );
+			break;
 	}
 
 	return $event;
