@@ -579,6 +579,7 @@ function efpic_get_images( $post = '' ) {
 		return json_encode( efpic_get_image_collection( $delivery_images ), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
 	}
 	elseif ( ! empty( $include ) AND 'delivered' != $post->post_status AND 'delivery-draft' != $post->post_status ) {
+		$include = efpic_apply_collection_image_sort( $post->ID, $include, false );
 		return json_encode( efpic_get_image_collection( $include ), JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT );
 	}
 	else {

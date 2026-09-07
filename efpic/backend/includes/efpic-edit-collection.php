@@ -595,6 +595,7 @@ function efpic_display_draft_view( $post ) {
 	// Load the IDs of all uploaded images into an array
 	$gallery_data = get_post_meta( $post->ID, '_efpic_collection_gallery_ids', true );
 	if ( ! empty( $gallery_data ) ) {
+		$gallery_data = efpic_apply_collection_image_sort( $post->ID, $gallery_data, false );
 		$gallery_image_ids = explode( ',', $gallery_data );
 		$gallery_image_count = count( $gallery_image_ids );
 	}
@@ -620,21 +621,22 @@ function efpic_display_draft_view( $post ) {
 				$efpic_section_header_1 = apply_filters( 'efpic_section_header_1', $efpic_section_header_1 );
 			?>
 			<h2><span class="stepcounter">1</span> <?php echo $efpic_section_header_1; ?></h2>
+			<?php
+				$sort_mode = efpic_get_image_sort_mode( $post->ID );
+				$sort_modes = efpic_get_image_sort_modes();
+			?>
 			<div class="efpic-sort-options-wrapper">
-				<select class="efpic-sort-options__select" name="sort-collection">
-					<?php /* translators: Default option in a select menu */ ?>
-					<option value=""><?php _e( 'Select image order', 'efpic' ); ?>&hellip;</option>
-					<?php /* translators: Option in a select menu */ ?>
-					<option value="order-by-name-asc"><?php _e( 'Order by name (ASC)', 'efpic' ); ?></option>
-					<?php /* translators: Option in a select menu */ ?>
-					<option value="order-by-name-desc"><?php _e( 'Order by name (DESC)', 'efpic' ); ?></option>
-					<?php /* translators: Option in a select menu */ ?>
-					<option value="order-by-created-asc"><?php _e( 'Order by created date (ASC)', 'efpic' ); ?></option>
-					<?php /* translators: Option in a select menu */ ?>
-					<option value="order-by-created-desc"><?php _e( 'Order by created date (DESC)', 'efpic' ); ?></option>
+				<label class="efpic-sort-options__label" for="efpic-image-sort-mode">
+					<?php esc_html_e( 'Image order', 'efpic' ); ?>
+				</label>
+				<select class="efpic-sort-options__select" name="efpic_image_sort_mode" id="efpic-image-sort-mode">
+					<?php foreach ( $sort_modes as $value => $label ) : ?>
+						<option value="<?php echo esc_attr( $value ); ?>" <?php selected( $sort_mode, $value ); ?>><?php echo esc_html( $label ); ?></option>
+					<?php endforeach; ?>
 				</select>
-				<?php /* translators: Button text */ ?>
-				<button class="efpic-sort-options__button button button-small" name="sort-collection-submit"><?php _e( 'Sort', 'efpic' ); ?></button>
+				<p class="description efpic-sort-options__hint">
+					<?php esc_html_e( 'Filename order uses the original file name (natural sort, e.g. 2 before 10). Manual keeps drag & drop order.', 'efpic' ); ?>
+				</p>
 			</div>
 			<div class="efpic-gallery-thumbnails">
 			<?php
@@ -1343,12 +1345,36 @@ function efpic_update_collection_meta( $post_id ) {
 		// Sanitize data and put the image ids into a variable
 		$efpic_gallery_ids = sanitize_text_field( $_POST['efpic_gallery_ids'] );
 
+		// Persist sort mode before applying sort
+		if ( isset( $_POST['efpic_image_sort_mode'] ) ) {
+			$modes = efpic_get_image_sort_modes();
+			$mode  = sanitize_key( wp_unslash( $_POST['efpic_image_sort_mode'] ) );
+			if ( isset( $modes[ $mode ] ) ) {
+				update_post_meta( $post_id, '_efpic_image_sort_mode', $mode );
+			}
+		}
+
+		// Apply automatic sort (filename / date) when not manual
+		$previous_order = $efpic_gallery_ids;
+		$efpic_gallery_ids = efpic_apply_collection_image_sort( $post_id, $efpic_gallery_ids, false );
+
 		// Save the image ID's as custom post meta
 		$ids_updated = update_post_meta( $post_id, '_efpic_collection_gallery_ids', $efpic_gallery_ids );
+
+		if ( $previous_order !== $efpic_gallery_ids && 'manual' !== efpic_get_image_sort_mode( $post_id ) ) {
+			set_transient( 'efpic_previous_image_order_' . $post_id, explode( ',', $previous_order ), DAY_IN_SECONDS );
+		}
 
 		// Update existing selections if the images have changed
 		if ( $ids_updated === true ) {
 			efpic_update_client_selections( $post_id, $efpic_gallery_ids );
+		}
+	} elseif ( isset( $_POST['efpic_image_sort_mode'] ) ) {
+		$modes = efpic_get_image_sort_modes();
+		$mode  = sanitize_key( wp_unslash( $_POST['efpic_image_sort_mode'] ) );
+		if ( isset( $modes[ $mode ] ) ) {
+			update_post_meta( $post_id, '_efpic_image_sort_mode', $mode );
+			efpic_apply_collection_image_sort( $post_id, null, true );
 		}
 	}
 
@@ -1424,65 +1450,43 @@ add_action( 'save_post_efpic_collection', 'efpic_update_collection_meta', 5 );
 
 
 /**
- * Handle collection image sorting.
+ * Handle collection image sorting (legacy Sort button + mode sync).
  *
  * @since 1.8.0
+ * @since 1.0.22 Uses shared sort helpers and persists sort mode.
  *
  * @param int $post_id The collection post ID
  */
 function efpic_sort_collection_images( $post_id ) {
-
+	// Legacy one-shot Sort button (kept for backwards compatibility)
 	if ( ! empty( $_POST['sort-collection'] ) AND ! empty( $_POST['efpic_gallery_ids'] ) AND isset( $_POST['sort-collection-submit'] ) ) {
+		$map = array(
+			'order-by-name-asc'     => 'name-asc',
+			'order-by-name-desc'    => 'name-desc',
+			'order-by-created-asc'  => 'created-asc',
+			'order-by-created-desc' => 'created-desc',
+		);
+		$requested = sanitize_text_field( wp_unslash( $_POST['sort-collection'] ) );
+		if ( isset( $map[ $requested ] ) ) {
+			update_post_meta( $post_id, '_efpic_image_sort_mode', $map[ $requested ] );
+		}
 
 		$efpic_collection_images = sanitize_text_field( $_POST['efpic_gallery_ids'] );
-
 		$efpic_gallery_ids = explode( ',', $efpic_collection_images );
-
-		// Save current order to make it undoable
 		set_transient( 'efpic_previous_image_order_' . $post_id, $efpic_gallery_ids, DAY_IN_SECONDS );
 
-		$images = [];
-		$date_sort_error = false;
-		foreach( $efpic_gallery_ids as $image_id ) {
-			if ( strpos( $_POST['sort-collection'], 'order-by-name' ) !== false ) {
-				// Filename as value
-				$images[ $image_id ] = basename( get_attached_file( $image_id ) );
-			}
-			elseif ( strpos( $_POST['sort-collection'], 'order-by-created' )  !== false ) {
-				$temp = wp_get_attachment_metadata( $image_id );
-				// Creation date as value
-				$images[ $image_id ] = $temp['image_meta']['created_timestamp'];
-				if ( $temp['image_meta']['created_timestamp'] == 0 ) {
-					$date_sort_error = true;
-				}
-			}
-		}
+		$sorted = efpic_apply_collection_image_sort( $post_id, $efpic_collection_images, true );
 
-		// Sort in ascending order
-		if ( strpos( $_POST['sort-collection'], 'asc' ) !== false ) {
-			asort( $images );
-		}
-		// Sort in descending order
-		elseif ( strpos( $_POST['sort-collection'], 'desc' ) !== false ) {
-			arsort( $images );
-		}
-
-		$efpic_gallery_ids = implode( ',', array_keys( $images ) );
-		update_post_meta( $post_id, '_efpic_collection_gallery_ids', $efpic_gallery_ids );
-
-		// Order has not changed
-		if ( $efpic_collection_images == $efpic_gallery_ids ) {
+		if ( $efpic_collection_images == $sorted ) {
 			efpic_add_notification( 'efpic_images_sorted', 'notice notice-info is-dismissible', __( 'Images were already sorted in this order.', 'efpic' ) );
 			return;
 		}
 
-		$error = '';
-		if ( $date_sort_error == true ) {
-			/* translators: Admin notice, %s = opening and closing link tags */
-			$error = '<br />' . sprintf( __( '<strong>Please note:</strong> At least one of the images does not contain the necessary meta data for date based sorting. %sLearn more%s', 'efpic' ), '<a href="https://efpic.io/docs/faq/#image-order">', '</a>' );
-		}
-
-		efpic_add_notification( 'efpic_images_sorted', 'notice notice-success is-dismissible', __( 'Image order adjusted.', 'efpic' ) . ' ' . '<a href="' . add_query_arg( 'collection_id', $post_id, wp_nonce_url( get_edit_post_link(), 'undo_image_order', 'undo_image_order' ) ) . '">' . __( 'Undo', 'efpic' ) . '</a>' . $error );
+		efpic_add_notification(
+			'efpic_images_sorted',
+			'notice notice-success is-dismissible',
+			__( 'Image order adjusted.', 'efpic' ) . ' ' . '<a href="' . add_query_arg( 'collection_id', $post_id, wp_nonce_url( get_edit_post_link(), 'undo_image_order', 'undo_image_order' ) ) . '">' . __( 'Undo', 'efpic' ) . '</a>'
+		);
 	}
 }
 

@@ -638,6 +638,127 @@ function efpic_get_image_filename( $attachment_id ) {
 
 
 /**
+ * Allowed per-collection image sort modes.
+ *
+ * @since 1.0.22
+ *
+ * @return array<string,string> mode => label
+ */
+function efpic_get_image_sort_modes() {
+	return array(
+		'manual'       => __( 'Manual (drag & drop)', 'efpic' ),
+		'name-asc'     => __( 'Filename A → Z', 'efpic' ),
+		'name-desc'    => __( 'Filename Z → A', 'efpic' ),
+		'created-asc'  => __( 'Created date (oldest first)', 'efpic' ),
+		'created-desc' => __( 'Created date (newest first)', 'efpic' ),
+	);
+}
+
+
+/**
+ * Get image sort mode for a collection.
+ *
+ * Default: filename A→Z (natural order by original name).
+ *
+ * @since 1.0.22
+ *
+ * @param int $collection_id Collection post ID.
+ * @return string
+ */
+function efpic_get_image_sort_mode( $collection_id ) {
+	$mode = get_post_meta( (int) $collection_id, '_efpic_image_sort_mode', true );
+	$modes = efpic_get_image_sort_modes();
+	if ( empty( $mode ) || ! isset( $modes[ $mode ] ) ) {
+		return 'name-asc';
+	}
+	return $mode;
+}
+
+
+/**
+ * Sort attachment IDs by mode (natural filename / created date).
+ *
+ * @since 1.0.22
+ *
+ * @param int[]  $image_ids Attachment IDs.
+ * @param string $mode      Sort mode.
+ * @return int[] Sorted IDs.
+ */
+function efpic_sort_image_ids( $image_ids, $mode = 'name-asc' ) {
+	$image_ids = array_values( array_filter( array_map( 'intval', (array) $image_ids ) ) );
+	if ( count( $image_ids ) < 2 || 'manual' === $mode ) {
+		return $image_ids;
+	}
+
+	$keyed = array();
+	foreach ( $image_ids as $image_id ) {
+		if ( 0 === strpos( $mode, 'name-' ) ) {
+			$keyed[ $image_id ] = (string) efpic_get_image_filename( $image_id );
+		} else {
+			$meta = wp_get_attachment_metadata( $image_id );
+			$keyed[ $image_id ] = ! empty( $meta['image_meta']['created_timestamp'] )
+				? (int) $meta['image_meta']['created_timestamp']
+				: 0;
+		}
+	}
+
+	$desc = ( false !== strpos( $mode, 'desc' ) );
+
+	if ( 0 === strpos( $mode, 'name-' ) ) {
+		uasort(
+			$keyed,
+			function( $a, $b ) use ( $desc ) {
+				$result = strnatcasecmp( (string) $a, (string) $b );
+				return $desc ? -$result : $result;
+			}
+		);
+	} else {
+		if ( $desc ) {
+			arsort( $keyed, SORT_NUMERIC );
+		} else {
+			asort( $keyed, SORT_NUMERIC );
+		}
+	}
+
+	return array_map( 'intval', array_keys( $keyed ) );
+}
+
+
+/**
+ * Apply collection sort mode to a comma-separated gallery ID string and optionally save.
+ *
+ * @since 1.0.22
+ *
+ * @param int         $collection_id Collection ID.
+ * @param string|null $gallery_ids   Comma-separated IDs; null = load from meta.
+ * @param bool        $persist       Whether to write sorted IDs back to meta.
+ * @return string Comma-separated sorted IDs.
+ */
+function efpic_apply_collection_image_sort( $collection_id, $gallery_ids = null, $persist = true ) {
+	$collection_id = (int) $collection_id;
+	$mode = efpic_get_image_sort_mode( $collection_id );
+
+	if ( null === $gallery_ids ) {
+		$gallery_ids = get_post_meta( $collection_id, '_efpic_collection_gallery_ids', true );
+	}
+
+	if ( empty( $gallery_ids ) ) {
+		return '';
+	}
+
+	$ids = is_array( $gallery_ids ) ? $gallery_ids : explode( ',', $gallery_ids );
+	$sorted = efpic_sort_image_ids( $ids, $mode );
+	$sorted_string = implode( ',', $sorted );
+
+	if ( $persist && 'manual' !== $mode ) {
+		update_post_meta( $collection_id, '_efpic_collection_gallery_ids', $sorted_string );
+	}
+
+	return $sorted_string;
+}
+
+
+/**
  * Create proof txt file.
  *
  * @since 1.5.0

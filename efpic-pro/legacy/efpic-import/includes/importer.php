@@ -282,6 +282,7 @@ function efpic_import_import_files() {
 		}
 		else {
 			update_post_meta( $post_id, '_efpic_collection_gallery_ids', $new_image_ids );
+			$new_image_ids = efpic_apply_collection_image_sort( $post_id, $new_image_ids, true );
 		}
 
 		// Delete temporary image ids

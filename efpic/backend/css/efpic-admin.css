@@ -432,10 +432,20 @@
   position: absolute;
   top: 0;
   right: 0;
-  padding: 5px 5px 0;
+  padding: 5px 8px 0;
+  text-align: right;
+  max-width: 280px;
 }
 .efpic-gallery-has-images .efpic-sort-options-wrapper {
   display: block;
+}
+
+.efpic-sort-options__label {
+  display: block;
+  margin: 0 0 2px;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
 }
 
 select.efpic-sort-options__select {
@@ -444,6 +454,14 @@ select.efpic-sort-options__select {
   max-height: 26px;
   font-size: 11px;
   line-height: 2.18181818;
+  max-width: 100%;
+}
+
+.efpic-sort-options__hint {
+  margin: 4px 0 0 !important;
+  font-size: 11px !important;
+  line-height: 1.35 !important;
+  color: #646970;
 }
 
 .wp-core-ui .button.efpic-sort-options__button {
