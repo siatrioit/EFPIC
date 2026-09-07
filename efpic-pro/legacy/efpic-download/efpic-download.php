@@ -372,7 +372,7 @@ function efpic_download_add_collection_option( $option_output ) {
 	if ( ! class_exists( 'ZipArchive' ) ) {
 		$dl['option'] = 'url';
 		$zip_disabled = ' disabled';
-		$zip_disabled_message = '<span class="efpic-php-zip-error">Not supported. <a class="efpic-help" href="https://efpic.io/docs/pro/download/#zip-not-supported" target="_blank">' . esc_html__( 'Learn more', 'efpic-pro' ) . '</a></span>';
+		$zip_disabled_message = '<span class="efpic-php-zip-error">' . esc_html__( 'Not supported.', 'efpic-pro' ) . ' <a class="efpic-help" href="https://efpic.io/docs/pro/download/#zip-not-supported" target="_blank">' . esc_html__( 'Learn more', 'efpic-pro' ) . '</a></span>';
 		$zip_disabled_label_class = 'class="efpic-php-zip-error-disabled" ';
 	}
 
