@@ -780,7 +780,6 @@ function efpic_display_draft_view( $post ) {
 	ob_start();
 ?>
 	<div class="postbox efpic-postbox <?php echo esc_attr( $gallery_class ); ?>"<?php echo $foldable ? ' data-efpic-fold="images" data-efpic-fold-post="' . (int) $post->ID . '"' : ''; ?>>
-		<div class="efpic-postbox-inner">
 			<?php
 				$efpic_section_header_1 = __( 'Upload Images', 'efpic' );
 				$efpic_section_header_1 = apply_filters( 'efpic_section_header_1', $efpic_section_header_1 );
@@ -793,6 +792,7 @@ function efpic_display_draft_view( $post ) {
 				<?php endif; ?>
 			</h2>
 			<div<?php echo $foldable ? ' class="efpic-foldable-section__body"' : ''; ?>>
+			<div class="efpic-postbox-inner">
 			<?php
 				$sort_mode = efpic_get_image_sort_mode( $post->ID );
 				$sort_modes = efpic_get_image_sort_modes();
@@ -853,8 +853,8 @@ function efpic_display_draft_view( $post ) {
 				<p><a class="button efpic-upload-image-button" href="#"><?php _e( 'Upload / Edit Images', 'efpic' ); ?></a></p>
 				<p class="efpic-max-file-size"><?php echo __( 'Maximum upload size', 'efpic' ) . ': ' . size_format( wp_max_upload_size() ); ?> <a class="efpic-help" href="https://efpic.io/docs/faq#maximum-upload-size" target="_blank"><?php _e( 'Help', 'efpic' ); ?></a></p>
 			</div><!-- .efpic-gallery-uploader -->
+			</div><!-- .efpic-postbox-inner -->
 			</div><!-- .efpic-foldable-section__body -->
-		</div><!-- .efpic-postbox-inner -->
 	</div><!-- .postbox.efpic-postbox -->
 <?php
 	echo ob_get_clean();
