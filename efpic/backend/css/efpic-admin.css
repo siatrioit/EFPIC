@@ -5379,11 +5379,10 @@ body[class*=efpic_page_efpic-] #wpbody-content > div.notice {
 
 .efpic-feature-toggle {
   display: inline-flex;
-  gap: 6px;
   margin: 0.5em 0;
 }
 .efpic-feature-toggle .button {
-  min-width: 4.5rem;
+  min-width: 6.5rem;
   border-radius: 8px !important;
 }
 .efpic-social-links-option {

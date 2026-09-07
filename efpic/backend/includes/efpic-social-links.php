@@ -150,32 +150,8 @@ function efpic_social_links_settings_html() {
 	<fieldset class="efpic_settings__settings-item" id="efpic_setting--social_links_enabled">
 		<h2><?php esc_html_e( 'Social links in galleries', 'efpic' ); ?></h2>
 		<p class="description"><?php esc_html_e( 'Show your social profile links in client galleries. You can turn them off for individual collections.', 'efpic' ); ?></p>
-		<p class="efpic-feature-toggle" data-efpic-toggle="efpic_social_links_enabled">
-			<button type="button" class="button<?php echo 'on' === $value ? ' button-primary' : ''; ?>" data-efpic-toggle-value="on"><?php esc_html_e( 'On', 'efpic' ); ?></button>
-			<button type="button" class="button<?php echo 'off' === $value ? ' button-primary' : ''; ?>" data-efpic-toggle-value="off"><?php esc_html_e( 'Off', 'efpic' ); ?></button>
-			<input type="hidden" name="efpic_social_links_enabled" id="efpic_social_links_enabled" value="<?php echo esc_attr( $value ); ?>" />
-		</p>
+		<?php echo efpic_feature_on_off_toggle( 'efpic_social_links_enabled', $value ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 	</fieldset>
-	<script>
-	(function(){
-		document.querySelectorAll('[data-efpic-toggle]').forEach(function(wrap){
-			if (wrap.getAttribute('data-efpic-toggle-bound')) return;
-			wrap.setAttribute('data-efpic-toggle-bound', '1');
-			var input = wrap.querySelector('input[type="hidden"]');
-			if (!input) return;
-			wrap.querySelectorAll('[data-efpic-toggle-value]').forEach(function(btn){
-				btn.addEventListener('click', function(e){
-					e.preventDefault();
-					var val = btn.getAttribute('data-efpic-toggle-value');
-					input.value = val;
-					wrap.querySelectorAll('[data-efpic-toggle-value]').forEach(function(b){
-						b.classList.toggle('button-primary', b === btn);
-					});
-				});
-			});
-		});
-	})();
-	</script>
 	<?php
 	return ob_get_clean();
 }
@@ -213,33 +189,9 @@ function efpic_social_links_collection_post_option( $post ) {
 	?>
 	<div class="efpic-option-item efpic-social-links-option">
 		<span class="efpic-social-links-option__label"><?php esc_html_e( 'Social links', 'efpic' ); ?></span>
-		<p class="efpic-feature-toggle" data-efpic-toggle="efpic_collection_social_links">
-			<button type="button" class="button<?php echo 'on' === $value ? ' button-primary' : ''; ?>" data-efpic-toggle-value="on"><?php esc_html_e( 'On', 'efpic' ); ?></button>
-			<button type="button" class="button<?php echo 'off' === $value ? ' button-primary' : ''; ?>" data-efpic-toggle-value="off"><?php esc_html_e( 'Off', 'efpic' ); ?></button>
-			<input type="hidden" name="efpic_collection_social_links" id="efpic_collection_social_links" value="<?php echo esc_attr( $value ); ?>" />
-		</p>
+		<?php echo efpic_feature_on_off_toggle( 'efpic_collection_social_links', $value ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
 		<span class="efpic-hint"><?php esc_html_e( 'Show photographer social links in this gallery.', 'efpic' ); ?></span>
 	</div>
-	<script>
-	(function(){
-		document.querySelectorAll('[data-efpic-toggle]').forEach(function(wrap){
-			if (wrap.getAttribute('data-efpic-toggle-bound')) return;
-			wrap.setAttribute('data-efpic-toggle-bound', '1');
-			var input = wrap.querySelector('input[type="hidden"]');
-			if (!input) return;
-			wrap.querySelectorAll('[data-efpic-toggle-value]').forEach(function(btn){
-				btn.addEventListener('click', function(e){
-					e.preventDefault();
-					var val = btn.getAttribute('data-efpic-toggle-value');
-					input.value = val;
-					wrap.querySelectorAll('[data-efpic-toggle-value]').forEach(function(b){
-						b.classList.toggle('button-primary', b === btn);
-					});
-				});
-			});
-		});
-	})();
-	</script>
 	<?php
 }
 add_action( 'efpic_collection_post_options', 'efpic_social_links_collection_post_option' );

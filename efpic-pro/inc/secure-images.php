@@ -55,29 +55,12 @@ function efpic_secure_images_setting_html() {
 	<fieldset class="efpic_settings__settings-item">
 		<h2><?php esc_html_e( 'Prevent direct image access', 'efpic-pro' ); ?></h2>
 		<p class="description"><?php esc_html_e( 'When enabled, collection images can only be loaded from within an efpic gallery (not via a direct file URL).', 'efpic-pro' ); ?></p>
-		<p class="efpic-feature-toggle" data-efpic-toggle="efpic_prevent_direct_access">
-			<button type="button" class="button<?php echo 'on' === $value ? ' button-primary' : ''; ?>" data-efpic-toggle-value="on"><?php esc_html_e( 'On', 'efpic-pro' ); ?></button>
-			<button type="button" class="button<?php echo 'off' === $value ? ' button-primary' : ''; ?>" data-efpic-toggle-value="off"><?php esc_html_e( 'Off', 'efpic-pro' ); ?></button>
-			<input type="hidden" name="efpic_prevent_direct_access" id="efpic_prevent_direct_access" value="<?php echo esc_attr( $value ); ?>" />
-		</p>
+		<?php
+		if ( function_exists( 'efpic_feature_on_off_toggle' ) ) {
+			echo efpic_feature_on_off_toggle( 'efpic_prevent_direct_access', $value ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		}
+		?>
 	</fieldset>
-	<script>
-	(function(){
-		document.querySelectorAll('[data-efpic-toggle]').forEach(function(wrap){
-			var input = wrap.querySelector('input[type="hidden"]');
-			wrap.querySelectorAll('[data-efpic-toggle-value]').forEach(function(btn){
-				btn.addEventListener('click', function(e){
-					e.preventDefault();
-					var val = btn.getAttribute('data-efpic-toggle-value');
-					input.value = val;
-					wrap.querySelectorAll('[data-efpic-toggle-value]').forEach(function(b){
-						b.classList.toggle('button-primary', b === btn);
-					});
-				});
-			});
-		});
-	})();
-	</script>
 	<?php
 	return ob_get_clean();
 }
