@@ -500,7 +500,9 @@ function efpic_main_edit_screen( $post ) {
 				$efpic_collection_options_output .= '<div class="efpic-option-set" id="' . $key . '">' . $option . '</div><!-- .efpic-option-set#' . $key . ' -->';
 			}
 
-			echo '<div class="efpic-collection-options"><h2><span class="stepcounter">' . $step . '</span>' . __( 'Collection Options', 'efpic' ) . '</h2>' . $efpic_collection_options_output . '</div><!-- .efpic-collection-options -->';
+			echo '<div class="efpic-collection-options"><h2><span class="stepcounter">' . $step . '</span>' . __( 'Collection Options', 'efpic' ) . '</h2>';
+			echo '<input type="hidden" name="efpic_collection_options_form" value="1" />';
+			echo $efpic_collection_options_output . '</div><!-- .efpic-collection-options -->';
 
 			// Add one to the step number
 			$step++;

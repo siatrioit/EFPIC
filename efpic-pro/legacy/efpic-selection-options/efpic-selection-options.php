@@ -226,6 +226,11 @@ function efpic_selection_options_save_collection( $post_id ) {
 		return $post_id;
 	}
 
+	// Sent/approved screens do not post Collection Options — keep existing meta.
+	if ( function_exists( 'efpic_pro_should_skip_collection_option_save' ) && efpic_pro_should_skip_collection_option_save( $post_id ) ) {
+		return $post_id;
+	}
+
 	if ( isset( $_REQUEST['efpic_gallery_ids'] ) ) {
 		$num = count( explode( ',', $_REQUEST['efpic_gallery_ids'] ) );
 	} else {

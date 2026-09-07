@@ -260,6 +260,11 @@ function efpic_mark_comment_save_collection( $post_id ) {
 		return $post_id;
 	}
 
+	// Sent/approved screens do not post Collection Options — keep existing meta.
+	if ( function_exists( 'efpic_pro_should_skip_collection_option_save' ) && efpic_pro_should_skip_collection_option_save( $post_id ) ) {
+		return $post_id;
+	}
+
 	// Check options, save as meta data accordingly
 	if ( isset( $_POST['efpic_mark_comment_allow_comments'] ) AND 'on' == $_POST['efpic_mark_comment_allow_comments'] ) {
 		$temp = 1;
