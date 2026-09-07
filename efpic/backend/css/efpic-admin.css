@@ -5460,6 +5460,28 @@ body[class*=efpic_page_efpic-] #wpbody-content > div.notice {
 .efpic-feature-toggle.is-on .efpic-feature-toggle__knob {
   transform: translateX(18px);
 }
+.efpic-post-options .efpic-option-item.efpic-social-links-option {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  padding: 10px 12px;
+}
+.efpic-post-options .efpic-option-item.efpic-social-links-option .efpic-feature-toggle {
+  margin: 0;
+  flex: 0 0 auto;
+  display: inline-flex;
+  vertical-align: middle;
+}
+.efpic-post-options .efpic-option-item.efpic-social-links-option .efpic-social-links-option__label {
+  font-weight: 600;
+  line-height: 1.3;
+  display: inline-flex;
+  align-items: center;
+  white-space: nowrap;
+}
 .efpic-social-links-option {
   display: flex;
   flex-direction: row;

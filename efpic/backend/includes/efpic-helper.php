@@ -2085,7 +2085,7 @@ function efpic_feature_on_off_toggle( $name, $value, $id = '' ) {
 
 	ob_start();
 	?>
-	<p class="efpic-feature-toggle<?php echo $is_on ? ' is-on' : ' is-off'; ?>" data-efpic-toggle>
+	<span class="efpic-feature-toggle<?php echo $is_on ? ' is-on' : ' is-off'; ?>" data-efpic-toggle>
 		<button type="button"
 			class="efpic-feature-toggle__switch"
 			data-efpic-toggle-btn
@@ -2099,10 +2099,25 @@ function efpic_feature_on_off_toggle( $name, $value, $id = '' ) {
 			id="<?php echo esc_attr( $id ); ?>"
 			value="<?php echo esc_attr( $value ); ?>"
 			data-efpic-toggle-input />
-	</p>
+	</span>
 	<?php
-	efpic_feature_on_off_toggle_script();
+	efpic_feature_on_off_toggle_enqueue_script();
 	return ob_get_clean();
+}
+
+/**
+ * Ensure On/Off toggle script is printed once in admin footer (not inline in layout).
+ *
+ * @since 1.0.32
+ * @since 1.0.36 Print via admin_footer so it does not break flex rows.
+ */
+function efpic_feature_on_off_toggle_enqueue_script() {
+	static $hooked = false;
+	if ( $hooked ) {
+		return;
+	}
+	$hooked = true;
+	add_action( 'admin_footer', 'efpic_feature_on_off_toggle_script', 50 );
 }
 
 /**
