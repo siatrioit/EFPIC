@@ -2262,15 +2262,65 @@ input[type=radio].efpic-radio-tab-input {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-  -webkit-box-pack: start;
-      -ms-flex-pack: start;
-          justify-content: flex-start;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
   gap: 10px;
   padding: 10px 12px 0px;
 }
-.post-status-auto-draft #efpic-submit-metabox #major-publishing-actions, .post-status-draft #efpic-submit-metabox #major-publishing-actions, .post-status-delivery-draft #efpic-submit-metabox #major-publishing-actions {
+.efpic-publishing-actions__buttons {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+.efpic-publishing-actions__buttons .button,
+.efpic-publishing-actions__buttons .button-primary,
+.efpic-publishing-actions__buttons .button-large,
+.efpic-publishing-actions__buttons input.button,
+.efpic-publishing-actions__buttons input.button-primary {
+  float: none !important;
+  margin: 0 !important;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
+  white-space: nowrap;
+}
+.efpic-publishing-actions__buttons .efpic-save-button-wrap {
+  display: -webkit-inline-box;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  gap: 4px;
+  -webkit-box-flex: 0;
+      -ms-flex: 0 0 auto;
+          flex: 0 0 auto;
+}
+.efpic-publishing-actions__modals {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.efpic-publishing-actions__modals .efpic-modal {
+  pointer-events: auto;
+}
+.post-status-auto-draft #efpic-submit-metabox #major-publishing-actions .efpic-publishing-actions__buttons,
+.post-status-draft #efpic-submit-metabox #major-publishing-actions .efpic-publishing-actions__buttons,
+.post-status-delivery-draft #efpic-submit-metabox #major-publishing-actions .efpic-publishing-actions__buttons {
   -webkit-box-pack: justify;
       -ms-flex-pack: justify;
           justify-content: space-between;
@@ -5281,6 +5331,9 @@ body[class*=efpic_page_efpic-] #wpbody-content > div.notice {
   padding: 12px;
   background: #fafbfc;
   border-top: 1px solid #eef0f3;
+}
+.post-type-efpic_collection #efpic-submit-metabox .efpic-publishing-actions__buttons {
+  gap: 8px;
 }
 .post-type-efpic_collection #efpic-submit-metabox .button,
 .post-type-efpic_collection #efpic-submit-metabox .button-primary,

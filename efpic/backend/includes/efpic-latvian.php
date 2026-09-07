@@ -108,7 +108,7 @@ function efpic_get_latvian_translations() {
 		'Help' => 'Palīdzība',
 		'Show all images' => 'Rādīt visas bildes',
 		'Hide images' => 'Slēpt bildes',
-		'Copy Filenames' => 'Kopēt failu nosaukumus',
+		'Copy Filenames' => 'Kopēt nosaukumus',
 		'Download Proof' => 'Lejupielādēt apstiprinājumu',
 		'Collection reopened.' => 'Kolekcija atvērta atkārtoti.',
 		'Open' => 'Atvērt',
@@ -258,6 +258,121 @@ function efpic_get_latvian_translations() {
 }
 
 /**
+ * Extra Latvian strings (admin filters, history, menu, import, branding).
+ *
+ * @param array $map Existing map.
+ * @return array
+ */
+function efpic_latvian_translations_extra( $map ) {
+	$extra = array(
+		'Copy Filenames %s' => 'Kopēt nosaukumus %s',
+		'Copy %s Filename' => 'Kopēt %s failu',
+		'Selected by all' => 'Atlasījuši visi',
+		'Selected at least once' => 'Atlasīta vismaz reizi',
+		'Selected by %s' => 'Atlasījis: %s',
+		'Not selected' => 'Neatlasītas',
+		'All' => 'Visas',
+		'Thumbnail' => 'Sīktēls',
+		'File' => 'Fails',
+		'Proof' => 'Apstiprinājums',
+		'Download' => 'Lejupielādēt',
+		'Reopen' => 'Atvērt no jauna',
+		'Remove…' => 'Noņemt…',
+		'View' => 'Skatīt',
+		'No events yet.' => 'Vēl nav notikumu.',
+		'All images' => 'Visas bildes',
+		'Selected images only' => 'Tikai atlasītās',
+		'Unselected images only' => 'Tikai neatlasītās',
+		'You are about to remove this client' => 'Tu gatavojies noņemt šo klientu',
+		'All selections by this client will be deleted. This cannot be undone.' => 'Visas šī klienta atlases tiks dzēstas. To nevarēs atsaukt.',
+		'Are you sure, you want to remove this client?' => 'Vai tiešām vēlies noņemt šo klientu?',
+		'Yes, remove client' => 'Jā, noņemt klientu',
+		'Sent to client(s)' => 'Nosūtīts klientam(-iem)',
+		'Sent to additional client' => 'Nosūtīts papildu klientam',
+		'New client registered' => 'Reģistrēts jauns klients',
+		'Removed client' => 'Klients noņemts',
+		'Approved by client' => 'Klients apstiprināja',
+		'Reopened for client' => 'Atvērts klientam no jauna',
+		'Reopened' => 'Atvērts no jauna',
+		'Reverted to draft' => 'Atgriezts melnrakstā',
+		'Reverted to delivery draft' => 'Atgriezts piegādes melnrakstā',
+		'Closed manually' => 'Aizvērts manuāli',
+		'Preparing Delivery' => 'Sagatavo piegādi',
+		'Delivery published' => 'Piegāde publicēta',
+		'Last modified' => 'Pēdējās izmaiņas',
+		'Images updated' => 'Bildes atjauninātas',
+		'Collections' => 'Kolekcijas',
+		'Collection' => 'Kolekcija',
+		'All Collections' => 'Visas kolekcijas',
+		'Edit Collection' => 'Rediģēt kolekciju',
+		'View Collection' => 'Skatīt kolekciju',
+		'Search Collections' => 'Meklēt kolekcijas',
+		'No Collection Found' => 'Kolekcija nav atrasta',
+		'No Collection Found in Trash' => 'Miskastē kolekcija nav atrasta',
+		'Parent Collection' => 'Vecākkolekcija',
+		'Filter collections list' => 'Filtrēt kolekciju sarakstu',
+		'Collections list navigation' => 'Kolekciju saraksta navigācija',
+		'Collections list' => 'Kolekciju saraksts',
+		'Title' => 'Nosaukums',
+		'Clients' => 'Klienti',
+		'Expiration' => 'Derīgums',
+		'Last Modified' => 'Pēdējās izmaiņas',
+		'Actions' => 'Darbības',
+		'This collection has been delivered to the client.' => 'Šī kolekcija ir piegādāta klientam.',
+		'This collection is a delivery draft.' => 'Šī kolekcija ir piegādes melnraksts.',
+		'This collection is open.' => 'Šī kolekcija ir atvērta.',
+		'This collection is closed.' => 'Šī kolekcija ir aizvērta.',
+		'This collection is a draft, which means it cannot be publicly accessed' => 'Šī kolekcija ir melnraksts un nav publiski pieejama',
+		'This collection is in the trash. You can either restore or permanently delete it.' => 'Šī kolekcija ir miskastē. Vari atjaunot vai neatgriezeniski dzēst.',
+		'(no title)' => '(bez nosaukuma)',
+		'Import / Upload Images' => 'Importēt / augšupielādēt bildes',
+		'Import' => 'Imports',
+		'Import images right from your web server.' => 'Importē bildes tieši no web servera.',
+		'Import from folder' => 'Importēt no mapes',
+		'Import Images' => 'Importēt bildes',
+		'Importing' => 'Importē',
+		'Import successful.' => 'Imports veiksmīgs.',
+		'Import canceled.' => 'Imports atcelts.',
+		'Upload images' => 'Augšupielādēt bildes',
+		'efpic Pro' => 'EFPIC Pro',
+		'EFPIC' => 'EFPIC',
+		'efpic' => 'EFPIC',
+		'Theme' => 'Tēma',
+		'Dark' => 'Tumša',
+		'Light' => 'Gaiša',
+		'Email' => 'E-pasts',
+		'Client language' => 'Klienta valoda',
+		'Latvian' => 'Latviešu',
+		'English' => 'Angļu',
+		'Language for all messages the client sees in the gallery and in emails for this collection.' => 'Valoda visiem ziņojumiem, ko klients redz galerijā un e-pastos šai kolekcijai.',
+		'Defaults to the collection author\'s email address.' => 'Noklusējumā — kolekcijas autora e-pasts.',
+		'new' => 'jauns',
+		'Dismiss this notice.' => 'Aizvērt paziņojumu.',
+		'Client' => 'Klients',
+		'Your delivery is ready! Make sure to send the link to your client:' => 'Piegāde gatava! Nosūti saiti klientam:',
+		'The collection is ready! Make sure to send the link to your client:' => 'Kolekcija gatava! Nosūti saiti klientam:',
+		'efpic Client Access' => 'EFPIC klientu piekļuve',
+		'efpic Settings' => 'EFPIC iestatījumi',
+		'General efpic settings.' => 'Vispārīgie EFPIC iestatījumi.',
+		'Show efpic logo' => 'Rādīt EFPIC logo',
+		'Spread some efpic love, by displaying our logo in collections and efpic related emails.' => 'Rādīt EFPIC logo kolekcijās un e-pastos.',
+		'efpic email settings.' => 'EFPIC e-pasta iestatījumi.',
+		'<strong>Please note:</strong> efpic will <strong>NOT</strong> send an email. Make sure to copy and send the link to your client manually.' => '<strong>Uzmanību:</strong> EFPIC <strong>NESŪTĪS</strong> e-pastu. Nokopē un nosūti saiti klientam pats.',
+		'efpic Collections List' => 'EFPIC kolekciju saraksts',
+		'Download a CSV list of all efpic collections (title, status, clients, image count, URL).' => 'Lejupielādē visu EFPIC kolekciju CSV sarakstu (nosaukums, statuss, klienti, bilžu skaits, URL).',
+		'When enabled, collection images can only be loaded from within an efpic gallery (not via a direct file URL).' => 'Kad ieslēgts, kolekcijas bildes ielādējas tikai no EFPIC galerijas (nevis ar tiešu faila URL).',
+		'Switch between different image processors to improve performance when uploading/importing images.<br /><strong>Please be aware, that this affects all media uploads on your site, not just efpic images.</strong>' => 'Maini attēlu procesoru, lai uzlabotu augšupielādi.<br /><strong>Ietekmē visas vietnes mediijas, ne tikai EFPIC.</strong>',
+		'Use random URLs for efpic collections' => 'Nejauši URL kolekcijām',
+		'A random password will automatically assigned to all new efpic collections.' => 'Jaunām kolekcijām automātiski tiks piešķirta nejauša parole.',
+		'If a client started selecting images but did not finally approve the collection, efpic will automatically send a reminder after 24 hours.' => 'Ja klients sāka atlasi, bet neapstiprināja, pēc 24 h tiks nosūtīts atgādinājums.',
+		'efpic Collection base' => 'EFPIC kolekciju bāze',
+	);
+
+	return array_merge( $map, $extra );
+}
+add_filter( 'efpic_latvian_translations', 'efpic_latvian_translations_extra', 5 );
+
+/**
  * Apply Latvian gettext overrides.
  *
  * @param string $translation Translated text.
@@ -276,6 +391,11 @@ function efpic_latvian_gettext( $translation, $text, $domain ) {
 	$map = efpic_get_latvian_translations();
 	if ( isset( $map[ $text ] ) ) {
 		return $map[ $text ];
+	}
+
+	// Brand display name: efpic -> EFPIC (keep URLs like efpic.io untouched).
+	if ( 'efpic' === $text || 'efpic' === $translation ) {
+		return 'EFPIC';
 	}
 
 	return $translation;

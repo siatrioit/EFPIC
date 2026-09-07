@@ -19,8 +19,8 @@ defined( 'ABSPATH' ) OR exit;
 function efpic_plugin_menu() {
 
 	add_menu_page(
-		'efpic',
-		'efpic',
+		'EFPIC',
+		'EFPIC',
 		efpic_capability(),
 		'efpic',
 		'',

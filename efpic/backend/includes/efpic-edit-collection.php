@@ -145,21 +145,11 @@ function efpic_collection_metabox( $post ) {
 
 	<div id="submitpost">
 		<div id="major-publishing-actions">
+			<div class="efpic-publishing-actions__buttons">
 		<?php
 			if ( get_post_status() == 'delivered' ) {
 		?>
 				<a class="button js-efpic-edit" href="<?php print wp_nonce_url( admin_url( "post.php?post=" . $post->ID . "&action=edit" ), 'efpic_collection_reopen_' . $post->ID, 'reopen' ); ?>"><?php _e( 'Edit Delivery', 'efpic' ); ?></a>
-
-				<div class="efpic-modal efpic-warning is-hidden" id="js-efpic-edit">
-					<div class="efpic-modal-inner">
-						<div class="efpic-modal-content">
-							<h3><?php _e( 'Caution!', 'efpic' ); ?></h3><p><?php _e ( 'You already delivered this collection to your client.', 'efpic' ); ?></p><p><strong><?php _e ( 'Are you sure you want to make changes?', 'efpic' ); ?></strong></p>
-							<div class="efpic-modal-actions">
-								<a class="button button-primary" href="<?php print wp_nonce_url( admin_url( "post.php?post=" . $post->ID . "&action=edit" ), 'efpic_collection_reopen_' . $post->ID, 'reopen' ); ?>"><?php _e( 'Yes, I am sure', 'efpic' ); ?></a> <a class="button efpic-cancel-modal js-efpic-cancel-modal" href=""><?php _e( 'Cancel', 'efpic' ); ?></a>
-							</div>
-						</div>
-					</div>
-				</div>
 		<?php
 			}
 			elseif ( get_post_status() == 'sent' ) {
@@ -171,52 +161,13 @@ function efpic_collection_metabox( $post ) {
 				?>
 				<span class="spinner"></span>
 				</span>
-				<a class="button js-efpic-close" href="<?php print wp_nonce_url( admin_url( "post.php?post=" . $post->ID . "&action=close" ), 'efpic_collection_close_' . $post->ID, 'close' ); ?>"><?php _e( 'Close', 'efpic' ); ?></a>
 				<a class="button js-efpic-edit" href="<?php print wp_nonce_url( admin_url( "post.php?post=" . $post->ID . "&action=edit" ), 'efpic_collection_reopen_' . $post->ID, 'reopen' ); ?>"><?php _e( 'Edit', 'efpic' ); ?></a>
-		<?php 
-			if ( efpic_get_selection_count( $post->ID ) > 0 ) {
-		?>
+				<?php if ( efpic_get_selection_count( $post->ID ) > 0 ) { ?>
 				<a class="button js-efpic-duplicate" data-id="<?php echo $post->ID; ?>" href="<?php echo wp_nonce_url( admin_url( 'post.php?efpic_duplicate_collection=' . $post->ID ), 'efpic_duplicate_collection', 'efpic_duplication_nonce' ); ?>"><?php _e( 'Duplicate', 'efpic' ); ?>&hellip;</a>
-		<?php
-				echo efpic_get_duplication_modal( $post->ID );
-			}
-			else {
-		?>
+				<?php } else { ?>
 				<a class="button" href="<?php echo wp_nonce_url( admin_url( 'post.php?efpic_duplicate_collection=' . $post->ID ), 'efpic_duplicate_collection', 'efpic_duplication_nonce' ); ?>"><?php _e( 'Duplicate', 'efpic' ); ?></a>
-		<?php
-			}
-		?>
-				<div class="efpic-modal efpic-warning is-hidden" id="js-efpic-edit">
-					<div class="efpic-modal-inner">
-						<div class="efpic-modal-content">
-							<h3><?php _e( 'Caution!', 'efpic' ); ?></h3><p><?php _e ( 'You already sent this collection to the client.', 'efpic' ); ?></p><p><strong><?php _e ( 'Are you sure you want to make changes?', 'efpic' ); ?></strong></p>
-							<div class="efpic-modal-actions">
-								<a class="button button-primary" href="<?php print wp_nonce_url( admin_url( "post.php?post=" . $post->ID . "&action=edit" ), 'efpic_collection_reopen_' . $post->ID, 'reopen' ); ?>"><?php _e( 'Yes, I am sure', 'efpic' ); ?></a> <a class="button efpic-cancel-modal js-efpic-cancel-modal" href=""><?php _e( 'Cancel', 'efpic' ); ?></a>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div class="efpic-modal efpic-warning is-hidden" id="js-efpic-close">
-					<div class="efpic-modal-inner">
-						<div class="efpic-modal-content">
-							<h3><?php _e( 'Caution!', 'efpic' ); ?></h3>
-							<p><?php _e ( 'You are about to close this collection.', 'efpic' ); ?>
-							<?php
-							if ( efpic_have_all_clients_approved( $post->ID ) ) {
-								_e( 'New clients can no longer register themselves after that.', 'efpic' );
-							}
-							else {
-								_e ( 'Clients can no longer submit their selections after that.', 'efpic' );
-							}
-							?></p>
-							<p><strong><?php _e ( 'Are you sure you want to close this collection?', 'efpic' ); ?></strong></p>
-							<div class="efpic-modal-actions">
-								<a class="button button-primary" href="<?php print wp_nonce_url( admin_url( "post.php?post=" . $post->ID . "&action=close" ), 'efpic_collection_close_' . $post->ID, 'close' ); ?>"><?php _e( 'Yes, I am sure', 'efpic' ); ?></a> <a class="button efpic-cancel-modal js-efpic-cancel-modal" href=""><?php _e( 'Cancel', 'efpic' ); ?></a>
-							</div>
-						</div>
-					</div>
-				</div>
-
+				<?php } ?>
+				<a class="button js-efpic-close" href="<?php print wp_nonce_url( admin_url( "post.php?post=" . $post->ID . "&action=close" ), 'efpic_collection_close_' . $post->ID, 'close' ); ?>"><?php _e( 'Close', 'efpic' ); ?></a>
 		<?php
 			}
 			// The wrapping #submitbox is needed for the submit buttons to work
@@ -257,13 +208,72 @@ function efpic_collection_metabox( $post ) {
 				<?php if ( efpic_get_selection_count( $post->ID ) > 0 ) { ?>
 				<a class="button js-efpic-duplicate" data-id="<?php echo $post->ID; ?>" href="<?php echo wp_nonce_url( admin_url( 'post.php?efpic_duplicate_collection=' . $post->ID ), 'efpic_duplicate_collection', 'efpic_duplication_nonce' ); ?>"><?php _e( 'Duplicate', 'efpic' ); ?>&hellip;</a>
 				<?php } else { ?>
-					<a class="button" href="<?php echo wp_nonce_url( admin_url( 'post.php?efpic_duplicate_collection=' . $post->ID ), 'efpic_duplicate_collection', 'efpic_duplication_nonce' ); ?>"><?php _e( 'Duplicate', 'efpic' ); ?></a>
-		<?php 
+				<a class="button" href="<?php echo wp_nonce_url( admin_url( 'post.php?efpic_duplicate_collection=' . $post->ID ), 'efpic_duplicate_collection', 'efpic_duplication_nonce' ); ?>"><?php _e( 'Duplicate', 'efpic' ); ?></a>
+				<?php } ?>
+		<?php
 			}
 		?>
-			<?php echo efpic_get_duplication_modal( $post->ID );
-		}
-			do_action( 'efpic_after_major_publishing_actions', $post ); ?>
+			</div><!-- .efpic-publishing-actions__buttons -->
+
+			<div class="efpic-publishing-actions__modals">
+		<?php
+			if ( get_post_status() == 'delivered' ) {
+		?>
+				<div class="efpic-modal efpic-warning is-hidden" id="js-efpic-edit">
+					<div class="efpic-modal-inner">
+						<div class="efpic-modal-content">
+							<h3><?php _e( 'Caution!', 'efpic' ); ?></h3><p><?php _e ( 'You already delivered this collection to your client.', 'efpic' ); ?></p><p><strong><?php _e ( 'Are you sure you want to make changes?', 'efpic' ); ?></strong></p>
+							<div class="efpic-modal-actions">
+								<a class="button button-primary" href="<?php print wp_nonce_url( admin_url( "post.php?post=" . $post->ID . "&action=edit" ), 'efpic_collection_reopen_' . $post->ID, 'reopen' ); ?>"><?php _e( 'Yes, I am sure', 'efpic' ); ?></a> <a class="button efpic-cancel-modal js-efpic-cancel-modal" href=""><?php _e( 'Cancel', 'efpic' ); ?></a>
+							</div>
+						</div>
+					</div>
+				</div>
+		<?php
+			}
+			elseif ( get_post_status() == 'sent' ) {
+				if ( efpic_get_selection_count( $post->ID ) > 0 ) {
+					echo efpic_get_duplication_modal( $post->ID );
+				}
+		?>
+				<div class="efpic-modal efpic-warning is-hidden" id="js-efpic-edit">
+					<div class="efpic-modal-inner">
+						<div class="efpic-modal-content">
+							<h3><?php _e( 'Caution!', 'efpic' ); ?></h3><p><?php _e ( 'You already sent this collection to the client.', 'efpic' ); ?></p><p><strong><?php _e ( 'Are you sure you want to make changes?', 'efpic' ); ?></strong></p>
+							<div class="efpic-modal-actions">
+								<a class="button button-primary" href="<?php print wp_nonce_url( admin_url( "post.php?post=" . $post->ID . "&action=edit" ), 'efpic_collection_reopen_' . $post->ID, 'reopen' ); ?>"><?php _e( 'Yes, I am sure', 'efpic' ); ?></a> <a class="button efpic-cancel-modal js-efpic-cancel-modal" href=""><?php _e( 'Cancel', 'efpic' ); ?></a>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="efpic-modal efpic-warning is-hidden" id="js-efpic-close">
+					<div class="efpic-modal-inner">
+						<div class="efpic-modal-content">
+							<h3><?php _e( 'Caution!', 'efpic' ); ?></h3>
+							<p><?php _e ( 'You are about to close this collection.', 'efpic' ); ?>
+							<?php
+							if ( efpic_have_all_clients_approved( $post->ID ) ) {
+								_e( 'New clients can no longer register themselves after that.', 'efpic' );
+							}
+							else {
+								_e ( 'Clients can no longer submit their selections after that.', 'efpic' );
+							}
+							?></p>
+							<p><strong><?php _e ( 'Are you sure you want to close this collection?', 'efpic' ); ?></strong></p>
+							<div class="efpic-modal-actions">
+								<a class="button button-primary" href="<?php print wp_nonce_url( admin_url( "post.php?post=" . $post->ID . "&action=close" ), 'efpic_collection_close_' . $post->ID, 'close' ); ?>"><?php _e( 'Yes, I am sure', 'efpic' ); ?></a> <a class="button efpic-cancel-modal js-efpic-cancel-modal" href=""><?php _e( 'Cancel', 'efpic' ); ?></a>
+							</div>
+						</div>
+					</div>
+				</div>
+		<?php
+			}
+			elseif ( get_post_status() == 'approved' || get_post_status() == 'expired' ) {
+				echo efpic_get_duplication_modal( $post->ID );
+			}
+			do_action( 'efpic_after_major_publishing_actions', $post );
+		?>
+			</div><!-- .efpic-publishing-actions__modals -->
 
 			<a class="efpic-delete" href="<?php echo get_delete_post_link( $post->ID ); ?>"><?php _e( 'Move to Trash' ); ?></a>
 		</div>
@@ -1008,7 +1018,14 @@ function efpic_display_approved_view( $post, $collapsible = false ) {
 					</select>
 					<label for="efpic-copy-filenames"><?php _e( 'Copy Filenames', 'efpic' ); ?>:</label>
 					<input id="efpic-copy-filenames" type="text" value="<?php echo $img_filenames; ?>" />
-					<span class="button button-primary efpic-copy-to-clipboard<?php if ( empty( $img_filenames ) ) { echo ' disabled'; } ?>" role="button" tabindex="0" data-clipboard-text="<?php echo $img_filenames; ?>"><?php /* translators: Button text */ printf( _n( 'Copy %s Filename', 'Copy Filenames %s', $selection_image_count, 'efpic' ), '<span class="filename-count">(' .number_format_i18n( $selection_image_count ) . ')</span>' ); ?></span>
+					<span class="button button-primary efpic-copy-to-clipboard<?php if ( empty( $img_filenames ) ) { echo ' disabled'; } ?>" role="button" tabindex="0" data-clipboard-text="<?php echo $img_filenames; ?>"><?php
+						/* translators: %s = count like (12) */
+						printf(
+							/* translators: %s = count like (12) */
+							__( 'Copy Filenames %s', 'efpic' ),
+							'<span class="filename-count">(' . number_format_i18n( $selection_image_count ) . ')</span>'
+						);
+					?></span>
 				</div><!-- .efpic-filter -->
 
 				<div class="efpic-copy">

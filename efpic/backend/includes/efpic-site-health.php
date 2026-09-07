@@ -18,7 +18,7 @@ function efpic_add_debug_info( $debug_info ) {
 	sort( $php_extensions );
 
 	$debug_info['efpic'] = array(
-		'label'    => __( 'efpic', 'efpic' ),
+		'label'    => __( 'EFPIC', 'efpic' ),
 		'fields'   => array(
 			// 'license' => array(
 			// 	'label'    => 'License',
