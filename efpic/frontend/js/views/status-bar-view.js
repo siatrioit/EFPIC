@@ -163,6 +163,12 @@ efpic.StatusBarView = Backbone.View.extend({
 	filterSelected: function() {
 		$( '.efpic-error' ).remove();
 
+		// Toggle off if Selected filter is already active.
+		if ( $( 'body' ).hasClass( 'filter-selected' ) ) {
+			this.filterReset();
+			return;
+		}
+
 		this.appstate.set( 'filter', 'selected' );
 		$( 'body' ).removeClass( 'filter-unselected' ).addClass( 'filter-selected' );
 
@@ -175,6 +181,12 @@ efpic.StatusBarView = Backbone.View.extend({
 
 	filterUnselected: function() {
 		$( '.efpic-error' ).remove();
+
+		// Toggle off if Unselected filter is already active.
+		if ( $( 'body' ).hasClass( 'filter-unselected' ) ) {
+			this.filterReset();
+			return;
+		}
 
 		this.appstate.set( 'filter', 'unselected' );
 		$( 'body' ).removeClass( 'filter-selected' ).addClass( 'filter-unselected' );

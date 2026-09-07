@@ -4321,12 +4321,14 @@ body.filter-unselected.stars-filter-1 .efpic-collection .efpic-gallery-item.star
 }
 .efpic-filter-reset {
   position: static !important;
-  display: inline-flex;
-  align-items: center;
-  flex: 0 0 auto;
+  display: none !important; /* cancel via re-click on filter; keep center empty-state reset */
 }
 .efpic-filter-reset span {
   display: none;
+}
+.filter-selected .efpic-display-filter,
+.filter-unselected .efpic-display-filter {
+  padding-left: 0 !important;
 }
 .efpic-grid-size {
   flex: 0 0 auto;
