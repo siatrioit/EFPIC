@@ -283,6 +283,52 @@ add_filter( 'efpic_mail_parts', 'efpic_append_email_signature', 50, 3 );
 
 
 /**
+ * Whether a global email signature is configured.
+ *
+ * @return bool
+ */
+function efpic_has_email_signature() {
+	$signature = (string) get_option( 'efpic_email_signature_html', '' );
+	return '' !== trim( $signature );
+}
+
+
+/**
+ * Show the automatic email signature under the collection/delivery message field.
+ *
+ * @since 1.0.53
+ */
+function efpic_render_email_signature_preview() {
+	if ( ! efpic_has_email_signature() ) {
+		return;
+	}
+
+	$signature = (string) get_option( 'efpic_email_signature_html', '' );
+	$settings_url = admin_url( 'admin.php?page=efpic-email' );
+	?>
+	<div class="efpic-email-signature-preview">
+		<div class="efpic-email-signature-preview__head">
+			<strong><?php esc_html_e( 'Email signature (added automatically)', 'efpic' ); ?></strong>
+			<a href="<?php echo esc_url( $settings_url ); ?>"><?php esc_html_e( 'Edit in Settings', 'efpic' ); ?></a>
+		</div>
+		<p class="efpic-email-signature-preview__hint"><?php esc_html_e( 'This signature is appended to the email after your message. Do not write another signature above.', 'efpic' ); ?></p>
+		<div class="efpic-email-signature-preview__body">
+			<?php
+			if ( function_exists( 'efpic_sanitize_email_signature_html' ) ) {
+				echo efpic_sanitize_email_signature_html( $signature ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- sanitized HTML
+			} else {
+				echo wp_kses_post( $signature );
+			}
+			?>
+		</div>
+	</div>
+	<?php
+}
+
+add_action( 'efpic_after_collection_description', 'efpic_render_email_signature_preview' );
+
+
+/**
  * Email delivery collection to client(s)
  *
  * @param int $post_id The collection id

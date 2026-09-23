@@ -1625,6 +1625,43 @@ label.efpic-php-zip-error-disabled {
   font-size: 0.875em;
 }
 
+.efpic-email-signature-preview {
+  margin: -0.5rem 0 1.25rem;
+  padding: 0.85rem 1rem;
+  border: 1px solid #d8dde3;
+  border-radius: 10px;
+  background: #f7f8fa;
+}
+.efpic-email-signature-preview__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+  margin-bottom: 0.35rem;
+}
+.efpic-email-signature-preview__head strong {
+  color: #1d2327;
+}
+.efpic-email-signature-preview__hint {
+  margin: 0 0 0.75rem;
+  color: #50575e;
+  font-size: 0.875em;
+  line-height: 1.4;
+}
+.efpic-email-signature-preview__body {
+  padding: 0.85rem 1rem;
+  border-radius: 8px;
+  background: #fff;
+  color: #111;
+  line-height: 1.45;
+  overflow: auto;
+}
+.efpic-email-signature-preview__body img {
+  max-width: 100%;
+  height: auto;
+}
+
 /**
  * Radio tabs – used for delivery method
  *
