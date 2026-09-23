@@ -22,6 +22,7 @@ efpic.DeliveryView = Backbone.View.extend({
 	delivery: function() {
 		// Empty everything
 		this.$el.empty();
+		this.$el.toggleClass( 'efpic-delivery--external', this.appstate.get( 'delivery_option' ) === 'external' );
 
 		if ( this.collection.length > 0 ) {
 

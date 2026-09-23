@@ -363,6 +363,7 @@ function efpic_latvian_translations_extra( $map ) {
 		'No downloads yet' => 'Vēl nav lejupielāžu',
 		'Download Images' => 'Lejupielādēt bildes',
 		'You can download your images by clicking on the buttons below.' => 'Lejupielādē bildes, spiežot pogas zemāk.',
+		'Press the button to download your images.' => 'Spied pogu, lai lejupielādētu bildes.',
 		'Show Images' => 'Rādīt bildes',
 		'Hide Images' => 'Slēpt bildes',
 		'Delivery published' => 'Piegāde publicēta',

@@ -14,7 +14,13 @@ defined( 'EFPIC_PRO' ) OR exit;
 			<?php /* translators: Headline in the delivery box in the client view */ ?>
 			<h2 class="efpic-delivery-title"><?php echo apply_filters( 'efpic_delivery_box_title' ,__( 'Download Images', 'efpic-pro' ) ); ?></h2>
 			<?php /* translators: Text in the delivery box in the client view */ ?>
-			<div class="efpic-delivery-intro-text"><?php echo apply_filters( 'efpic_delivery_box_message' ,__( 'You can download your images by clicking on the buttons below.', 'efpic-pro' ) ); ?></div>
+			<div class="efpic-delivery-intro-text">
+				<@ if ( this.appstate.get( 'delivery_option' ) == 'external' ) { @>
+					<?php echo apply_filters( 'efpic_delivery_box_message_external', __( 'Press the button to download your images.', 'efpic-pro' ) ); ?>
+				<@ } else { @>
+					<?php echo apply_filters( 'efpic_delivery_box_message' ,__( 'You can download your images by clicking on the buttons below.', 'efpic-pro' ) ); ?>
+				<@ } @>
+			</div>
 		</div>
 		<div class="efpic-delivery-actions">
 			<@ if ( this.appstate.get( 'delivery_option' ) == 'external' ) { @>

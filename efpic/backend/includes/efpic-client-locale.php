@@ -202,6 +202,7 @@ function efpic_get_client_lv_translations() {
 		'<em>Please Note:</em> This collection has expired. Therefore it is not possible to change your selection at this time.' => '<em>Lūdzu, ņemiet vērā:</em> šī galerija ir beigusies. Pašlaik atlasi vairs nevar mainīt.',
 		'Download Images' => 'Lejupielādēt bildes',
 		'You can download your images by clicking on the buttons below.' => 'Bildes var lejupielādēt, noklikšķinot uz pogām zemāk.',
+		'Press the button to download your images.' => 'Spied pogu, lai lejupielādētu bildes.',
 		'Download All' => 'Lejupielādēt visas',
 		'Show Images' => 'Rādīt bildes',
 		'Hide Images' => 'Paslēpt bildes',
