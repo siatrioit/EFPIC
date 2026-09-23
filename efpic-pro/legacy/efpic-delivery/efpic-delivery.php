@@ -118,14 +118,13 @@ function efpic_delivery_collection_background( $custom_styles ) {
  * @param object $post The collection post object
  */
 function efpic_delvery_add_delivery_button( $post ) {
-	if ( in_array( $post->post_status, [ 'approved', 'expired' ] ) ) {
-		ob_start();
-
-		?>
-		<a class="button button-primary js-efpic-deliver" href="<?php print wp_nonce_url( admin_url( "post.php?post=" . $post->ID ), -1, 'delivery' ); ?>"><?php _e( 'Deliver Final Images', 'efpic-pro' ); ?></a>
-		<?php
-
-		echo ob_get_clean();
+	if ( in_array( $post->post_status, [ 'approved', 'expired' ], true ) ) {
+		$url = wp_nonce_url(
+			admin_url( 'post.php?post=' . (int) $post->ID . '&action=edit&efpic_deliver=1' ),
+			'efpic_collection_delivery_' . (int) $post->ID,
+			'delivery'
+		);
+		echo '<a class="button button-primary js-efpic-deliver" href="' . esc_url( $url ) . '">' . esc_html__( 'Deliver Final Images', 'efpic-pro' ) . '</a>';
 	}
 }
 

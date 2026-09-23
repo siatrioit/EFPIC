@@ -215,6 +215,13 @@ function efpic_collection_metabox( $post ) {
 		<?php
 			}
 		?>
+				<?php
+				/**
+				 * Extra primary actions (e.g. Deliver Final Images).
+				 * Must stay inside the buttons container — modals wrap has pointer-events: none.
+				 */
+				do_action( 'efpic_after_major_publishing_actions', $post );
+				?>
 				<a class="button efpic-delete-button" href="<?php echo esc_url( get_delete_post_link( $post->ID ) ); ?>"><?php esc_html_e( 'Move to Trash', 'efpic' ); ?></a>
 			</div><!-- .efpic-publishing-actions__buttons -->
 
@@ -238,7 +245,7 @@ function efpic_collection_metabox( $post ) {
 				if ( efpic_get_selection_count( $post->ID ) > 0 ) {
 					echo efpic_get_duplication_modal( $post->ID );
 				}
-		?>
+				?>
 				<div class="efpic-modal efpic-warning is-hidden" id="js-efpic-edit">
 					<div class="efpic-modal-inner">
 						<div class="efpic-modal-content">
@@ -274,7 +281,6 @@ function efpic_collection_metabox( $post ) {
 			elseif ( get_post_status() == 'approved' || get_post_status() == 'expired' ) {
 				echo efpic_get_duplication_modal( $post->ID );
 			}
-			do_action( 'efpic_after_major_publishing_actions', $post );
 		?>
 			</div><!-- .efpic-publishing-actions__modals -->
 		</div>
@@ -2276,37 +2282,41 @@ add_filter( 'post_row_actions', 'efpic_add_duplicate_link', 10, 2 );
  */
 function efpic_collection_delivery() {
 
-	// Check if a "reopen" parameter (the nonce) was set with this request
-	if ( isset( $_REQUEST['delivery'] ) AND isset( $_REQUEST['delivery'] ) ) {
-
-		// If it is, save it in a variable
-		$delivery_nonce = $_REQUEST['delivery'];
-
-		// Verify the nonce to see if it is a legitimate request
-		if ( ! wp_verify_nonce( $_REQUEST['delivery'] ) ) {
-			wp_die( __( 'Security check failed!', 'efpic' ) );
-
-		} else {
-			if ( ! empty( $_REQUEST['post'] ) ) {
-				$post_id = sanitize_key( $_REQUEST['post'] );
-				efpic_update_post_status( $post_id, 'delivery-draft' );
-				efpic_update_collection_history( $post_id, 'preparing-delivery' );
-			}
-			else {
-				// Create new delivery draft
-				$post_id = wp_insert_post( array(
-					'post_type' => 'efpic_collection',
-					'post_status' => 'delivery-draft'
-				) );
-			}
-
-			wp_redirect( admin_url( 'post.php?action=edit&post=' . $post_id ) );
-			exit;
-		}
+	if ( empty( $_REQUEST['delivery'] ) || empty( $_REQUEST['post'] ) ) {
+		return;
 	}
+
+	$post_id = absint( $_REQUEST['post'] );
+	if ( ! $post_id ) {
+		return;
+	}
+
+	if ( ! wp_verify_nonce( sanitize_text_field( wp_unslash( $_REQUEST['delivery'] ) ), 'efpic_collection_delivery_' . $post_id ) ) {
+		wp_die( esc_html__( 'Security check failed!', 'efpic' ) );
+	}
+
+	if ( ! current_user_can( 'edit_post', $post_id ) ) {
+		wp_die( esc_html__( 'Security check failed!', 'efpic' ) );
+	}
+
+	$post = get_post( $post_id );
+	if ( ! $post || 'efpic_collection' !== $post->post_type ) {
+		wp_die( esc_html__( 'Security check failed!', 'efpic' ) );
+	}
+
+	if ( ! in_array( $post->post_status, array( 'approved', 'expired' ), true ) ) {
+		wp_safe_redirect( admin_url( 'post.php?action=edit&post=' . $post_id ) );
+		exit;
+	}
+
+	efpic_update_post_status( $post_id, 'delivery-draft' );
+	efpic_update_collection_history( $post_id, 'preparing-delivery' );
+
+	wp_safe_redirect( admin_url( 'post.php?action=edit&post=' . $post_id ) );
+	exit;
 }
 
-add_action( 'wp_loaded', 'efpic_collection_delivery' );
+add_action( 'admin_init', 'efpic_collection_delivery' );
 
 
 /**
